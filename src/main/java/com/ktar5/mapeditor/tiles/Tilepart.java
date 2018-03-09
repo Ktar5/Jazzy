@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor.tiles;
 
-import com.ktar5.tilejump.tools.mapeditor.ToolSerializeable;
+import com.ktar5.mapeditor.util.ToolSerializeable;
 import lombok.Getter;
 
 @Getter

@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.ktar5.tilejump.tools.mapeditor.Tilemap;
+import com.ktar5.mapeditor.Tilemap;
 
 import java.lang.reflect.Type;
 

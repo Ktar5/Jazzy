@@ -1,11 +1,13 @@
 package com.ktar5.mapeditor;
 
-import com.badlogic.gdx.utils.Timer;
 import com.google.gson.JsonArray;
-import com.ktar5.tilejump.tools.mapeditor.tiles.Tile;
-import com.ktar5.tilejump.tools.mapeditor.tiles.TileBlock;
+import com.ktar5.mapeditor.tiles.Tile;
+import com.ktar5.mapeditor.tiles.TileBlock;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Tilemap {
     public Tile[][] grid;
@@ -32,14 +34,6 @@ public class Tilemap {
                 tilemap.grid[x][y] = new TileBlock(0, 0, x, y);
             }
         }
-
-        //Schedule a save for the map;
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                TileManager.get().saveMap(id);
-            }
-        }, 15);
         return tilemap;
     }
 

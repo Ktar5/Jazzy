@@ -1,14 +1,9 @@
 package com.ktar5.mapeditor.rendering;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Disposable;
-import com.ktar5.tilejump.tools.mapeditor.TileManager;
-import com.ktar5.tilejump.tools.mapeditor.Tilemap;
-import com.ktar5.tilejump.tools.mapeditor.tiles.Tile;
-import com.ktar5.tilejump.variables.Const;
+import com.ktar5.mapeditor.TileManager;
+import com.ktar5.mapeditor.Tilemap;
+import com.ktar5.mapeditor.tiles.Tile;
+import com.ktar5.mapeditor.util.Disposable;
 
 public class GridRenderer implements Disposable {
     public static final int radius = 16;

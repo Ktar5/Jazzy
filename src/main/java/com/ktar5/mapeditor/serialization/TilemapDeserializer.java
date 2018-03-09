@@ -1,9 +1,9 @@
 package com.ktar5.mapeditor.serialization;
 
 import com.google.gson.*;
-import com.ktar5.tilejump.tools.mapeditor.Tilemap;
-import com.ktar5.tilejump.tools.mapeditor.tiles.TileBlock;
-import com.ktar5.tilejump.tools.mapeditor.tiles.TileFoursquare;
+import com.ktar5.mapeditor.Tilemap;
+import com.ktar5.mapeditor.tiles.TileBlock;
+import com.ktar5.mapeditor.tiles.TileFoursquare;
 
 import java.lang.reflect.Type;
 

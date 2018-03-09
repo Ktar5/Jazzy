@@ -1,18 +1,13 @@
 package com.ktar5.mapeditor;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ktar5.tilejump.camera.CameraBase;
-import com.ktar5.tilejump.camera.CameraMove;
-import com.ktar5.tilejump.tools.mapeditor.rendering.GridRenderer;
-import com.ktar5.tilejump.tools.mapeditor.serialization.TilemapDeserializer;
-import com.ktar5.tilejump.tools.mapeditor.serialization.TilemapSerializer;
+import com.ktar5.mapeditor.rendering.GridRenderer;
+import com.ktar5.mapeditor.serialization.TilemapDeserializer;
+import com.ktar5.mapeditor.serialization.TilemapSerializer;
+import com.ktar5.mapeditor.util.Disposable;
 import lombok.Getter;
+import org.mini2Dx.gdx.utils.IntMap;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;

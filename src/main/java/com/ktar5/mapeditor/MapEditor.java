@@ -1,10 +1,6 @@
 package com.ktar5.mapeditor;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.ktar5.tilejump.variables.Const;
+import com.ktar5.mapeditor.util.Const;
 
 import java.io.File;
 
