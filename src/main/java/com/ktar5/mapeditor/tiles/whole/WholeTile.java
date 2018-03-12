@@ -1,16 +1,16 @@
-package com.ktar5.mapeditor.tiles;
+package com.ktar5.mapeditor.tiles.whole;
 
+import com.ktar5.mapeditor.tiles.Tile;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TileBlock extends Tile {
+public class WholeTile extends Tile {
     private int blockId;
     private int direction;
 
-    public TileBlock(int blockId, int direction, int x, int y) {
-        super(x, y);
+    public WholeTile(int blockId, int direction) {
         this.blockId = blockId;
         this.direction = direction;
     }

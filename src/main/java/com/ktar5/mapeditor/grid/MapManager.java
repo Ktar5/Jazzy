@@ -1,11 +1,7 @@
-package com.ktar5.mapeditor;
+package com.ktar5.mapeditor.grid;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ktar5.mapeditor.rendering.GridRenderer;
-import com.ktar5.mapeditor.serialization.TilemapDeserializer;
-import com.ktar5.mapeditor.serialization.TilemapSerializer;
-import com.ktar5.mapeditor.util.Disposable;
 import lombok.Getter;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.pmw.tinylog.Configurator;
@@ -17,23 +13,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class TileManager implements Disposable {
-    public static final int SIZE = 16;
-    public static TileManager instance;
-
+public class MapManager {
+    public static MapManager instance;
+    private final Gson gson;
     private File tempDir, saveDir;
     private IntMap<Tilemap> openMaps;
-    private final Gson gson;
-
-    @Getter
-    private CameraBase camera;
     @Getter
     private int currentLevel = -1;
-    @Getter
-    private GridRenderer gridRenderer;
 
-    public TileManager(File dir) {
+    public MapManager(File dir) {
         instance = this;
 
         openMaps = new IntMap<>();
@@ -65,16 +56,21 @@ public class TileManager implements Disposable {
             tempDir.mkdir();
         }
 
-        camera = new CameraMove(new OrthographicCamera(), new ScreenViewport());
 
-        this.gridRenderer = new GridRenderer();
         //Save maps every 5 minutes
-        Timer.schedule(new Timer.Task() {
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 saveTempAllMaps();
             }
         }, 5 * 60, 5 * 60);
+    }
+
+    public static MapManager get() {
+        if (instance == null) {
+            throw new RuntimeException("Please initialize tile manager first.");
+        }
+        return instance;
     }
 
     public Tilemap getMap(int id) {
@@ -84,14 +80,7 @@ public class TileManager implements Disposable {
         return openMaps.get(id);
     }
 
-    public static TileManager get() {
-        if (instance == null) {
-            throw new RuntimeException("Please initialize tile manager first.");
-        }
-        return instance;
-    }
-
-    public void createMap(int width, int height, int id) {
+    public void createMap(int width, int height, int tileSize, int id) {
         if (openMaps.containsKey(id)) {
             throw new RuntimeException("Tilemap with id: " + id + " already exists");
         }
@@ -99,7 +88,7 @@ public class TileManager implements Disposable {
         if (file.exists()) {
             throw new RuntimeException("File at path already exists: " + file.getPath());
         }
-        Tilemap tilemap = Tilemap.create(width, height, id);
+        Tilemap tilemap = Tilemap.createEmpty(width, height, tileSize, id);
         openMaps.put(id, tilemap);
     }
 
@@ -174,9 +163,8 @@ public class TileManager implements Disposable {
         Logger.info("Finished saving map backups");
     }
 
-
-    @Override
-    public void dispose() {
-        gridRenderer.dispose();
+    public Tilemap getCurrent() {
+        return this.getMap(getCurrentLevel());
     }
+
 }

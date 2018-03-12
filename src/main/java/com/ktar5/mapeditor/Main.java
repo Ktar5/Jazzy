@@ -1,0 +1,121 @@
+package com.ktar5.mapeditor;
+
+import com.ktar5.mapeditor.grid.MapManager;
+import com.ktar5.mapeditor.input.Input;
+import com.ktar5.mapeditor.input.KeyPress;
+import com.ktar5.mapeditor.input.Scroll;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+public class Main extends Application {
+    //Use scene builder -> add content through creating tabs and rendering to canvas.
+    //Do check to see if canvas rendering is needed to be buffered
+    //Do cache images
+    //Do separate into multiple types of grids
+
+
+
+
+    public static Window window;
+
+    public static void main(String[] args) {
+        File file = new File("D:\\GameDev\\Projects\\TileJumpGame\\tools\\mapgen");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        new MapManager(file);
+
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("TileMapTest");
+
+        //Create root pane
+        Pane root = new Pane();
+        root.getChildren().add(MapManager.get().getCurrent());
+
+        //Initialize primary stage window and set to view scene
+        Scene scene = new Scene(root, 600, 600);
+        primaryStage.setScene(scene);
+        primaryStage.setHeight(600);
+        primaryStage.setWidth(800);
+        primaryStage.setMinWidth(350);
+        primaryStage.setMinHeight(150);
+        primaryStage.show();
+
+        //Initialize window
+        window = scene.getWindow();
+
+        //Initialize the current map
+        MapManager.get().getCurrent().draw();
+
+        //Add event listeners
+        scene.setOnKeyPressed(new KeyPress());
+        scene.setOnScroll(new Scroll());
+
+
+
+        //TODO
+        //Test this stuff:
+        int n = MapManager.get().getCurrent().getTileSize();
+        canvas = new BufferedImage(MapManager.get().getCurrent().getWidth() * n,
+                MapManager.get().getCurrent().getHeight() * n, BufferedImage.TYPE_INT_RGB);
+        graphics = (Graphics2D) canvas.getGraphics();
+    }
+
+    private BufferedImage canvas;
+    private Graphics2D graphics;
+
+    public void run() {
+        update();
+        render();
+        draw();
+    }
+
+    /**
+     * Updates the map editor.
+     */
+    private void update() {
+        // update main state
+        mainState.update();
+
+        // set number of tiles when tilemap is created
+        if (mainState.isMapCreated()) {
+            mainState.setMapCreated(false);
+        }
+
+        Input.handleInput();
+    }
+
+    /**
+     * Draws everything to an offscreen buffer. This is
+     * to prevent flickering.
+     */
+    private void render() {
+        int n = MapManager.get().getCurrent().getTileSize();
+        graphics.setColor(Color.BLACK);
+        graphics.fillRect(0, 0, MapManager.get().getCurrent().getWidth() * n,
+                MapManager.get().getCurrent().getHeight() * n);
+        mainState.draw(graphics);
+    }
+
+    /**
+     * Draws everything to the screen.
+     */
+    private void draw() {
+        Graphics2D tempGraphics = (Graphics2D) graphics;
+        tempGraphics.drawImage(canvas, getLocation().x, getLocation().y, null);
+        tempGraphics.dispose();
+    }
+
+
+}

@@ -1,9 +1,8 @@
-package com.ktar5.mapeditor.serialization;
+package com.ktar5.mapeditor.grid;
 
 import com.google.gson.*;
-import com.ktar5.mapeditor.Tilemap;
-import com.ktar5.mapeditor.tiles.TileBlock;
-import com.ktar5.mapeditor.tiles.TileFoursquare;
+import com.ktar5.mapeditor.tiles.composite.CompositeTile;
+import com.ktar5.mapeditor.tiles.whole.WholeTile;
 
 import java.lang.reflect.Type;
 
@@ -16,6 +15,7 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
         JsonObject jsonObject = (JsonObject) json;
         Tilemap tilemap = new Tilemap(jsonObject.get("width").getAsInt(),
                 jsonObject.get("height").getAsInt(),
+                jsonObject.get("tileSize").getAsInt(),
                 jsonObject.get("id").getAsInt());
         tilemap.setXStart(jsonObject.get("spawnX").getAsInt());
         tilemap.setYStart(jsonObject.get("spawnY").getAsInt());
@@ -27,17 +27,17 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
         }
 
         String block;
-        for (int x = 0; x < tilemap.width; x++) {
-            for (int y = 0; y < tilemap.height; y++) {
+        for (int x = 0; x < tilemap.getWidth(); x++) {
+            for (int y = 0; y < tilemap.getHeight(); y++) {
                 block = blocks[x][y];
                 if (block.charAt(0) == '[') {
-                    tilemap.grid[x][y] = new TileFoursquare(x, y, block);
+                    tilemap.grid[x][y] = new CompositeTile(x, y, block);
                 } else {
                     if (block.contains("_")) {
                         String[] split = block.split("_");
-                        tilemap.grid[x][y] = new TileBlock(Integer.valueOf(split[0]), Integer.valueOf(split[1]), x, y);
+                        tilemap.grid[x][y] = new WholeTile(Integer.valueOf(split[0]), Integer.valueOf(split[1]), x, y);
                     } else {
-                        tilemap.grid[x][y] = new TileBlock(Integer.valueOf(block), 0, x, y);
+                        tilemap.grid[x][y] = new WholeTile(Integer.valueOf(block), 0, x, y);
                     }
                 }
             }

@@ -1,21 +1,22 @@
-package com.ktar5.mapeditor.tiles;
+package com.ktar5.mapeditor.tiles.composite;
 
-public class TileFoursquare extends Tile {
-    Tilepart[] tileparts = new Tilepart[4];
+import com.ktar5.mapeditor.tiles.Tile;
 
-    public TileFoursquare(int x, int y) {
-        super(x, y);
+public class CompositeTile extends Tile {
+    CompositeTilePart[] tileparts = new CompositeTilePart[4];
+
+    public CompositeTile() {
         for (int i = 0; i < tileparts.length; i++) {
-            tileparts[i] = new Tilepart(0, 0);
+            tileparts[i] = new CompositeTilePart(0, 0);
         }
     }
 
-    public TileFoursquare(int x, int y, String block) {
-        this(x, y);
+    public CompositeTile(String block) {
+        this();
         block = block.substring(1, block.length());
         String[] split = block.split("/");
         for (int i = 0; i < split.length; i++) {
-            tileparts[i] = new Tilepart(split[i]);
+            tileparts[i] = new CompositeTilePart(split[i]);
         }
     }
 

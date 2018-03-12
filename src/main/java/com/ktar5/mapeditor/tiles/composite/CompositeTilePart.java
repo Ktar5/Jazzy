@@ -1,19 +1,19 @@
-package com.ktar5.mapeditor.tiles;
+package com.ktar5.mapeditor.tiles.composite;
 
 import com.ktar5.mapeditor.util.ToolSerializeable;
 import lombok.Getter;
 
 @Getter
-public class Tilepart implements ToolSerializeable {
+public class CompositeTilePart implements ToolSerializeable {
     private int baseId;
     private int data;
 
-    public Tilepart(int baseId, int data) {
+    public CompositeTilePart(int baseId, int data) {
         this.baseId = baseId;
         this.data = data;
     }
 
-    public Tilepart(String s) {
+    public CompositeTilePart(String s) {
         if (s.length() == 1 || s.charAt(0) == '0') {
             baseId = 0;
             data = 0;

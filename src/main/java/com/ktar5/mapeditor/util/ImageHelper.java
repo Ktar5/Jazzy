@@ -224,6 +224,56 @@ public class ImageHelper {
         return ImageIO.read(file);
     }
 
+    /**
+     * This grabs the width of the specified image. If the width is not
+     * available, this method will block until it becomes available
+     *
+     * @param image
+     * @return
+     */
+    public static int getImageWidth(Image image) {
+        SynchronizedImageObserver o = new SynchronizedImageObserver();
+
+        // we use the image observer as lock
+        synchronized (o) {
+            while (true) {
+                o.setValue(image.getWidth(o), ImageObserver.WIDTH);
+                if (o.getValue(ImageObserver.WIDTH) != -1)
+                    break;
+                try {
+                    o.wait();
+                } catch (InterruptedException ex) {
+                }
+            }
+            return o.getValue(ImageObserver.WIDTH);
+        }
+    }
+
+    /**
+     * This grabs the width of the specified image. If the width is not
+     * available, this method will block until it becomes available
+     *
+     * @param image
+     * @return
+     */
+    public static int getImageHeight(Image image) {
+        SynchronizedImageObserver o = new SynchronizedImageObserver();
+
+        // we use the image observer as lock
+        synchronized (o) {
+            while (true) {
+                o.setValue(image.getHeight(o), ImageObserver.HEIGHT);
+                if (o.getValue(ImageObserver.HEIGHT) != -1)
+                    break;
+                try {
+                    o.wait();
+                } catch (InterruptedException ex) {
+                }
+            }
+            return o.getValue(ImageObserver.HEIGHT);
+        }
+    }
+
     public static enum ImageFormat {
         PNG,
         RAW;
@@ -299,56 +349,6 @@ public class ImageHelper {
             if ((infoflags & ImageObserver.HEIGHT) != 0)
                 setValue(height, ImageObserver.HEIGHT);
             return true;
-        }
-    }
-
-    /**
-     * This grabs the width of the specified image. If the width is not
-     * available, this method will block until it becomes available
-     *
-     * @param image
-     * @return
-     */
-    public static int getImageWidth(Image image) {
-        SynchronizedImageObserver o = new SynchronizedImageObserver();
-
-        // we use the image observer as lock
-        synchronized (o) {
-            while (true) {
-                o.setValue(image.getWidth(o), ImageObserver.WIDTH);
-                if (o.getValue(ImageObserver.WIDTH) != -1)
-                    break;
-                try {
-                    o.wait();
-                } catch (InterruptedException ex) {
-                }
-            }
-            return o.getValue(ImageObserver.WIDTH);
-        }
-    }
-
-    /**
-     * This grabs the width of the specified image. If the width is not
-     * available, this method will block until it becomes available
-     *
-     * @param image
-     * @return
-     */
-    public static int getImageHeight(Image image) {
-        SynchronizedImageObserver o = new SynchronizedImageObserver();
-
-        // we use the image observer as lock
-        synchronized (o) {
-            while (true) {
-                o.setValue(image.getHeight(o), ImageObserver.HEIGHT);
-                if (o.getValue(ImageObserver.HEIGHT) != -1)
-                    break;
-                try {
-                    o.wait();
-                } catch (InterruptedException ex) {
-                }
-            }
-            return o.getValue(ImageObserver.HEIGHT);
         }
     }
 }
