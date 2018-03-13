@@ -6,9 +6,9 @@ import javafx.scene.layout.Priority;
 
 import java.util.UUID;
 
-public class ViewPane extends TabPane {
+public class EditorViewPane extends TabPane {
 
-    public ViewPane() {
+    public EditorViewPane() {
         super();
 
         this.setMaxHeight(Double.MAX_VALUE);
@@ -19,8 +19,6 @@ public class ViewPane extends TabPane {
         this.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 
         HBox.setHgrow(this, Priority.ALWAYS);
-        this.getTabs().addAll(new EditorTab(UUID.randomUUID()), new EditorTab(UUID.randomUUID()),
-                new EditorTab(UUID.randomUUID()));
     }
 
     public void createTab(UUID uuid) {

@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.util.UUID;
 
 public class Main extends Application {
     //Use scene builder -> add content through creating tabs and rendering to canvas.
@@ -45,6 +46,9 @@ public class Main extends Application {
 
         //Create root pane
         root = new Root();
+        root.getCenterView().getEditorViewPane().createTab(UUID.randomUUID());
+        root.getCenterView().getEditorViewPane().createTab(UUID.randomUUID());
+        root.getCenterView().getEditorViewPane().createTab(UUID.randomUUID());
 
         //Initialize primary stage window and set to view scene
         Scene scene = new Scene(root, 600, 600);

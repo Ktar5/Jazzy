@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class CenterView extends HBox {
     private DetailsPane detailsPane;
-    private ViewPane viewPane;
+    private EditorViewPane editorViewPane;
     private TilePane tilePane;
 
     public CenterView() {
@@ -16,7 +16,7 @@ public class CenterView extends HBox {
         VBox.setVgrow(this, Priority.ALWAYS);
         this.getChildren().addAll(
                 detailsPane = new DetailsPane(),
-                viewPane = new ViewPane(),
+                editorViewPane = new EditorViewPane(),
                 tilePane = new TilePane());
     }
 }
