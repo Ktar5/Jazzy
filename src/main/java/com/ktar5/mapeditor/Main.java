@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor;
 
-import com.ktar5.mapeditor.gui.Root;
+import com.ktar5.mapeditor.javafx.Root;
 import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
 import com.ktar5.mapeditor.tilemap.MapManager;

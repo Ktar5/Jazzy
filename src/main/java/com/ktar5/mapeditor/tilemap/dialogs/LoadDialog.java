@@ -4,7 +4,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 
-public class LoadDialogue {
+public class LoadDialog {
 
     public static File create() {
         FileChooser fileChooser = new FileChooser();

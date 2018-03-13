@@ -1,4 +1,4 @@
-package com.ktar5.mapeditor.gui.bottombar;
+package com.ktar5.mapeditor.javafx.bottombar;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

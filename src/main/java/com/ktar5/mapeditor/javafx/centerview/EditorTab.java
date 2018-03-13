@@ -1,7 +1,5 @@
-package com.ktar5.mapeditor.gui.centerview;
+package com.ktar5.mapeditor.javafx.centerview;
 
-import com.ktar5.mapeditor.tilemap.MapManager;
-import com.ktar5.mapeditor.tilemap.Tilemap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;

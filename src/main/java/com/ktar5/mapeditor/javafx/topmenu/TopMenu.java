@@ -1,4 +1,4 @@
-package com.ktar5.mapeditor.gui.topmenu;
+package com.ktar5.mapeditor.javafx.topmenu;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.MenuBar;

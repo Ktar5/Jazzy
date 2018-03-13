@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ktar5.mapeditor.alerts.GenericAlert;
 import com.ktar5.mapeditor.tilemap.dialogs.CreateDialog;
-import com.ktar5.mapeditor.tilemap.dialogs.LoadDialogue;
+import com.ktar5.mapeditor.tilemap.dialogs.LoadDialog;
 import lombok.Getter;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
@@ -92,7 +92,7 @@ public class MapManager {
     }
 
     public void loadMap() throws IOException {
-        File loaderFile = LoadDialogue.create();
+        File loaderFile = LoadDialog.create();
         if (loaderFile == null) {
             Logger.info("Tried to load map, cancelled or failed");
             return;
