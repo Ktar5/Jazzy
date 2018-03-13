@@ -1,49 +1,71 @@
-package com.ktar5.mapeditor.grid;
+package com.ktar5.mapeditor.tilemap;
 
 import com.google.gson.JsonArray;
+import com.ktar5.mapeditor.alerts.GenericAlert;
 import com.ktar5.mapeditor.tiles.Tile;
 import com.ktar5.utilities.common.constants.Direction;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 @Getter
-public class Tilemap extends Pane {
-    //The grid of tiles
+public class Tilemap {
+    private UUID id;
+
+    //File saving/loading stuff
+    private String mapName;
+    private File saveFile;
+
+    //Tilemap variables
     public Tile[][] grid;
-    //The width, height, id, and tileSize properties
-    private final int width, height, id, tileSize;
-    //The spawn point coordinates
+    private final int width, height, tileSize;
     @Setter
     private int xStart = 0, yStart = 0;
+
     //The canvas for which to render on
     private Canvas canvas = new Canvas();
 
 
-    //The constructor
-    public Tilemap(int width, int height, int tileSize, int id) {
+    public Tilemap(int width, int height, int tileSize, UUID id, File file) {
+        this(width, height, tileSize, id);
+        this.saveFile = file;
+        this.mapName = saveFile.getName();
+    }
+
+
+    //This is used because during deserialization we do not have access
+    // to the file until after the json is processed. Might come up with a
+    // better way to handle this in the future
+    Tilemap(int width, int height, int tileSize, UUID id) {
         this.width = width;
         this.height = height;
-        this.id = id;
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
-
+        this.id = id;
         canvas.setWidth(width);
         canvas.setHeight(height);
         canvas.setCache(true);
-        getChildren().add(canvas);
+        //TODO do this?....
+        //getChildren().add(canvas);
     }
 
-    public static Tilemap createEmpty(int width, int height, int tileSize, int id) {
-        Tilemap tilemap = new Tilemap(width, height, tileSize, id);
+    public static Tilemap createEmpty(int width, int height, int tileSize, UUID id, File file) {
+        Tilemap tilemap = new Tilemap(width, height, tileSize, id, file);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 tilemap.grid[x][y] = Tile.AIR;
             }
         }
         return tilemap;
+    }
+
+    public void updateNameAndFile(File file) {
+        this.saveFile = file;
+        this.mapName = file.getName();
     }
 
     public boolean isInMapRange(int x, int y) {
@@ -79,16 +101,18 @@ public class Tilemap extends Pane {
     }
 
     public void save() {
-        MapManager.get().saveMap(id);
+        try {
+            MapManager.get().saveMap(getId());
+        } catch (IOException e) {
+            new GenericAlert("Something happened during te save, try again?");
+            e.printStackTrace();
+        }
     }
 
     public void draw() {
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x <= width - 1; x++) {
-                canvas.getGraphicsContext2D().drawImage();
-                Image image;
-                canvas.getGraphicsContext2D().rotate(45);
-                canvas.getGraphicsContext2D().drawImage(element.getImage(), element.getX(), element.getY());
+                grid[x][y].draw(canvas, x, y);
             }
         }
     }

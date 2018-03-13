@@ -7,7 +7,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 //TODO
-public class TileLoader {
+public class TileCache {
+
+    //Map -> Tile -> Image ->
+
+
 
     /**
      * Returns a list with Tiles, constructed with images from the given folderPath.
@@ -31,7 +35,7 @@ public class TileLoader {
         }
 
         for (File f : map.values()) {
-            tiles.add(new Tile(f.getPath(), (char) character++));
+            //tiles.add(new Tile(f.getPath(), (char) character++));
         }
 
         return tiles;

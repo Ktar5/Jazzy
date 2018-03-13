@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tiles.whole;
 
 import com.ktar5.mapeditor.tiles.Tile;
+import javafx.scene.canvas.Canvas;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,11 @@ public class WholeTile extends Tile {
     @Override
     public boolean isFoursquare() {
         return false;
+    }
+
+    @Override
+    public void draw(Canvas canvas, int x, int y) {
+
     }
 
     @Override

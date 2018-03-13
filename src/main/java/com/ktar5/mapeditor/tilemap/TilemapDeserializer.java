@@ -1,10 +1,11 @@
-package com.ktar5.mapeditor.grid;
+package com.ktar5.mapeditor.tilemap;
 
 import com.google.gson.*;
 import com.ktar5.mapeditor.tiles.composite.CompositeTile;
 import com.ktar5.mapeditor.tiles.whole.WholeTile;
 
 import java.lang.reflect.Type;
+import java.util.UUID;
 
 public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
     @Override
@@ -16,11 +17,12 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
         Tilemap tilemap = new Tilemap(jsonObject.get("width").getAsInt(),
                 jsonObject.get("height").getAsInt(),
                 jsonObject.get("tileSize").getAsInt(),
-                jsonObject.get("id").getAsInt());
+                UUID.fromString(jsonObject.get("id").getAsString())
+        );
         tilemap.setXStart(jsonObject.get("spawnX").getAsInt());
         tilemap.setYStart(jsonObject.get("spawnY").getAsInt());
 
-        JsonArray grid = jsonObject.getAsJsonArray("grid");
+        JsonArray grid = jsonObject.getAsJsonArray("tilemap");
         String[][] blocks = new String[grid.size()][];
         for (int i = 0; i < grid.size(); i++) {
             blocks[i] = grid.get(i).getAsString().split(",");
@@ -31,13 +33,13 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
             for (int y = 0; y < tilemap.getHeight(); y++) {
                 block = blocks[x][y];
                 if (block.charAt(0) == '[') {
-                    tilemap.grid[x][y] = new CompositeTile(x, y, block);
+                    tilemap.grid[x][y] = new CompositeTile(block);
                 } else {
                     if (block.contains("_")) {
                         String[] split = block.split("_");
-                        tilemap.grid[x][y] = new WholeTile(Integer.valueOf(split[0]), Integer.valueOf(split[1]), x, y);
+                        tilemap.grid[x][y] = new WholeTile(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
                     } else {
-                        tilemap.grid[x][y] = new WholeTile(Integer.valueOf(block), 0, x, y);
+                        tilemap.grid[x][y] = new WholeTile(Integer.valueOf(block), 0);
                     }
                 }
             }

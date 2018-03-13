@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tiles.composite;
 
 import com.ktar5.mapeditor.tiles.Tile;
+import javafx.scene.canvas.Canvas;
 
 public class CompositeTile extends Tile {
     CompositeTilePart[] tileparts = new CompositeTilePart[4];
@@ -23,6 +24,11 @@ public class CompositeTile extends Tile {
     @Override
     public boolean isFoursquare() {
         return true;
+    }
+
+    @Override
+    public void draw(Canvas canvas, int x, int y) {
+
     }
 
     @Override

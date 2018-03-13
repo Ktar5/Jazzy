@@ -1,9 +1,10 @@
 {
   "height": 5,
   "width": 5,
-  "id": 1,
   "spawnX": 0,
   "spawnY": 0,
+  "id": "tolo",
+  "tileset": "tileset.json",
   "grid": [
     "[2_3/2_3/1_1/0],5_2,5_1,5,0",
     "0,0,0,0,0",
