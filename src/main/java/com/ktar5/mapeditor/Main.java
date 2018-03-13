@@ -4,8 +4,10 @@ import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
 import com.ktar5.mapeditor.tilemap.MapManager;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -34,9 +36,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("TileMapTest");
 
+        //this makes all stages close and the app exit when the main stage is closed
+        primaryStage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
         //Create root pane
-        Pane root = new Pane();
-        //root.getChildren().add(MapManager.get().getCurrent());
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
 
         //Initialize primary stage window and set to view scene
         Scene scene = new Scene(root, 600, 600);

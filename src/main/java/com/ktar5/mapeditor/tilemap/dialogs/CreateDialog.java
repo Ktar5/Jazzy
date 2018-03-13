@@ -11,7 +11,6 @@ import lombok.Getter;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 @Builder
 @Getter
@@ -51,18 +50,18 @@ public class CreateDialog {
         TextField filePath = new TextField();
         filePath.setEditable(false);
 
-        TextField width = new TextField();
-        TextField heigh = new TextField();
-        TextField tilesize = new TextField();
+        TextField width = new NumberTextField();
+        TextField heigh = new NumberTextField();
+        TextField tilesize = new NumberTextField();
 
         width.setPromptText("Map Width");
         heigh.setPromptText("Map Height");
         tilesize.setPromptText("Tile Size");
 
 
-        width.setTextFormatter(new NumberText());
-        heigh.setTextFormatter(new NumberText());
-        tilesize.setTextFormatter(new NumberText());
+//        width.setTextFormatter(new NumberText());
+//        heigh.setTextFormatter(new NumberText());
+//        tilesize.setTextFormatter(new NumberText());
 
         Button openFileButton = new Button("Select File");
         openFileButton.setOnAction(event -> {
@@ -123,20 +122,24 @@ public class CreateDialog {
         return createDialog.orElse(null);
     }
 
-    public static class NumberText extends TextFormatter {
+    public static class NumberTextField extends TextField {
 
-        public NumberText() {
-            super(new UnaryOperator<Change>() {
-                @Override
-                public Change apply(Change change) {
-                    String text = change.getText();
-                    if (text.matches("[0-9]*")) {
-                        return change;
-                    }
-                    return null;
+        @Override
+        public void replaceText(int start, int end, String text) {
+            if (validate(text)) {
+                super.replaceText(start, end, text);
+            }
+        }
 
-                }
-            });
+        @Override
+        public void replaceSelection(String text) {
+            if (validate(text)) {
+                super.replaceSelection(text);
+            }
+        }
+
+        private boolean validate(String text) {
+            return text.matches("[0-9]*");
         }
     }
 
