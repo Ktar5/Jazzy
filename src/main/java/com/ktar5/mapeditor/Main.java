@@ -1,11 +1,11 @@
 package com.ktar5.mapeditor;
 
+import com.ktar5.mapeditor.gui.Root;
 import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
 import com.ktar5.mapeditor.tilemap.MapManager;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -43,7 +43,7 @@ public class Main extends Application {
         });
 
         //Create root pane
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainWindow.fxml"));
+        Parent root = new Root();
 
         //Initialize primary stage window and set to view scene
         Scene scene = new Scene(root, 600, 600);
