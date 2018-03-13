@@ -1,5 +1,6 @@
 package com.ktar5.mapeditor.javafx.centerview;
 
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -23,6 +24,30 @@ public class EditorViewPane extends TabPane {
 
     public void createTab(UUID uuid) {
         this.getTabs().add(new EditorTab(uuid));
+    }
+
+    public void setTab(UUID uuid) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof EditorTab && ((EditorTab) tab).getTilemap().equals(uuid)) {
+                this.getSelectionModel().select(tab);
+                return;
+            }
+        }
+    }
+
+    public void setChanges(UUID uuid, boolean value) {
+        EditorTab tab = ((EditorTab) this.getSelectionModel().getSelectedItem());
+        if (tab.getTilemap().equals(uuid)) {
+            tab.setEdit(value);
+            return;
+        }
+        for (Tab itab : this.getTabs()) {
+            if (itab instanceof EditorTab && ((EditorTab) itab).getTilemap().equals(uuid)) {
+                ((EditorTab) itab).setEdit(value);
+                return;
+            }
+        }
+
     }
 
 

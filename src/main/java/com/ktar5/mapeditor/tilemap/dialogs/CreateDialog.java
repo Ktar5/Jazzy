@@ -65,7 +65,9 @@ public class CreateDialog {
 
         Button openFileButton = new Button("Select File");
         openFileButton.setOnAction(event -> {
+            openFileButton.setDisable(true);
             File file = fileChooser.showSaveDialog(null);
+            openFileButton.setDisable(false);
             if (file != null) {
                 filePath.setText(file.getAbsolutePath());
                 builder.file(file);

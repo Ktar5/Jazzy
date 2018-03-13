@@ -12,10 +12,7 @@ import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
 import org.pmw.tinylog.writers.ConsoleWriter;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -72,6 +69,12 @@ public class MapManager {
         return instance;
     }
 
+    public void remove(UUID uuid){
+        if(this.openMaps.containsKey(uuid)){
+            openMaps.remove(uuid);
+        }
+    }
+
     public Tilemap getMap(UUID id) {
         if (!openMaps.containsKey(id)) {
             throw new RuntimeException("Tilemap with id: " + id + " already exists");
@@ -94,31 +97,37 @@ public class MapManager {
         return tilemap;
     }
 
-    public void loadMap() throws IOException {
+    public Tilemap loadMap() {
         File loaderFile = LoadDialog.create();
         if (loaderFile == null) {
             Logger.info("Tried to load map, cancelled or failed");
-            return;
+            return null;
         } else if (!loaderFile.exists()) {
             new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
-            return;
+            return null;
         }
 
         Logger.info("Beginning to load map from file: " + loaderFile.getPath());
 
-        FileReader reader = new FileReader(loaderFile);
-        Tilemap tilemap = gson.fromJson(reader, Tilemap.class);
-        tilemap.updateNameAndFile(loaderFile);
-        if (openMaps.containsKey(tilemap.getId())) {
-            throw new RuntimeException("Tilemap with id: " + tilemap.getId() + " already loaded");
+        //Attempt to initialize the file reader
+        try(FileReader reader = new FileReader(loaderFile)) {
+            //Load the tilemap from gson
+            Tilemap tilemap = gson.fromJson(reader, Tilemap.class);
+            tilemap.updateNameAndFile(loaderFile);
+            if (openMaps.containsKey(tilemap.getId())) {
+                new GenericAlert("Tilemap with id: " + tilemap.getId() + " already loaded");
+                return null;
+            }
+            openMaps.put(tilemap.getId(), tilemap);
+            Logger.info("Finished loading map: " + tilemap.getId());
+            return tilemap;
+        }catch (IOException e){
+            e.printStackTrace();
         }
-        openMaps.put(tilemap.getId(), tilemap);
-        reader.close();
-
-        Logger.info("Finished loading map: " + tilemap.getId());
+        return null;
     }
 
-    public void saveMap(UUID id) throws IOException {
+    public void saveMap(UUID id) {
         Logger.info("Starting save for tilemap (" + id + ")");
 
         if (!openMaps.containsKey(id)) {
@@ -130,10 +139,18 @@ public class MapManager {
         if (tilemap.getSaveFile().exists()) {
             tilemap.getSaveFile().delete();
         }
-        tilemap.getSaveFile().createNewFile();
-        FileWriter writer = new FileWriter(tilemap.getSaveFile());
-        gson.toJson(tilemap, writer);
-        writer.close();
+
+        try {
+            tilemap.getSaveFile().createNewFile();
+            FileWriter writer = new FileWriter(tilemap.getSaveFile());
+            gson.toJson(tilemap, writer);
+            Main.root.getCenterView().getEditorViewPane().setChanges(tilemap.getId(), false);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
         Logger.info("Finished save for tilemap (" + id + ") in " + "\"" + tilemap.getSaveFile() + "\"");
     }
 

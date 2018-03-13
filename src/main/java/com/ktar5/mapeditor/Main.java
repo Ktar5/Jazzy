@@ -63,9 +63,6 @@ public class Main extends Application {
         //Add event listeners
         scene.setOnKeyPressed(new KeyPress());
         scene.setOnScroll(new Scroll());
-
-        final Tilemap map = MapManager.get().createMap();
-        map.save();
     }
 
 

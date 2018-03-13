@@ -1,15 +1,17 @@
 package com.ktar5.mapeditor.tilemap;
 
 import com.google.gson.JsonArray;
-import com.ktar5.mapeditor.alerts.GenericAlert;
+import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.tiles.Tile;
+import com.ktar5.mapeditor.tiles.composite.CompositeTile;
+import com.ktar5.mapeditor.tiles.whole.WholeTile;
 import com.ktar5.utilities.common.constants.Direction;
 import javafx.scene.canvas.Canvas;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 @Getter
@@ -21,7 +23,8 @@ public class Tilemap {
     private File saveFile;
 
     //Tilemap variables
-    public Tile[][] grid;
+    @Getter(AccessLevel.NONE)
+    Tile[][] grid;
     private final int width, height, tileSize;
     @Setter
     private int xStart = 0, yStart = 0;
@@ -101,12 +104,7 @@ public class Tilemap {
     }
 
     public void save() {
-        try {
-            MapManager.get().saveMap(getId());
-        } catch (IOException e) {
-            new GenericAlert("Something happened during te save, try again?");
-            e.printStackTrace();
-        }
+        MapManager.get().saveMap(getId());
     }
 
     public void draw() {
@@ -117,9 +115,18 @@ public class Tilemap {
         }
     }
 
-    public void remove(int x, int y) {
-        this.grid[x][y] = Tile.AIR;
+    public void set(int x, int y, Tile tile) {
+        this.grid[x][y] = tile;
+        setChanged(true);
     }
 
+    public void remove(int x, int y) {
+        this.grid[x][y] = Tile.AIR;
+        setChanged(true);
+    }
+
+    public void setChanged(boolean value) {
+        Main.root.getCenterView().getEditorViewPane().setChanges(getId(), value);
+    }
 
 }
