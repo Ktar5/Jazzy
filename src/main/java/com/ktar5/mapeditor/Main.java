@@ -21,6 +21,7 @@ public class Main extends Application {
 
 
     public static Window window;
+    public static Root root;
 
     public static void main(String[] args) {
         File file = new File("D:\\GameDev\\Projects\\TileJumpGame\\tools\\mapgen");
@@ -43,13 +44,13 @@ public class Main extends Application {
         });
 
         //Create root pane
-        Parent root = new Root();
+        root = new Root();
 
         //Initialize primary stage window and set to view scene
         Scene scene = new Scene(root, 600, 600);
         primaryStage.setScene(scene);
-        primaryStage.setHeight(600);
-        primaryStage.setWidth(800);
+        primaryStage.setWidth(1280);
+        primaryStage.setHeight(720);
         primaryStage.setMinWidth(350);
         primaryStage.setMinHeight(150);
         primaryStage.show();

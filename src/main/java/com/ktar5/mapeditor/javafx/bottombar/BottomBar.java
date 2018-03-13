@@ -11,11 +11,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class BottomBar extends HBox {
+    private Label left;
+    private Label right;
 
     public BottomBar() {
         super();
 
-        Label left = new Label("Left status");
+        left = new Label("Left status");
         left.maxWidth(-1.0);
         left.maxHeight(Double.MAX_VALUE);
         HBox.setHgrow(left, Priority.ALWAYS);
@@ -27,7 +29,7 @@ public class BottomBar extends HBox {
         center.prefHeight(-1);
         center.prefWidth(-1);
 
-        Label right = new Label("Right status");
+        right = new Label("Right status");
         right.maxWidth(-1.0);
         // ? right.maxHeight(Double.MAX_VALUE);
         HBox.setHgrow(right, Priority.NEVER);
@@ -40,6 +42,14 @@ public class BottomBar extends HBox {
         VBox.setVgrow(this, Priority.NEVER);
 
         this.setPadding(new Insets(3, 3, 3, 3));
+    }
+
+    public void setLeftText(String text){
+        left.setText(text);
+    }
+
+    public void setRightText(String text){
+        right.setText(text);
     }
 
 

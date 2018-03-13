@@ -23,8 +23,8 @@ public class ViewPane extends TabPane {
                 new EditorTab(UUID.randomUUID()));
     }
 
-    public void createTab() {
-        //todo
+    public void createTab(UUID uuid) {
+        this.getTabs().add(new EditorTab(uuid));
     }
 
 
