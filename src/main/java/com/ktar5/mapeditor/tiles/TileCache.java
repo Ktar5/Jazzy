@@ -12,7 +12,6 @@ public class TileCache {
     //Map -> Tile -> Image ->
 
 
-
     /**
      * Returns a list with Tiles, constructed with images from the given folderPath.
      *

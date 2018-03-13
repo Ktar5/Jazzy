@@ -7,6 +7,10 @@ import com.ktar5.mapeditor.tilemap.Tilemap;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
+import javafx.stage.FileChooser;
+import org.pmw.tinylog.Logger;
+
+import java.io.File;
 
 public class FileMenu extends Menu {
 
@@ -31,13 +35,35 @@ public class FileMenu extends Menu {
             }
         });
 
+        final MenuItem saveAs = new MenuItem("Save As..");
+        saveAs.setOnAction(event -> saveAsDialog());
+
         this.getItems().addAll(
                 open,
                 newMap,
                 new MenuItem("Open Recent"),
                 save,
-                new MenuItem("Save As..."),
+                saveAs,
                 new MenuItem("Revert")
         );
     }
+
+    public void saveAsDialog() {
+        final Tab selectedItem = Main.root.getCenterView().getEditorViewPane().getSelectionModel().getSelectedItem();
+        if (selectedItem instanceof EditorTab) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Map As..");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
+            final File file = fileChooser.showSaveDialog(null);
+            if(file == null){
+                Logger.debug("Something happened here with save as dialog yo");
+                return;
+            }
+            final Tilemap map = MapManager.get().getMap(((EditorTab) selectedItem).getTilemap());
+            map.updateNameAndFile(file);
+            map.save();
+            selectedItem.setText(map.getMapName());
+        }
+    }
+
 }

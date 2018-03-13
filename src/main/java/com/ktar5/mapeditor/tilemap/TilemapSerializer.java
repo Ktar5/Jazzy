@@ -8,7 +8,7 @@ public class TilemapSerializer implements JsonSerializer<Tilemap> {
     @Override
     public JsonElement serialize(Tilemap src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject json = new JsonObject();
-        json.addProperty("id", src.getId().toString());
+
         JsonObject dimensions = new JsonObject();
         dimensions.addProperty("width", src.getWidth());
         dimensions.addProperty("height", src.getHeight());

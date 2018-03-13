@@ -3,6 +3,8 @@ package com.ktar5.mapeditor.tiles.composite;
 import com.ktar5.mapeditor.util.ToolSerializeable;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class CompositeTilePart implements ToolSerializeable {
     private int baseId;
@@ -49,5 +51,18 @@ public class CompositeTilePart implements ToolSerializeable {
         WEST_FACE
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompositeTilePart that = (CompositeTilePart) o;
+        return baseId == that.baseId &&
+                data == that.data;
+    }
 
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(baseId, data);
+    }
 }

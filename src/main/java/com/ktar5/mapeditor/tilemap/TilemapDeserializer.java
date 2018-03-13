@@ -16,8 +16,7 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
         JsonObject jsonObject = (JsonObject) json;
         Tilemap tilemap = new Tilemap(jsonObject.getAsJsonObject("dimensions").get("width").getAsInt(),
                 jsonObject.getAsJsonObject("dimensions").get("height").getAsInt(),
-                jsonObject.get("tileSize").getAsInt(),
-                UUID.fromString(jsonObject.get("id").getAsString())
+                jsonObject.get("tileSize").getAsInt()
         );
         tilemap.setXStart(jsonObject.getAsJsonObject("spawn").get("x").getAsInt());
         tilemap.setYStart(jsonObject.getAsJsonObject("spawn").get("y").getAsInt());

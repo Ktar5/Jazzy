@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -33,8 +35,8 @@ public class Tilemap {
     private Canvas canvas = new Canvas();
 
 
-    public Tilemap(int width, int height, int tileSize, UUID id, File file) {
-        this(width, height, tileSize, id);
+    public Tilemap(int width, int height, int tileSize, File file) {
+        this(width, height, tileSize);
         this.saveFile = file;
         this.mapName = saveFile.getName();
     }
@@ -43,12 +45,12 @@ public class Tilemap {
     //This is used because during deserialization we do not have access
     // to the file until after the json is processed. Might come up with a
     // better way to handle this in the future
-    Tilemap(int width, int height, int tileSize, UUID id) {
+    Tilemap(int width, int height, int tileSize) {
         this.width = width;
         this.height = height;
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
-        this.id = id;
+        this.id = UUID.randomUUID();
         canvas.setWidth(width);
         canvas.setHeight(height);
         canvas.setCache(true);
@@ -56,8 +58,8 @@ public class Tilemap {
         //getChildren().add(canvas);
     }
 
-    public static Tilemap createEmpty(int width, int height, int tileSize, UUID id, File file) {
-        Tilemap tilemap = new Tilemap(width, height, tileSize, id, file);
+    public static Tilemap createEmpty(int width, int height, int tileSize, File file) {
+        Tilemap tilemap = new Tilemap(width, height, tileSize, file);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 tilemap.grid[x][y] = Tile.AIR;
@@ -88,6 +90,29 @@ public class Tilemap {
             builder.setLength(0);
         }
         return jsonArray;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tilemap tilemap = (Tilemap) o;
+        return width == tilemap.width &&
+                height == tilemap.height &&
+                tileSize == tilemap.tileSize &&
+                xStart == tilemap.xStart &&
+                yStart == tilemap.yStart &&
+                Objects.equals(id, tilemap.id) &&
+                Objects.equals(mapName, tilemap.mapName) &&
+                Objects.equals(saveFile, tilemap.saveFile) &&
+                Arrays.equals(grid, tilemap.grid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(mapName, saveFile, width, height, tileSize, xStart, yStart);
+        result = 31 * result + Arrays.hashCode(grid);
+        return result;
     }
 
     public void expandMap(int n, Direction direction) {

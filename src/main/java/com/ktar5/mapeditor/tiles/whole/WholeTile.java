@@ -5,6 +5,8 @@ import javafx.scene.canvas.Canvas;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class WholeTile extends Tile {
@@ -34,5 +36,20 @@ public class WholeTile extends Tile {
     @Override
     public String toString() {
         return blockId + "_" + direction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WholeTile wholeTile = (WholeTile) o;
+        return blockId == wholeTile.blockId &&
+                direction == wholeTile.direction;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(blockId, direction);
     }
 }

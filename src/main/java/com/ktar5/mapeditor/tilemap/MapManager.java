@@ -46,7 +46,6 @@ public class MapManager {
                 .setPrettyPrinting()
                 .create();
 
-
         //Create the save and temp directories
         this.tempDir = dir;
         if (!tempDir.exists() || !tempDir.isDirectory()) {
@@ -69,8 +68,8 @@ public class MapManager {
         return instance;
     }
 
-    public void remove(UUID uuid){
-        if(this.openMaps.containsKey(uuid)){
+    public void remove(UUID uuid) {
+        if (this.openMaps.containsKey(uuid)) {
             openMaps.remove(uuid);
         }
     }
@@ -89,9 +88,18 @@ public class MapManager {
             return null;
         }
 
+        File file = createDialog.getFile();
+        for (Tilemap tilemap1 : openMaps.values()) {
+            if (tilemap1.getSaveFile().getAbsolutePath().equals(file.getAbsolutePath())) {
+                new GenericAlert("Tilemap with path " + file.getAbsolutePath() + " already loaded.\n" +
+                        "Please close tab for " + file.getName() + " then try creating new map again.");
+                return null;
+            }
+        }
+
         UUID id = UUID.randomUUID();
         Tilemap tilemap = Tilemap.createEmpty(createDialog.getWidth(),
-                createDialog.getHeight(), createDialog.getTilesize(), id, createDialog.getFile());
+                createDialog.getHeight(), createDialog.getTilesize(), createDialog.getFile());
         openMaps.put(id, tilemap);
         Main.root.getCenterView().getEditorViewPane().createTab(id);
         return tilemap;
@@ -110,18 +118,21 @@ public class MapManager {
         Logger.info("Beginning to load map from file: " + loaderFile.getPath());
 
         //Attempt to initialize the file reader
-        try(FileReader reader = new FileReader(loaderFile)) {
+        try (FileReader reader = new FileReader(loaderFile)) {
             //Load the tilemap from gson
             Tilemap tilemap = gson.fromJson(reader, Tilemap.class);
             tilemap.updateNameAndFile(loaderFile);
-            if (openMaps.containsKey(tilemap.getId())) {
-                new GenericAlert("Tilemap with id: " + tilemap.getId() + " already loaded");
-                return null;
+            for (Tilemap tilemap1 : openMaps.values()) {
+                if (tilemap1.getSaveFile().getAbsolutePath().equals(tilemap.getSaveFile().getAbsolutePath())) {
+                    new GenericAlert("Tilemap with path " + tilemap.getSaveFile().getAbsolutePath() + " already loaded");
+                    return null;
+                }
             }
             openMaps.put(tilemap.getId(), tilemap);
-            Logger.info("Finished loading map: " + tilemap.getId());
+            Main.root.getCenterView().getEditorViewPane().createTab(tilemap.getId());
+            Logger.info("Finished loading map: " + tilemap.getMapName());
             return tilemap;
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;

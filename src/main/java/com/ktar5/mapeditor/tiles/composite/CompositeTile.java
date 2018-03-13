@@ -3,6 +3,8 @@ package com.ktar5.mapeditor.tiles.composite;
 import com.ktar5.mapeditor.tiles.Tile;
 import javafx.scene.canvas.Canvas;
 
+import java.util.Arrays;
+
 public class CompositeTile extends Tile {
     CompositeTilePart[] tileparts = new CompositeTilePart[4];
 
@@ -41,6 +43,19 @@ public class CompositeTile extends Tile {
         builder.deleteCharAt(builder.length() - 1);
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompositeTile that = (CompositeTile) o;
+        return Arrays.equals(tileparts, that.tileparts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(tileparts);
     }
 
     @Override
