@@ -4,6 +4,7 @@ import com.ktar5.mapeditor.javafx.Root;
 import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
 import com.ktar5.mapeditor.tilemap.MapManager;
+import com.ktar5.mapeditor.tilemap.Tilemap;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -46,9 +47,6 @@ public class Main extends Application {
 
         //Create root pane
         root = new Root();
-        root.getCenterView().getEditorViewPane().createTab(UUID.randomUUID());
-        root.getCenterView().getEditorViewPane().createTab(UUID.randomUUID());
-        root.getCenterView().getEditorViewPane().createTab(UUID.randomUUID());
 
         //Initialize primary stage window and set to view scene
         Scene scene = new Scene(root, 600, 600);
@@ -65,6 +63,9 @@ public class Main extends Application {
         //Add event listeners
         scene.setOnKeyPressed(new KeyPress());
         scene.setOnScroll(new Scroll());
+
+        final Tilemap map = MapManager.get().createMap();
+        map.save();
     }
 
 

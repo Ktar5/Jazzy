@@ -14,13 +14,13 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
             throw new RuntimeException("The json provided is not a json object");
         }
         JsonObject jsonObject = (JsonObject) json;
-        Tilemap tilemap = new Tilemap(jsonObject.get("width").getAsInt(),
-                jsonObject.get("height").getAsInt(),
+        Tilemap tilemap = new Tilemap(jsonObject.getAsJsonObject("dimensions").get("width").getAsInt(),
+                jsonObject.getAsJsonObject("dimensions").get("height").getAsInt(),
                 jsonObject.get("tileSize").getAsInt(),
                 UUID.fromString(jsonObject.get("id").getAsString())
         );
-        tilemap.setXStart(jsonObject.get("spawnX").getAsInt());
-        tilemap.setYStart(jsonObject.get("spawnY").getAsInt());
+        tilemap.setXStart(jsonObject.getAsJsonObject("spawn").get("x").getAsInt());
+        tilemap.setYStart(jsonObject.getAsJsonObject("spawn").get("y").getAsInt());
 
         JsonArray grid = jsonObject.getAsJsonArray("tilemap");
         String[][] blocks = new String[grid.size()][];

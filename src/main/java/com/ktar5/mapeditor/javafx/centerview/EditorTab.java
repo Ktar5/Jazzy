@@ -1,5 +1,7 @@
 package com.ktar5.mapeditor.javafx.centerview;
 
+import com.ktar5.mapeditor.tilemap.MapManager;
+import com.ktar5.mapeditor.tilemap.Tilemap;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -13,12 +15,10 @@ public class EditorTab extends Tab {
     boolean isSelected;
 
     public EditorTab(UUID tilemap) {
-        /*Tilemap map = MapManager.get().getMap(tilemap);
+        Tilemap map = MapManager.get().getMap(tilemap);
         this.tilemap = map.getId();
         this.setText(map.getMapName());
         this.setContent(new EditorPane(map.getCanvas()));
-        */
-        this.setText("Abc");
     }
 
     //TODO actions

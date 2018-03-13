@@ -2,6 +2,7 @@ package com.ktar5.mapeditor.tilemap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.alerts.GenericAlert;
 import com.ktar5.mapeditor.tilemap.dialogs.CreateDialog;
 import com.ktar5.mapeditor.tilemap.dialogs.LoadDialog;
@@ -78,17 +79,19 @@ public class MapManager {
         return openMaps.get(id);
     }
 
-    public void createMap() {
+    public Tilemap createMap() {
         CreateDialog createDialog = CreateDialog.create();
         if (createDialog == null) {
             new GenericAlert("Something went wrong during the process of creating the map, please try again.");
-            return;
+            return null;
         }
 
         UUID id = UUID.randomUUID();
         Tilemap tilemap = Tilemap.createEmpty(createDialog.getWidth(),
                 createDialog.getHeight(), createDialog.getTilesize(), id, createDialog.getFile());
         openMaps.put(id, tilemap);
+        Main.root.getCenterView().getEditorViewPane().createTab(id);
+        return tilemap;
     }
 
     public void loadMap() throws IOException {
@@ -96,7 +99,7 @@ public class MapManager {
         if (loaderFile == null) {
             Logger.info("Tried to load map, cancelled or failed");
             return;
-        }else if(!loaderFile.exists()){
+        } else if (!loaderFile.exists()) {
             new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
             return;
         }
