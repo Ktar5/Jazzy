@@ -23,11 +23,16 @@ public class TilemapDeserializer {
             blocks[i] = grid.getString(i).split(",");
         }
 
-        //Because of how were doing the above we need to switch x and y
         String block;
         for (int x = 0; x < tilemap.getWidth(); x++) {
             for (int y = 0; y < tilemap.getHeight(); y++) {
-                block = blocks[x][y];
+                //Note here that we switch the x and y variable because we store the data as
+                //an array of ROWS, and we load it as ROWS, so the first-dimension array is the ROWS
+                //and the 2nd dimension of the array is the COLUMNS
+                //See comments in Tilemap#getJsonArray on the line with:
+                // jsonArray.put(y, builder.toString());
+                //Hence, data is stored "y-value, row string"
+                block = blocks[y][x];
                 if (block.charAt(0) == '[') {
                     tilemap.grid[x][y] = new CompositeTile(block);
                 } else {

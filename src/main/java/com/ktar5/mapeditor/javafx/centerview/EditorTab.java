@@ -25,6 +25,9 @@ public class EditorTab extends Tab {
         this.setOnCloseRequest(e -> {
             if (isHasEdits()) {
                 newSaveConfirmation(e);
+                if(!e.isConsumed()){
+                    MapManager.get().remove(tilemap);
+                }
             }
         });
     }

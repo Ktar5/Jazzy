@@ -69,14 +69,13 @@ public class Tilemap {
     public JSONArray getJsonArray() {
         JSONArray jsonArray = new JSONArray();
         StringBuilder builder = new StringBuilder();
-        for (int y = height - 1; y >= 0; y--) {
+        for (int y = 0 ; y <= height -1 ; y++) {
             for (int x = 0; x <= width - 1; x++) {
                 builder.append(grid[x][y].serialize());
                 builder.append(",");
             }
             builder.deleteCharAt(builder.length() - 1);
-            //TODO test
-            jsonArray.put(height - y -1, builder.toString());
+            jsonArray.put(y, builder.toString());
             builder.setLength(0);
         }
         return jsonArray;
