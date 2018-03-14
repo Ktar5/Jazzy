@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public class TilesetSerializer {
 
-    public JSONObject serialize(Tileset src) {
+    public static JSONObject serialize(Tileset src) {
         JSONObject json = new JSONObject();
 
         JSONObject padding = new JSONObject();

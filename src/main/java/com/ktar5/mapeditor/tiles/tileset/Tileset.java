@@ -1,5 +1,8 @@
 package com.ktar5.mapeditor.tiles.tileset;
 
+import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.tilemap.Tilemap;
+import com.ktar5.mapeditor.tilemap.TilemapSerializer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -10,6 +13,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 @Getter
@@ -20,7 +24,8 @@ public class Tileset {
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
 
-    public Tileset(File sourceFile, File tilesetFile, int tileSize, int paddingVertical, int paddingHorizontal, int offsetLeft, int offsetUp) {
+    public Tileset(File sourceFile, File tilesetFile, int tileSize, int paddingVertical, int paddingHorizontal,
+                   int offsetLeft, int offsetUp) {
         this.sourceFile = sourceFile;
         this.tilesetFile = tilesetFile;
         this.tileSize = tileSize;
@@ -62,11 +67,21 @@ public class Tileset {
         }
     }
 
-
-    public class TilesetDeserializer {
-        public Tileset deserialize(Tileset src) {
-            return null;
+    public void save(){
+        if (getTilesetFile().exists()) {
+            getTilesetFile().delete();
         }
+
+        try {
+            getTilesetFile().createNewFile();
+            FileWriter writer = new FileWriter(getTilesetFile());
+            writer.write(TilesetSerializer.serialize(this).toString(4));
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        System.out.println("done");
     }
 
 

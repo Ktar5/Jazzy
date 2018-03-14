@@ -1,28 +1,25 @@
 package com.ktar5.mapeditor;
 
-import com.ktar5.mapeditor.javafx.Root;
 import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
+import com.ktar5.mapeditor.javafx.Root;
 import com.ktar5.mapeditor.tilemap.MapManager;
-import com.ktar5.mapeditor.tilemap.Tilemap;
 import com.ktar5.mapeditor.tiles.tileset.Tileset;
+import com.ktar5.mapeditor.tiles.tileset.TilesetDeserializer;
+import com.ktar5.mapeditor.util.StringUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.json.JSONObject;
 
 import java.io.File;
-import java.util.UUID;
 
 public class Main extends Application {
-    //Use scene builder -> add content through creating tabs and rendering to canvas.
-    //Do check to see if canvas rendering is needed to be buffered
-    //Do cache images
-    //Do separate into multiple types of grids
-
+    //Multiple types of grids
+    //Multiple types of tilesets
 
     public static Window window;
     public static Root root;
@@ -66,14 +63,35 @@ public class Main extends Application {
         scene.setOnKeyPressed(new KeyPress());
         scene.setOnScroll(new Scroll());
 
+        //TESTS
+        // testSaveTileset();
+        testLoadTileset();
+    }
 
-
-        File imageFile = new File("C:\\Users\\012148006\\Desktop\\test2.png");
-        File tilesetfile = new File("C:\\Users\\012148006\\Desktop\\text.txt");
+    public void testSaveTileset() {
+        File imageFile = new File("C:\\Users\\012148006\\IdeaProjects\\Java-Tilemap-Editor\\mapgen\\test2.png");
+        File tilesetfile = new File("C:\\Users\\012148006\\IdeaProjects\\Java-Tilemap-Editor\\mapgen\\test.json");
         Tileset tileset = new Tileset(imageFile, tilesetfile, 16, 2, 2, 2, 2);
-        Canvas canvas = new Canvas(128,128);
+        Canvas canvas = new Canvas(128, 128);
         for (int i = 0; i < tileset.getTileImages().size; i++) {
-            canvas.getGraphicsContext2D().drawImage(tileset.getTileImages().get(i), (i % 7) * (tileset.getTileSize() + 2), ((i)/ 7) * (tileset.getTileSize() + 2));
+            canvas.getGraphicsContext2D().drawImage(tileset.getTileImages().get(i),
+                    (i % 7) * (tileset.getTileSize() + 2), ((i) / 7) * (tileset.getTileSize() + 2));
+        }
+        root.getChildren().addAll(canvas);
+        tileset.save();
+    }
+
+    public void testLoadTileset() {
+        File loaderFile = new File("C:\\Users\\012148006\\IdeaProjects\\Java-Tilemap-Editor\\mapgen\\test.json");
+        String data = StringUtil.readFileAsString(loaderFile);
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+        Tileset deserialize = TilesetDeserializer.deserialize(loaderFile, new JSONObject(data));
+        Canvas canvas = new Canvas(128, 128);
+        for (int i = 0; i < deserialize.getTileImages().size; i++) {
+            canvas.getGraphicsContext2D().drawImage(deserialize.getTileImages().get(i),
+                    (i % 7) * (deserialize.getTileSize() + 2), ((i) / 7) * (deserialize.getTileSize() + 2));
         }
         root.getChildren().addAll(canvas);
     }
