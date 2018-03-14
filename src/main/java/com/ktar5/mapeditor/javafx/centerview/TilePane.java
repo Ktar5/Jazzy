@@ -4,7 +4,7 @@ import javafx.scene.layout.AnchorPane;
 
 public class TilePane extends AnchorPane {
 
-    public TilePane(){
+    public TilePane() {
         super();
 
         this.setPrefWidth(250);

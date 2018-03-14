@@ -69,7 +69,7 @@ public class Tilemap {
     public JSONArray getJsonArray() {
         JSONArray jsonArray = new JSONArray();
         StringBuilder builder = new StringBuilder();
-        for (int y = 0 ; y <= height -1 ; y++) {
+        for (int y = 0; y <= height - 1; y++) {
             for (int x = 0; x <= width - 1; x++) {
                 builder.append(grid[x][y].serialize());
                 builder.append(",");

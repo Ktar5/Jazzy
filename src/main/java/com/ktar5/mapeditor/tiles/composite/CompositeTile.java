@@ -16,7 +16,7 @@ public class CompositeTile extends Tile {
 
     public CompositeTile(String block) {
         this();
-        block = block.substring(1, block.length() -1);
+        block = block.substring(1, block.length() - 1);
         String[] split = block.split("/");
         for (int i = 0; i < split.length; i++) {
             tileparts[i] = new CompositeTilePart(split[i]);

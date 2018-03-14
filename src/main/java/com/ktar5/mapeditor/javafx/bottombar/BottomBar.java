@@ -44,11 +44,11 @@ public class BottomBar extends HBox {
         this.setPadding(new Insets(3, 3, 3, 3));
     }
 
-    public void setLeftText(String text){
+    public void setLeftText(String text) {
         left.setText(text);
     }
 
-    public void setRightText(String text){
+    public void setRightText(String text) {
         right.setText(text);
     }
 

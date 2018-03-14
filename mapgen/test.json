@@ -1,12 +1,12 @@
 {
-    "padding": {
-        "horizontal": 2,
-        "vertical": 2
-    },
-    "offset": {
-        "left": 2,
-        "up": 2
-    },
-    "tileSize": 16,
-    "sourceFile": "..\\test2.png"
+  "padding": {
+    "horizontal": 2,
+    "vertical": 2
+  },
+  "offset": {
+    "left": 2,
+    "up": 2
+  },
+  "tileSize": 16,
+  "sourceFile": "..\\test2.png"
 }

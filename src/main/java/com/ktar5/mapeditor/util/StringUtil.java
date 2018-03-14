@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class StringUtil {
-//String[] lines = StringUtils.split(FileUtils.readFileToString(new File("...")), '\n');
+    //String[] lines = StringUtils.split(FileUtils.readFileToString(new File("...")), '\n');
     public static String readFileAsString(File file) {
         StringBuilder fileData = new StringBuilder();
         try {
@@ -21,7 +21,7 @@ public class StringUtil {
             }
             reader.close();
             fr.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             Logger.info(e);
             return null;
         }

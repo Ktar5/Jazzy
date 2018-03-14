@@ -4,7 +4,7 @@ import javafx.scene.layout.AnchorPane;
 
 public class DetailsPane extends AnchorPane {
 
-    public DetailsPane(){
+    public DetailsPane() {
         super();
 
         this.setPrefWidth(200);

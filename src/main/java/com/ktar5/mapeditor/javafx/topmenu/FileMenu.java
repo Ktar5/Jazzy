@@ -55,7 +55,7 @@ public class FileMenu extends Menu {
             fileChooser.setTitle("Save Map As..");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
             final File file = fileChooser.showSaveDialog(null);
-            if(file == null){
+            if (file == null) {
                 Logger.debug("Something happened here with save as dialog yo");
                 return;
             }

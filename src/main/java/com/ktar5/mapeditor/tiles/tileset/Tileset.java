@@ -1,8 +1,5 @@
 package com.ktar5.mapeditor.tiles.tileset;
 
-import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.tilemap.Tilemap;
-import com.ktar5.mapeditor.tilemap.TilemapSerializer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import lombok.Getter;
@@ -67,7 +64,7 @@ public class Tileset {
         }
     }
 
-    public void save(){
+    public void save() {
         if (getTilesetFile().exists()) {
             getTilesetFile().delete();
         }
