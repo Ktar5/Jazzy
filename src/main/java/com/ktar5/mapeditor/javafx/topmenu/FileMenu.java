@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.javafx.topmenu;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.javafx.centerview.EditorTab;
+import com.ktar5.mapeditor.javafx.centerview.editor.EditorTab;
 import com.ktar5.mapeditor.tilemap.MapManager;
 import com.ktar5.mapeditor.tilemap.Tilemap;
 import javafx.scene.control.Menu;

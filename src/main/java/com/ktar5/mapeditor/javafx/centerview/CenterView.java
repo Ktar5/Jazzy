@@ -1,5 +1,6 @@
 package com.ktar5.mapeditor.javafx.centerview;
 
+import com.ktar5.mapeditor.javafx.centerview.editor.EditorViewPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;

@@ -1,4 +1,4 @@
-package com.ktar5.mapeditor.javafx.centerview;
+package com.ktar5.mapeditor.javafx.centerview.editor;
 
 import javafx.scene.canvas.Canvas;
 

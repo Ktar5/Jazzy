@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.tilemap;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.javafx.centerview.EditorCanvas;
+import com.ktar5.mapeditor.javafx.centerview.editor.EditorCanvas;
 import com.ktar5.mapeditor.tiles.Tile;
 import com.ktar5.utilities.common.constants.Direction;
 import lombok.AccessLevel;
