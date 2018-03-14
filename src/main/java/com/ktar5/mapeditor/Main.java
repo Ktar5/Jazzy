@@ -69,8 +69,8 @@ public class Main extends Application {
     }
 
     public void testSaveTileset() {
-        File imageFile = new File("C:\\Users\\012148006\\IdeaProjects\\Java-Tilemap-Editor\\mapgen\\test2.png");
-        File tilesetfile = new File("C:\\Users\\012148006\\IdeaProjects\\Java-Tilemap-Editor\\mapgen\\test.json");
+        File imageFile = new File(".\\mapgen\\test2.png");
+        File tilesetfile = new File(".\\mapgen\\test.json");
         Tileset tileset = new Tileset(imageFile, tilesetfile, 16, 2, 2, 2, 2);
         Canvas canvas = new Canvas(128, 128);
         for (int i = 0; i < tileset.getTileImages().size; i++) {
@@ -82,7 +82,7 @@ public class Main extends Application {
     }
 
     public void testLoadTileset() {
-        File loaderFile = new File("C:\\Users\\012148006\\IdeaProjects\\Java-Tilemap-Editor\\mapgen\\test.json");
+        File loaderFile = new File(".\\mapgen\\test.json");
         String data = StringUtil.readFileAsString(loaderFile);
         if (data == null || data.isEmpty()) {
             return;

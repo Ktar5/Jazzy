@@ -64,6 +64,7 @@ public class MapManager {
 
     public void remove(UUID uuid) {
         if (this.openMaps.containsKey(uuid)) {
+            Logger.debug("Removed tilemap: " + getMap(uuid).getMapName());
             openMaps.remove(uuid);
         }
     }

@@ -25,11 +25,10 @@ public class EditorTab extends Tab {
         this.setOnCloseRequest(e -> {
             if (isHasEdits()) {
                 newSaveConfirmation(e);
-                if (!e.isConsumed()) {
-                    MapManager.get().remove(tilemap);
-                }
             }
         });
+
+        this.setOnClosed(e -> MapManager.get().remove(tilemap));
     }
 
     public void newSaveConfirmation(Event event) {
@@ -51,10 +50,9 @@ public class EditorTab extends Tab {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == closeNoSave) {
-            MapManager.get().remove(tilemap);
+            //Do nothing
         } else if (result.get() == saveAndClose) {
             MapManager.get().saveMap(tilemap);
-            MapManager.get().remove(tilemap);
         } else if (result.get() == cancel) {
             event.consume();
         } else {
