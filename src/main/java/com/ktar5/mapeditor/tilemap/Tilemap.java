@@ -1,15 +1,13 @@
 package com.ktar5.mapeditor.tilemap;
 
-import com.google.gson.JsonArray;
 import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.tiles.Tile;
-import com.ktar5.mapeditor.tiles.composite.CompositeTile;
-import com.ktar5.mapeditor.tiles.whole.WholeTile;
 import com.ktar5.utilities.common.constants.Direction;
 import javafx.scene.canvas.Canvas;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONArray;
 
 import java.io.File;
 import java.util.Arrays;
@@ -34,20 +32,11 @@ public class Tilemap {
     //The canvas for which to render on
     private Canvas canvas = new Canvas();
 
-
-    public Tilemap(int width, int height, int tileSize, File file) {
-        this(width, height, tileSize);
-        this.saveFile = file;
-        this.mapName = saveFile.getName();
-    }
-
-
-    //This is used because during deserialization we do not have access
-    // to the file until after the json is processed. Might come up with a
-    // better way to handle this in the future
-    Tilemap(int width, int height, int tileSize) {
+    Tilemap(File saveFile, int width, int height, int tileSize) {
         this.width = width;
         this.height = height;
+        this.saveFile = saveFile;
+        this.mapName = saveFile.getName();
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
         this.id = UUID.randomUUID();
@@ -59,7 +48,7 @@ public class Tilemap {
     }
 
     public static Tilemap createEmpty(int width, int height, int tileSize, File file) {
-        Tilemap tilemap = new Tilemap(width, height, tileSize, file);
+        Tilemap tilemap = new Tilemap(file, width, height, tileSize);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 tilemap.grid[x][y] = Tile.AIR;
@@ -77,8 +66,8 @@ public class Tilemap {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
-    public JsonArray getJsonArray() {
-        JsonArray jsonArray = new JsonArray(height);
+    public JSONArray getJsonArray() {
+        JSONArray jsonArray = new JSONArray();
         StringBuilder builder = new StringBuilder();
         for (int y = height - 1; y >= 0; y--) {
             for (int x = 0; x <= width - 1; x++) {
@@ -86,7 +75,8 @@ public class Tilemap {
                 builder.append(",");
             }
             builder.deleteCharAt(builder.length() - 1);
-            jsonArray.add(builder.toString());
+            //TODO test
+            jsonArray.put(height - y -1, builder.toString());
             builder.setLength(0);
         }
         return jsonArray;

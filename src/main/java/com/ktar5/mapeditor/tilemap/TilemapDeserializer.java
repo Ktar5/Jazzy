@@ -1,32 +1,29 @@
 package com.ktar5.mapeditor.tilemap;
 
-import com.google.gson.*;
 import com.ktar5.mapeditor.tiles.composite.CompositeTile;
 import com.ktar5.mapeditor.tiles.whole.WholeTile;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.UUID;
+import java.io.File;
 
-public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
-    @Override
-    public Tilemap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        if (!json.isJsonObject()) {
-            throw new RuntimeException("The json provided is not a json object");
-        }
-        JsonObject jsonObject = (JsonObject) json;
-        Tilemap tilemap = new Tilemap(jsonObject.getAsJsonObject("dimensions").get("width").getAsInt(),
-                jsonObject.getAsJsonObject("dimensions").get("height").getAsInt(),
-                jsonObject.get("tileSize").getAsInt()
+public class TilemapDeserializer {
+    public static Tilemap deserialize(File file, JSONObject json) {
+        Tilemap tilemap = new Tilemap(file,
+                json.getJSONObject("dimensions").getInt("width"),
+                json.getJSONObject("dimensions").getInt("height"),
+                json.getInt("tileSize")
         );
-        tilemap.setXStart(jsonObject.getAsJsonObject("spawn").get("x").getAsInt());
-        tilemap.setYStart(jsonObject.getAsJsonObject("spawn").get("y").getAsInt());
+        tilemap.setXStart(json.getJSONObject("spawn").getInt("x"));
+        tilemap.setYStart(json.getJSONObject("spawn").getInt("y"));
 
-        JsonArray grid = jsonObject.getAsJsonArray("tilemap");
-        String[][] blocks = new String[grid.size()][];
-        for (int i = 0; i < grid.size(); i++) {
-            blocks[i] = grid.get(i).getAsString().split(",");
+        JSONArray grid = json.getJSONArray("tilemap");
+        String[][] blocks = new String[grid.length()][];
+        for (int i = 0; i < grid.length(); i++) {
+            blocks[i] = grid.getString(i).split(",");
         }
 
+        //Because of how were doing the above we need to switch x and y
         String block;
         for (int x = 0; x < tilemap.getWidth(); x++) {
             for (int y = 0; y < tilemap.getHeight(); y++) {
@@ -43,7 +40,6 @@ public class TilemapDeserializer implements JsonDeserializer<Tilemap> {
                 }
             }
         }
-
         return tilemap;
     }
 }

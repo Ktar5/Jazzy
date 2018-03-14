@@ -1,18 +1,20 @@
 package com.ktar5.mapeditor.tilemap;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.alerts.GenericAlert;
 import com.ktar5.mapeditor.tilemap.dialogs.CreateDialog;
 import com.ktar5.mapeditor.tilemap.dialogs.LoadDialog;
+import com.ktar5.mapeditor.util.StringUtil;
 import lombok.Getter;
+import org.json.JSONObject;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
 import org.pmw.tinylog.writers.ConsoleWriter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,7 +22,6 @@ import java.util.UUID;
 
 public class MapManager {
     public static MapManager instance;
-    private final Gson gson;
     private File tempDir;
     private HashMap<UUID, Tilemap> openMaps;
     @Getter
@@ -38,13 +39,6 @@ public class MapManager {
                 .addWriter(new org.pmw.tinylog.writers.FileWriter("log.txt"))
                 .formatPattern("{date:mm:ss:SSS} {class_name}.{method}() [{level}]: {message}")
                 .activate();
-
-        //Initialize gson
-        gson = new GsonBuilder()
-                .registerTypeAdapter(Tilemap.class, new TilemapSerializer())
-                .registerTypeAdapter(Tilemap.class, new TilemapDeserializer())
-                .setPrettyPrinting()
-                .create();
 
         //Create the save and temp directories
         this.tempDir = dir;
@@ -97,11 +91,10 @@ public class MapManager {
             }
         }
 
-        UUID id = UUID.randomUUID();
         Tilemap tilemap = Tilemap.createEmpty(createDialog.getWidth(),
                 createDialog.getHeight(), createDialog.getTilesize(), createDialog.getFile());
-        openMaps.put(id, tilemap);
-        Main.root.getCenterView().getEditorViewPane().createTab(id);
+        openMaps.put(tilemap.getId(), tilemap);
+        Main.root.getCenterView().getEditorViewPane().createTab(tilemap.getId());
         return tilemap;
     }
 
@@ -117,25 +110,21 @@ public class MapManager {
 
         Logger.info("Beginning to load map from file: " + loaderFile.getPath());
 
-        //Attempt to initialize the file reader
-        try (FileReader reader = new FileReader(loaderFile)) {
-            //Load the tilemap from gson
-            Tilemap tilemap = gson.fromJson(reader, Tilemap.class);
-            tilemap.updateNameAndFile(loaderFile);
-            for (Tilemap tilemap1 : openMaps.values()) {
-                if (tilemap1.getSaveFile().getAbsolutePath().equals(tilemap.getSaveFile().getAbsolutePath())) {
-                    new GenericAlert("Tilemap with path " + tilemap.getSaveFile().getAbsolutePath() + " already loaded");
-                    return null;
-                }
-            }
-            openMaps.put(tilemap.getId(), tilemap);
-            Main.root.getCenterView().getEditorViewPane().createTab(tilemap.getId());
-            Logger.info("Finished loading map: " + tilemap.getMapName());
-            return tilemap;
-        } catch (IOException e) {
-            e.printStackTrace();
+        String data = StringUtil.readFileAsString(loaderFile);
+        if (data == null || data.isEmpty()) {
+            return null;
         }
-        return null;
+        Tilemap tilemap = TilemapDeserializer.deserialize(loaderFile, new JSONObject(data));
+        for (Tilemap temp : openMaps.values()) {
+            if (temp.getSaveFile().getPath().equals(tilemap.getSaveFile().getPath())) {
+                new GenericAlert("Tilemap with path " + tilemap.getSaveFile().getAbsolutePath() + " already loaded");
+                return null;
+            }
+        }
+        openMaps.put(tilemap.getId(), tilemap);
+        Main.root.getCenterView().getEditorViewPane().createTab(tilemap.getId());
+        Logger.info("Finished loading map: " + tilemap.getMapName());
+        return tilemap;
     }
 
     public void saveMap(UUID id) {
@@ -154,7 +143,7 @@ public class MapManager {
         try {
             tilemap.getSaveFile().createNewFile();
             FileWriter writer = new FileWriter(tilemap.getSaveFile());
-            gson.toJson(tilemap, writer);
+            writer.write(TilemapSerializer.serialize(tilemap).toString(4));
             Main.root.getCenterView().getEditorViewPane().setChanges(tilemap.getId(), false);
             writer.close();
         } catch (IOException e) {
