@@ -16,7 +16,6 @@ public class EditorViewPane extends TabPane {
         this.setMaxWidth(Double.MAX_VALUE);
         this.setPrefHeight(650);
         this.setPrefWidth(650);
-        //TODO:
         this.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 
         HBox.setHgrow(this, Priority.ALWAYS);

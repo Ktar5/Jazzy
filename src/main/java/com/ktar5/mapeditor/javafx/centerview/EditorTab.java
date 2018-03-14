@@ -3,8 +3,8 @@ package com.ktar5.mapeditor.javafx.centerview;
 import com.ktar5.mapeditor.tilemap.MapManager;
 import com.ktar5.mapeditor.tilemap.Tilemap;
 import javafx.event.Event;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.StageStyle;
 import lombok.Getter;
 import org.pmw.tinylog.Logger;
@@ -63,6 +63,8 @@ public class EditorTab extends Tab {
         }
     }
 
+    //https://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm
+
     public void setEdit(boolean value) {
         if (value == hasEdits) {
             return;
@@ -77,8 +79,9 @@ public class EditorTab extends Tab {
 
     @Getter
     public class EditorPane extends ScrollPane {
+        private EditorCanvas canvas;
 
-        public EditorPane(Canvas canvas) {
+        public EditorPane(EditorCanvas canvas) {
             super();
 
             this.setFitToHeight(true);
@@ -86,7 +89,28 @@ public class EditorTab extends Tab {
             this.prefHeight(-1);
             this.prefWidth(-1);
 
+            this.canvas = canvas;
             this.setContent(canvas);
+
+            //Canvas drag
+            addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+                canvas.isDragging = false;
+            });
+
+            addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+                if (!canvas.isDragging) {
+                    canvas.pressedX = event.getSceneX();
+                    canvas.pressedY = event.getSceneY();
+                    canvas.origX = canvas.getTranslateX();
+                    canvas.origY = canvas.getTranslateY();
+                    canvas.isDragging = true;
+                }
+                canvas.setTranslateX(canvas.origX + (event.getSceneX() - canvas.pressedX));
+                canvas.setTranslateY(canvas.origY + (event.getSceneY() - canvas.pressedY));
+
+                event.consume();
+            });
+
         }
     }
 

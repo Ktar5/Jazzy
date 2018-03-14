@@ -1,9 +1,9 @@
 package com.ktar5.mapeditor.tilemap;
 
 import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.javafx.centerview.EditorCanvas;
 import com.ktar5.mapeditor.tiles.Tile;
 import com.ktar5.utilities.common.constants.Direction;
-import javafx.scene.canvas.Canvas;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ public class Tilemap {
     private int xStart = 0, yStart = 0;
 
     //The canvas for which to render on
-    private Canvas canvas = new Canvas();
+    private EditorCanvas canvas;
 
     Tilemap(File saveFile, int width, int height, int tileSize) {
         this.width = width;
@@ -40,11 +40,9 @@ public class Tilemap {
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
         this.id = UUID.randomUUID();
-        canvas.setWidth(width);
-        canvas.setHeight(height);
+        canvas = new EditorCanvas(width * tileSize, height * tileSize);
+        canvas.getGraphicsContext2D().fillRect(0, 0, width * tileSize, height * tileSize);
         canvas.setCache(true);
-        //TODO do this?....
-        //getChildren().add(canvas);
     }
 
     public static Tilemap createEmpty(int width, int height, int tileSize, File file) {
