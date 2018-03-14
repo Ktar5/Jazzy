@@ -5,10 +5,12 @@ import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
 import com.ktar5.mapeditor.tilemap.MapManager;
 import com.ktar5.mapeditor.tilemap.Tilemap;
+import com.ktar5.mapeditor.tiles.tileset.Tileset;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -63,6 +65,17 @@ public class Main extends Application {
         //Add event listeners
         scene.setOnKeyPressed(new KeyPress());
         scene.setOnScroll(new Scroll());
+
+
+
+        File imageFile = new File("C:\\Users\\012148006\\Desktop\\test2.png");
+        File tilesetfile = new File("C:\\Users\\012148006\\Desktop\\text.txt");
+        Tileset tileset = new Tileset(imageFile, tilesetfile, 16, 2, 2, 2, 2);
+        Canvas canvas = new Canvas(128,128);
+        for (int i = 0; i < tileset.getTileImages().size; i++) {
+            canvas.getGraphicsContext2D().drawImage(tileset.getTileImages().get(i), (i % 7) * (tileset.getTileSize() + 2), ((i)/ 7) * (tileset.getTileSize() + 2));
+        }
+        root.getChildren().addAll(canvas);
     }
 
 

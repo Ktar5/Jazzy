@@ -11,10 +11,8 @@ public class TilesetSerializer {
         JSONObject json = new JSONObject();
 
         JSONObject padding = new JSONObject();
-        padding.put("left", src.getPaddingLeft());
-        padding.put("right", src.getPaddingRight());
-        padding.put("up", src.getPaddingUp());
-        padding.put("down", src.getPaddingDown());
+        padding.put("horizontal", src.getPaddingHorizontal());
+        padding.put("vertical", src.getPaddingVertical());
         json.put("padding", padding);
 
         JSONObject offset = new JSONObject();
