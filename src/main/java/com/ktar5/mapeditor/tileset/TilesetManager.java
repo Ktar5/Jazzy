@@ -117,7 +117,7 @@ public class TilesetManager {
         try {
             baseTileset.getTilesetFile().createNewFile();
             FileWriter writer = new FileWriter(baseTileset.getTilesetFile());
-            writer.write(TilesetSerializer.serialize(baseTileset).toString(4));
+            writer.write(baseTileset.serialize().toString(4));
             Main.root.getCenterView().getEditorViewPane().setChanges(baseTileset.getId(), false);
             writer.close();
         } catch (IOException e) {
