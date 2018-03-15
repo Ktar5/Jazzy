@@ -3,6 +3,7 @@ package com.ktar5.mapeditor.tileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import lombok.Getter;
+import org.json.JSONObject;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.pmw.tinylog.Logger;
 
@@ -11,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Getter
@@ -64,6 +67,27 @@ public class BaseTileset {
                 tileImages.put(index++, SwingFXUtils.toFXImage(subImage, null));
             }
         }
+    }
+
+    public JSONObject serialize() {
+        JSONObject json = new JSONObject();
+
+        JSONObject padding = new JSONObject();
+        padding.put("horizontal", this.getPaddingHorizontal());
+        padding.put("vertical", this.getPaddingVertical());
+        json.put("padding", padding);
+
+        JSONObject offset = new JSONObject();
+        offset.put("left", this.getOffsetLeft());
+        offset.put("up", this.getOffsetUp());
+        json.put("offset", offset);
+
+        json.put("tileSize", this.getTileSize());
+
+        Path path = Paths.get(this.getTilesetFile().getPath())
+                .relativize(Paths.get(this.getSourceFile().getPath()));
+        json.put("sourceFile", path.toString());
+        return json;
     }
 
 
