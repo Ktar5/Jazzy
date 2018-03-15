@@ -2,8 +2,8 @@ package com.ktar5.mapeditor.tilemaps;
 
 import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
-import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.mapeditor.tileset.BaseTileset;
+import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.utilities.common.constants.Direction;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -61,7 +61,7 @@ public abstract class BaseTilemap<S extends BaseTileset> {
                 Hence, data is stored "y-value, row string"
                 */
                 deserializeBlock(blocks[y][x], x, y);
-                if(this.grid[x][y] == null){
+                if (this.grid[x][y] == null) {
                     Logger.info("Loading map: " + saveFile.getName() + ". Null found at: " + x + ", " + y);
                     MapManager.get().remove(getId());
                     return;

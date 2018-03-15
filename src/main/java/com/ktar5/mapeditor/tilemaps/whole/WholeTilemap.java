@@ -1,7 +1,6 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
-import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -50,7 +49,7 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
         }
     }
 
-    public void set(int x, int y, Tile tile) {
+    public void set(int x, int y, WholeTile tile) {
         this.grid[x][y] = tile;
         setChanged(true);
     }

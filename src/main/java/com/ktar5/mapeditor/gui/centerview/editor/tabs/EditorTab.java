@@ -1,7 +1,7 @@
-package com.ktar5.mapeditor.gui.centerview.editor;
+package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
-import com.ktar5.mapeditor.tilemaps.MapManager;
-import com.ktar5.mapeditor.tilemaps.BaseTilemap;
+import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
+import com.ktar5.mapeditor.gui.centerview.editor.EditorPane;
 import javafx.event.Event;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -15,22 +15,43 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
-public class EditorTab extends Tab {
-    private UUID tilemap;
-    private boolean hasEdits;
+public abstract class EditorTab extends Tab {
+    private UUID uuid;
+    private boolean hasEdits = false;
 
-    public EditorTab(UUID tilemap) {
-        BaseTilemap map = MapManager.get().getMap(tilemap);
-        this.tilemap = map.getId();
-        this.setText(map.getMapName());
-        this.setContent(new EditorPane(map.getCanvas()));
+    public EditorTab(UUID uuid) {
+        this.uuid = uuid;
+        this.setText(getName());
+        this.setContent(new EditorPane(getCanvas()));
         this.setOnCloseRequest(e -> {
-            if (isHasEdits()) {
+            if (this.hasEdits) {
                 newSaveConfirmation(e);
             }
         });
+        this.setOnClosed(e -> removeCurrent());
+        draw();
+    }
 
-        this.setOnClosed(e -> MapManager.get().remove(tilemap));
+    public abstract void draw();
+
+    abstract EditorCanvas getCanvas();
+
+    abstract String getName();
+
+    abstract void saveCurrent();
+
+    abstract void removeCurrent();
+
+    public void setEdit(boolean value) {
+        if (value == hasEdits) {
+            return;
+        }
+        hasEdits = value;
+        if (hasEdits && !this.getText().startsWith("* ")) {
+            this.setText("* " + this.getText());
+        } else {
+            this.setText(getName());
+        }
     }
 
     public void newSaveConfirmation(Event event) {
@@ -38,9 +59,8 @@ public class EditorTab extends Tab {
         alert.initStyle(StageStyle.UTILITY);
 
         alert.setTitle("Quit Without Saving");
-        //alert.setHeaderText("");
         alert.setContentText("Are you sure you'd like to quit without saving changes to " +
-                MapManager.get().getMap(tilemap).getMapName() + "?");
+                getName() + "?");
 
 
         ButtonType closeNoSave = new ButtonType("Close without saving");
@@ -54,26 +74,12 @@ public class EditorTab extends Tab {
         if (result.get() == closeNoSave) {
             //Do nothing
         } else if (result.get() == saveAndClose) {
-            MapManager.get().saveMap(tilemap);
+            saveCurrent();
         } else if (result.get() == cancel) {
             event.consume();
         } else {
             Logger.info("Something happened over here");
             event.consume();
-        }
-    }
-
-    //https://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm
-
-    public void setEdit(boolean value) {
-        if (value == hasEdits) {
-            return;
-        }
-        hasEdits = value;
-        if (hasEdits && !this.getText().startsWith("* ")) {
-            this.setText("* " + this.getText());
-        } else {
-            this.setText(MapManager.get().getMap(tilemap).getMapName());
         }
     }
 

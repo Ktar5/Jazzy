@@ -1,7 +1,6 @@
 package com.ktar5.mapeditor.gui.dialogs;
 
 import javafx.stage.FileChooser;
-import javafx.util.Pair;
 
 import java.io.File;
 

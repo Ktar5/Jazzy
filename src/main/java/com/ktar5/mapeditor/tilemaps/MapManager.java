@@ -1,8 +1,9 @@
 package com.ktar5.mapeditor.tilemaps;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
+import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateBaseTilemap;
+import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.LoadDialog;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.util.StringUtil;
@@ -72,7 +73,7 @@ public class MapManager {
 
     public BaseTilemap getMap(UUID id) {
         if (!openMaps.containsKey(id)) {
-            throw new RuntimeException("BaseTilemap with id: " + id + " already exists");
+            throw new RuntimeException("BaseTilemap with id: " + id + " doesn't exist");
         }
         return openMaps.get(id);
     }
@@ -96,7 +97,7 @@ public class MapManager {
         BaseTilemap baseTilemap = new WholeTilemap(createDialog.getFile(), createDialog.getWidth(),
                 createDialog.getHeight(), createDialog.getTilesize());
         openMaps.put(baseTilemap.getId(), baseTilemap);
-        Main.root.getCenterView().getEditorViewPane().createTab(baseTilemap.getId());
+        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
         return baseTilemap;
     }
 
@@ -125,7 +126,7 @@ public class MapManager {
             }
         }
         openMaps.put(baseTilemap.getId(), baseTilemap);
-        Main.root.getCenterView().getEditorViewPane().createTab(baseTilemap.getId());
+        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
         Logger.info("Finished loading map: " + baseTilemap.getMapName());
         return baseTilemap;
     }

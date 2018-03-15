@@ -30,7 +30,7 @@ public class CompositeTilePart implements ToolSerializeable {
         this.data = data;
     }
 
-    void setData(TilepartData tilepartData) {
+    void setData(CompositeTilePartData tilepartData) {
         this.data = tilepartData.ordinal();
     }
 
@@ -42,13 +42,10 @@ public class CompositeTilePart implements ToolSerializeable {
         return baseId + "_" + data;
     }
 
-    public enum TilepartData {
+    public enum CompositeTilePartData {
         INNER_CORNER,
         OUTER_CORNER,
-        NORTH_FACE,
-        EAST_FACE,
-        SOUTH_FACE,
-        WEST_FACE
+        NORTH_FACE
     }
 
     @Override

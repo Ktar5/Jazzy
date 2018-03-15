@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor.gui.dialogs;
 
-import javafx.application.Platform;
+import com.ktar5.mapeditor.gui.utils.NumberTextField;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -12,16 +12,16 @@ import lombok.Getter;
 import java.io.File;
 import java.util.Optional;
 
+import static com.ktar5.mapeditor.gui.utils.GuiUtils.addListener;
+
 @Builder
 @Getter
 public class CreateBaseTilemap {
-    int width, height, tilesize;
-    String name;
-    File file;
+    private int width, height, tilesize;
+    private File file;
 
     public static CreateBaseTilemap create() {
         CreateBaseTilemapBuilder builder = new CreateBaseTilemapBuilder();
-
 
         // Create the custom dialog.
         Dialog<CreateBaseTilemap> dialog = new Dialog<>();
@@ -46,22 +46,12 @@ public class CreateBaseTilemap {
         fileChooser.setTitle("Create Resource File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
 
-
         TextField filePath = new TextField();
         filePath.setEditable(false);
 
-        TextField width = new NumberTextField();
-        TextField heigh = new NumberTextField();
-        TextField tilesize = new NumberTextField();
-
-        width.setPromptText("Map Width");
-        heigh.setPromptText("Map Height");
-        tilesize.setPromptText("Tile Size");
-
-
-//        width.setTextFormatter(new NumberText());
-//        heigh.setTextFormatter(new NumberText());
-//        tilesize.setTextFormatter(new NumberText());
+        NumberTextField width = new NumberTextField("Map Width:");
+        NumberTextField heigh = new NumberTextField("Map Height:");
+        NumberTextField tilesize = new NumberTextField("Tile Size:");
 
         Button openFileButton = new Button("Select File");
         openFileButton.setOnAction(event -> {
@@ -71,7 +61,6 @@ public class CreateBaseTilemap {
             if (file != null) {
                 filePath.setText(file.getAbsolutePath());
                 builder.file(file);
-                builder.name(file.getName());
             }
         });
 
@@ -89,31 +78,16 @@ public class CreateBaseTilemap {
         Node doneButton = dialog.getDialogPane().lookupButton(loginButtonType);
         doneButton.setDisable(true);
 
-        // Do some validation (using the Java 8 lambda syntax).
-        width.textProperty().addListener((observable, oldValue, newValue) -> {
-            doneButton.setDisable(newValue.trim().isEmpty());
-        });
-        heigh.textProperty().addListener((observable, oldValue, newValue) -> {
-            doneButton.setDisable(newValue.trim().isEmpty());
-        });
-        tilesize.textProperty().addListener((observable, oldValue, newValue) -> {
-            doneButton.setDisable(newValue.trim().isEmpty());
-        });
-        filePath.textProperty().addListener((observable, oldValue, newValue) -> {
-            doneButton.setDisable(newValue.trim().isEmpty());
-        });
+        addListener((observable, oldValue, newValue) -> doneButton.setDisable(newValue.trim().isEmpty()),
+                width, filePath, heigh, tilesize);
 
         dialog.getDialogPane().setContent(grid);
 
-        // Request focus on the username field by default.
-        Platform.runLater(width::requestFocus);
-
-        // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                builder.height(Integer.valueOf(heigh.getText()));
-                builder.width(Integer.valueOf(width.getText()));
-                builder.tilesize(Integer.valueOf(tilesize.getText()));
+                builder.height(heigh.getNumber());
+                builder.width(width.getNumber());
+                builder.tilesize(tilesize.getNumber());
                 return builder.build();
             }
             return null;
@@ -122,27 +96,6 @@ public class CreateBaseTilemap {
         Optional<CreateBaseTilemap> createDialog = dialog.showAndWait();
 
         return createDialog.orElse(null);
-    }
-
-    public static class NumberTextField extends TextField {
-
-        @Override
-        public void replaceText(int start, int end, String text) {
-            if (validate(text)) {
-                super.replaceText(start, end, text);
-            }
-        }
-
-        @Override
-        public void replaceSelection(String text) {
-            if (validate(text)) {
-                super.replaceSelection(text);
-            }
-        }
-
-        private boolean validate(String text) {
-            return text.matches("[0-9]*");
-        }
     }
 
 }

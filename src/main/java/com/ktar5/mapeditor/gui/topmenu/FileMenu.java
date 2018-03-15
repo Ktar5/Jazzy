@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.gui.topmenu;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.EditorTab;
+import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import javafx.scene.control.Menu;
@@ -20,7 +20,7 @@ public class FileMenu extends Menu {
         open.setOnAction(event -> {
             final BaseTilemap baseTilemap = MapManager.get().loadMap();
             if (baseTilemap != null) {
-                Main.root.getCenterView().getEditorViewPane().setTab(baseTilemap.getId());
+                Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTilemap.getId());
             }
         });
 
@@ -30,8 +30,8 @@ public class FileMenu extends Menu {
         final MenuItem save = new MenuItem("Save Current");
         save.setOnAction(event -> {
             final Tab selectedItem = Main.root.getCenterView().getEditorViewPane().getSelectionModel().getSelectedItem();
-            if (selectedItem instanceof EditorTab) {
-                MapManager.get().saveMap(((EditorTab) selectedItem).getTilemap());
+            if (selectedItem instanceof TilemapTab) {
+                MapManager.get().saveMap(((TilemapTab) selectedItem).getUuid());
             }
         });
 
@@ -50,7 +50,7 @@ public class FileMenu extends Menu {
 
     public void saveAsDialog() {
         final Tab selectedItem = Main.root.getCenterView().getEditorViewPane().getSelectionModel().getSelectedItem();
-        if (selectedItem instanceof EditorTab) {
+        if (selectedItem instanceof TilemapTab) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Map As..");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
@@ -59,7 +59,7 @@ public class FileMenu extends Menu {
                 Logger.debug("Something happened here with save as dialog yo");
                 return;
             }
-            final BaseTilemap map = MapManager.get().getMap(((EditorTab) selectedItem).getTilemap());
+            final BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getUuid());
             map.updateNameAndFile(file);
             map.save();
             selectedItem.setText(map.getMapName());
