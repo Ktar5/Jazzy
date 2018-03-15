@@ -118,7 +118,7 @@ public class Main extends Application {
 //        // update main state
 //        mainState.update();
 //
-//        // set number of tileset when tilemaps is created
+//        // set number of tileset when tilemap is created
 //        if (mainState.isMapCreated()) {
 //            mainState.setMapCreated(false);
 //        }

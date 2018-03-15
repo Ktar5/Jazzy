@@ -65,7 +65,7 @@ public class MapManager {
 
     public void remove(UUID uuid) {
         if (this.openMaps.containsKey(uuid)) {
-            Logger.debug("Removed tilemaps: " + getMap(uuid).getMapName());
+            Logger.debug("Removed tilemap: " + getMap(uuid).getMapName());
             openMaps.remove(uuid);
         }
     }
@@ -101,7 +101,7 @@ public class MapManager {
     }
 
     public BaseTilemap loadMap() {
-        File loaderFile = LoadDialog.create("Load a tilemaps", "Json Tilemap File", "*.json");
+        File loaderFile = LoadDialog.create("Load a tilemap", "Json Tilemap File", "*.json");
         if (loaderFile == null) {
             Logger.info("Tried to load map, cancelled or failed");
             return null;
@@ -114,6 +114,7 @@ public class MapManager {
 
         String data = StringUtil.readFileAsString(loaderFile);
         if (data == null || data.isEmpty()) {
+            Logger.error("Data from file: " + loaderFile.getPath() + " is either null or empty.");
             return null;
         }
         BaseTilemap baseTilemap = new WholeTilemap(loaderFile, new JSONObject(data));

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.pmw.tinylog.Logger;
 
 import java.io.File;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public abstract class BaseTilemap<S extends BaseTileset> {
         this.xStart = json.getJSONObject("spawn").getInt("x");
         this.yStart = json.getJSONObject("spawn").getInt("y");
 
-        JSONArray grid = json.getJSONArray("tilemaps");
+        JSONArray grid = json.getJSONArray("tilemap");
         String[][] blocks = new String[grid.length()][];
         for (int i = 0; i < grid.length(); i++) {
             blocks[i] = grid.getString(i).split(",");
@@ -60,8 +61,14 @@ public abstract class BaseTilemap<S extends BaseTileset> {
                 Hence, data is stored "y-value, row string"
                 */
                 deserializeBlock(blocks[y][x], x, y);
+                if(this.grid[x][y] == null){
+                    Logger.info("Loading map: " + saveFile.getName() + ". Null found at: " + x + ", " + y);
+                    MapManager.get().remove(getId());
+                    return;
+                }
             }
         }
+
     }
 
     protected BaseTilemap(File saveFile, int width, int height, int tileSize) {
@@ -178,7 +185,7 @@ public abstract class BaseTilemap<S extends BaseTileset> {
             builder.setLength(0);
         }
 
-        json.put("tilemaps", jsonArray);
+        json.put("tilemap", jsonArray);
         return json;
     }
 
