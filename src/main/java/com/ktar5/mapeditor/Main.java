@@ -2,10 +2,11 @@ package com.ktar5.mapeditor;
 
 import com.ktar5.mapeditor.input.KeyPress;
 import com.ktar5.mapeditor.input.Scroll;
-import com.ktar5.mapeditor.javafx.Root;
-import com.ktar5.mapeditor.tilemap.MapManager;
-import com.ktar5.mapeditor.tiles.tileset.Tileset;
-import com.ktar5.mapeditor.tiles.tileset.TilesetDeserializer;
+import com.ktar5.mapeditor.gui.Root;
+import com.ktar5.mapeditor.tilemaps.MapManager;
+import com.ktar5.mapeditor.tileset.BaseTileset;
+import com.ktar5.mapeditor.tileset.TilesetDeserializer;
+import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.mapeditor.util.StringUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,7 +20,7 @@ import java.io.File;
 
 public class Main extends Application {
     //Multiple types of grids
-    //Multiple types of tilesets
+    //Multiple types of tileset
 
     public static Window window;
     public static Root root;
@@ -71,14 +72,14 @@ public class Main extends Application {
     public void testSaveTileset() {
         File imageFile = new File(".\\mapgen\\test2.png");
         File tilesetfile = new File(".\\mapgen\\test.json");
-        Tileset tileset = new Tileset(imageFile, tilesetfile, 16, 2, 2, 2, 2);
+        BaseTileset baseTileset = new BaseTileset(imageFile, tilesetfile, 16, 2, 2, 2, 2);
         Canvas canvas = new Canvas(128, 128);
-        for (int i = 0; i < tileset.getTileImages().size; i++) {
-            canvas.getGraphicsContext2D().drawImage(tileset.getTileImages().get(i),
-                    (i % 7) * (tileset.getTileSize() + 2), ((i) / 7) * (tileset.getTileSize() + 2));
+        for (int i = 0; i < baseTileset.getTileImages().size; i++) {
+            canvas.getGraphicsContext2D().drawImage(baseTileset.getTileImages().get(i),
+                    (i % 7) * (baseTileset.getTileSize() + 2), ((i) / 7) * (baseTileset.getTileSize() + 2));
         }
         root.getChildren().addAll(canvas);
-        tileset.save();
+        TilesetManager.get().saveTileset(baseTileset.getId());
     }
 
     public void testLoadTileset() {
@@ -87,7 +88,7 @@ public class Main extends Application {
         if (data == null || data.isEmpty()) {
             return;
         }
-        Tileset deserialize = TilesetDeserializer.deserialize(loaderFile, new JSONObject(data));
+        BaseTileset deserialize = TilesetDeserializer.deserialize(loaderFile, new JSONObject(data));
         Canvas canvas = new Canvas(128, 128);
         for (int i = 0; i < deserialize.getTileImages().size; i++) {
             canvas.getGraphicsContext2D().drawImage(deserialize.getTileImages().get(i),
@@ -117,7 +118,7 @@ public class Main extends Application {
 //        // update main state
 //        mainState.update();
 //
-//        // set number of tiles when tilemap is created
+//        // set number of tileset when tilemaps is created
 //        if (mainState.isMapCreated()) {
 //            mainState.setMapCreated(false);
 //        }
