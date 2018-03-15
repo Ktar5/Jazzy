@@ -22,13 +22,13 @@ public class EditorPane extends ScrollPane {
 
         //Canvas drag
         this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
-            Logger.debug("End dragging");
+            //Logger.debug("End dragging");
             canvas.isDragging = false;
         });
 
         addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
             if (!canvas.isDragging) {
-                Logger.debug("Set canvas initial drag values");
+                //Logger.debug("Set canvas initial drag values");
                 canvas.pressedX = event.getSceneX();
                 canvas.pressedY = event.getSceneY();
                 canvas.origX = canvas.getTranslateX();
