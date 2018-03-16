@@ -1,12 +1,25 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
+import com.ktar5.mapeditor.gui.centerview.editor.test.CanvasTestPanel;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 
+import javax.swing.*;
+
 @Getter
 public class EditorPane extends ScrollPane {
     private EditorCanvas canvas;
+
+    public EditorPane(SwingNode swingNode){
+        super();
+        this.setFitToHeight(true);
+        this.setFitToWidth(true);
+        this.prefHeight(500);
+        this.prefWidth(500);
+        this.setContent(swingNode);
+    }
 
     public EditorPane(EditorCanvas canvas) {
         super();
@@ -23,6 +36,7 @@ public class EditorPane extends ScrollPane {
         this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             //Logger.debug("End dragging");
             canvas.isDragging = false;
+            canvas.setInt();
         });
 
         addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {

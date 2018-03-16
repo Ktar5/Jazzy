@@ -9,6 +9,7 @@ import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.canvas.Canvas;
@@ -75,7 +76,14 @@ public class Main extends Application {
     }
 
     public void testLoadTileset() {
-        BaseTileset baseTileset = TilesetManager.get().loadTileset();
+        final SwingNode swingNode = TilesetManager.get().loadTileset();
+        while(swingNode.getContent() == null){
+            System.out.println("null");
+        }
+        while (swingNode.getContent() != null){
+            swingNode.getContent().repaint();
+            System.out.println("not null");
+        }
     }
 
 }
