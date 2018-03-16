@@ -1,10 +1,8 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
 import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
-import com.ktar5.mapeditor.gui.centerview.editor.test.CanvasTestPanel;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 
-import java.awt.*;
 import java.util.UUID;
 
 public class TilemapTab extends EditorTab {
@@ -14,10 +12,6 @@ public class TilemapTab extends EditorTab {
     }
 
     @Override
-    public void draw(Graphics graphics) {
-
-    }
-
     public void draw() {
         MapManager.get().getMap(getUuid()).draw();
     }

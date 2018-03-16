@@ -42,16 +42,9 @@ public class EditorCanvas extends Canvas {
             // note: pivot value must be untransformed, i. e. without scaling
             this.setPivot(f * dx, f * dy);
 
-            setInt();
-
             event.consume();
         });
 
-    }
-
-    public void setInt(){
-        this.setTranslateX((int)this.getTranslateX());
-        this.setTranslateY((int)this.getTranslateY());
     }
 
     public void setPivot(double x, double y) {

@@ -1,23 +1,20 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
 import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
-import com.ktar5.mapeditor.gui.centerview.editor.test.CanvasTestPanel;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import lombok.Getter;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Getter
 public class TilesetTab extends EditorTab {
-
     public TilesetTab(UUID tileset) {
         super(tileset);
     }
 
     @Override
-    public void draw(Graphics graphics) {
-        TilesetManager.get().getTileset(getUuid()).draw(graphics);
+    public void draw() {
+        TilesetManager.get().getTileset(getUuid()).draw();
     }
 
     @Override

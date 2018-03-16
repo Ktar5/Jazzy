@@ -1,21 +1,16 @@
 package com.ktar5.mapeditor.tileset;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.EditorPane;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilesetTab;
-import com.ktar5.mapeditor.gui.centerview.editor.test.CanvasTestPanel;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.util.StringUtil;
-import javafx.embed.swing.SwingNode;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
 import org.pmw.tinylog.Logger;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -77,7 +72,7 @@ public class TilesetManager {
         return tileset;
     }
 
-    public SwingNode loadTileset() {
+    public BaseTileset loadTileset() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create Resource File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
@@ -104,28 +99,9 @@ public class TilesetManager {
             }
         }
         tilesetHashMap.put(baseTileset.getId(), baseTileset);
-
-        final SwingNode swingNode = new SwingNode();
-        swingNode.setCache(true);
-        swingNode.resize(500, 500);
-        SwingUtilities.invokeLater(() -> {
-            final CanvasTestPanel canvasTestPanel = new CanvasTestPanel(2048, 2048, baseTileset::draw);
-            canvasTestPanel.setMaximumSize(new Dimension(500, 500));
-            canvasTestPanel.setSize(500, 500);
-            canvasTestPanel.setVisible(true);
-            swingNode.setContent(canvasTestPanel);
-            //swingNode.setContent(new JButton("Click me!"));
-            System.out.println(swingNode.getContent());
-        });
-
-        final TilesetTab tilesetTab = new TilesetTab(baseTileset.getId());
-        tilesetTab.setContent(new EditorPane(swingNode));
-        Main.root.getCenterView().getEditorViewPane().addTab(tilesetTab);
-        swingNode.setVisible(true);
-
-
+        Main.root.getCenterView().getEditorViewPane().addTab(new TilesetTab(baseTileset.getId()));
         Logger.info("Finished loading tileset: " + baseTileset.getTilesetFile().getName());
-        return swingNode;
+        return baseTileset;
     }
 
     public void saveTileset(UUID id) {

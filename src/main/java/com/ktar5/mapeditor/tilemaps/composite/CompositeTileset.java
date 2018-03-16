@@ -3,7 +3,6 @@ package com.ktar5.mapeditor.tilemaps.composite;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -22,7 +21,7 @@ public class CompositeTileset extends BaseTileset {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw() {
 
     }
 

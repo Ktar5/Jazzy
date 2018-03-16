@@ -1,15 +1,12 @@
 package com.ktar5.mapeditor.tileset;
 
 import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
-import com.ktar5.mapeditor.gui.centerview.editor.test.CanvasTestPanel;
 import javafx.scene.image.Image;
 import lombok.Getter;
-import lombok.Setter;
 import org.json.JSONObject;
 import org.mini2Dx.gdx.utils.IntMap;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,14 +17,14 @@ import java.util.UUID;
 @Getter
 public abstract class BaseTileset {
     private UUID id;
-    private IntMap<BufferedImage> tileImages;
+    private IntMap<Image> tileImages;
     private File sourceFile, tilesetFile;
     private int tileSize;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
     private EditorCanvas canvas;
 
-    public static final int SCALE = 16;
+    public static final int SCALE = 4;
 
     public BaseTileset(File tilesetFile, JSONObject json) {
         this(Paths.get(tilesetFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
@@ -53,15 +50,10 @@ public abstract class BaseTileset {
         try {
             final BufferedImage readImage = ImageIO.read(sourceFile);
             getTilesetImages(readImage);
-            canvas = new EditorCanvas(readImage.getWidth() * SCALE, readImage.getHeight() * SCALE);
+            canvas = new EditorCanvas(readImage.getWidth(), readImage.getHeight());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.offsetLeft *= SCALE;
-        this.offsetUp *= SCALE;
-        this.tileSize *= SCALE;
-        this.paddingHorizontal *= SCALE;
-        this.paddingVertical *= SCALE;
     }
 
     public abstract void getTilesetImages(BufferedImage image);
@@ -87,7 +79,7 @@ public abstract class BaseTileset {
         return json;
     }
 
-    public abstract void draw(Graphics graphics);
+    public abstract void draw();
 
 
 }
