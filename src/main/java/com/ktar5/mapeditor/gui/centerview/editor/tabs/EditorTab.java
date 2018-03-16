@@ -1,17 +1,17 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
-import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
 import com.ktar5.mapeditor.gui.centerview.editor.EditorPane;
 import javafx.event.Event;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.Pane;
 import javafx.stage.StageStyle;
 import lombok.Getter;
 import org.pmw.tinylog.Logger;
 
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 @Getter
@@ -23,7 +23,7 @@ public abstract class EditorTab extends Tab {
     public EditorTab(UUID uuid) {
         this.uuid = uuid;
         this.setText(getName());
-        this.setContent(pane = new EditorPane(getCanvas()));
+        this.setContent(pane = new EditorPane());
         this.setOnCloseRequest(e -> {
             if (this.hasEdits) {
                 newSaveConfirmation(e);
@@ -34,7 +34,9 @@ public abstract class EditorTab extends Tab {
 
     public abstract void draw();
 
-    abstract EditorCanvas getCanvas();
+    public Pane getDrawingPane() {
+        return pane.getInternalPane();
+    }
 
     abstract String getName();
 

@@ -46,31 +46,16 @@ public class WholeTileset extends BaseTileset {
         }
     }
 
-    private static final boolean useCanvas = true;
-
     @Override
     public void draw() {
-        //pane.setTranslateY(-500);
-        Pane pane = ((EditorTab) Main.root.getCenterView().getEditorViewPane().getSelectionModel().getSelectedItem()).getPane().getPane();
+        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
         for (int i = 0; i < this.getTileImages().size; i++) {
             PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(i));
-            // assuming staggered if Y is odd move it right 1/2 a tile
-            // also assuming 64x64 tile
             iv.setVisible(true);
             iv.setTranslateX(((i % 7) * (this.getTileSize() + 2)));
             iv.setTranslateY((((i) / 7) * (this.getTileSize() + 2)));
             pane.getChildren().add(iv);
-            // at this point you might want to add the ImageView to a custom
-            // "tile" class including your own info which you can then place
-            // in a 2d array where the index's are the coordinates of the tile
-            if (useCanvas) {
-                System.out.println("draw");
-                getCanvas().getGraphicsContext2D().drawImage(this.getTileImages().get(i),
-                        ((i % 7) * (this.getTileSize() + 2)), (((i) / 7) * (this.getTileSize() + 2)));
-
-            }
         }
-        Main.root.getChildren().add(pane);
     }
 
 

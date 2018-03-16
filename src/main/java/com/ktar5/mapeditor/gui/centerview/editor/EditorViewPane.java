@@ -4,6 +4,7 @@ import com.ktar5.mapeditor.gui.centerview.editor.tabs.EditorTab;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
 import java.util.UUID;
@@ -35,18 +36,24 @@ public class EditorViewPane extends TabPane {
     }
 
     public void setChanges(UUID uuid, boolean value) {
+        getTab(uuid).setEdit(value);
+    }
+
+    public Pane getTabDrawingPane(UUID uuid) {
+        return getTab(uuid).getDrawingPane();
+    }
+
+    public EditorTab getTab(UUID uuid) {
         EditorTab tab = ((EditorTab) this.getSelectionModel().getSelectedItem());
         if (tab.getUuid().equals(uuid)) {
-            tab.setEdit(value);
-            return;
+            return tab;
         }
         for (Tab itab : this.getTabs()) {
             if (itab instanceof EditorTab && ((EditorTab) itab).getUuid().equals(uuid)) {
-                ((EditorTab) itab).setEdit(value);
-                return;
+                return tab;
             }
         }
-
+        return null;
     }
 
 

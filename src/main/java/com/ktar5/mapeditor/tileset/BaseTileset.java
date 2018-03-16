@@ -1,6 +1,5 @@
 package com.ktar5.mapeditor.tileset;
 
-import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import org.imgscalr.Scalr;
@@ -23,7 +22,6 @@ public abstract class BaseTileset {
     private int tileSize;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
-    private EditorCanvas canvas;
 
     public static final int SCALE = 1;
 
@@ -51,7 +49,6 @@ public abstract class BaseTileset {
         try {
             final BufferedImage readImage = ImageIO.read(sourceFile);
             getTilesetImages(readImage);
-            canvas = new EditorCanvas(readImage.getWidth() * SCALE, readImage.getHeight() * SCALE);
         } catch (IOException e) {
             e.printStackTrace();
         }

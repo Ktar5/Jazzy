@@ -1,7 +1,6 @@
 package com.ktar5.mapeditor.tilemaps;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.utilities.common.constants.Direction;
@@ -34,9 +33,6 @@ public abstract class BaseTilemap<S extends BaseTileset> {
     //BaseTileset
     @Setter
     private S tileset;
-
-    //The canvas for which to render on
-    private EditorCanvas canvas;
 
     protected BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
@@ -83,9 +79,6 @@ public abstract class BaseTilemap<S extends BaseTileset> {
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
         this.id = UUID.randomUUID();
-        canvas = new EditorCanvas(width * tileSize, height * tileSize);
-        canvas.getGraphicsContext2D().fillRect(0, 0, width * tileSize, height * tileSize);
-        canvas.setCache(true);
         if (empty) {
             setEmpty();
         }

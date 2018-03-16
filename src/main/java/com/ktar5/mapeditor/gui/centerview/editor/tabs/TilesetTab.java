@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
-import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
 import com.ktar5.mapeditor.tileset.TilesetManager;
+import javafx.scene.layout.Pane;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -15,11 +15,6 @@ public class TilesetTab extends EditorTab {
     @Override
     public void draw() {
         TilesetManager.get().getTileset(getUuid()).draw();
-    }
-
-    @Override
-    EditorCanvas getCanvas() {
-        return TilesetManager.get().getTileset(getUuid()).getCanvas();
     }
 
     @Override
