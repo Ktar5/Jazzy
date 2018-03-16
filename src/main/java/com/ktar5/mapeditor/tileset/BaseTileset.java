@@ -3,6 +3,7 @@ package com.ktar5.mapeditor.tileset;
 import com.ktar5.mapeditor.gui.centerview.editor.EditorCanvas;
 import javafx.scene.image.Image;
 import lombok.Getter;
+import org.imgscalr.Scalr;
 import org.json.JSONObject;
 import org.mini2Dx.gdx.utils.IntMap;
 
@@ -24,7 +25,7 @@ public abstract class BaseTileset {
     private int offsetLeft, offsetUp;
     private EditorCanvas canvas;
 
-    public static final int SCALE = 4;
+    public static final int SCALE = 1;
 
     public BaseTileset(File tilesetFile, JSONObject json) {
         this(Paths.get(tilesetFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
@@ -50,10 +51,19 @@ public abstract class BaseTileset {
         try {
             final BufferedImage readImage = ImageIO.read(sourceFile);
             getTilesetImages(readImage);
-            canvas = new EditorCanvas(readImage.getWidth(), readImage.getHeight());
+            canvas = new EditorCanvas(readImage.getWidth() * SCALE, readImage.getHeight() * SCALE);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.tileSize = tileSize * SCALE;
+        this.offsetLeft = offsetLeft * SCALE;
+        this.offsetUp = offsetUp * SCALE;
+        this.paddingHorizontal = paddingHorizontal * SCALE;
+        this.paddingVertical = paddingVertical * SCALE;
+    }
+
+    public static BufferedImage scale(BufferedImage sbi, int factor) {
+        return Scalr.resize(sbi, Scalr.Method.SPEED, sbi.getWidth() * factor);
     }
 
     public abstract void getTilesetImages(BufferedImage image);

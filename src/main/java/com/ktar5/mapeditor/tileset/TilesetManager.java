@@ -68,7 +68,9 @@ public class TilesetManager {
                 createDialog.getPaddingVertical(), createDialog.getPaddingHorizontal(),
                 createDialog.getOffsetLeft(), createDialog.getOffsetUp());
         tilesetHashMap.put(tileset.getId(), tileset);
-        Main.root.getCenterView().getEditorViewPane().addTab(new TilesetTab(tileset.getId()));
+        TilesetTab tab;
+        Main.root.getCenterView().getEditorViewPane().addTab(tab =new TilesetTab(tileset.getId()));
+        tab.draw();
         return tileset;
     }
 
@@ -99,7 +101,9 @@ public class TilesetManager {
             }
         }
         tilesetHashMap.put(baseTileset.getId(), baseTileset);
-        Main.root.getCenterView().getEditorViewPane().addTab(new TilesetTab(baseTileset.getId()));
+        TilesetTab tilesetTab = new TilesetTab(baseTileset.getId());
+        Main.root.getCenterView().getEditorViewPane().addTab(tilesetTab);
+        tilesetTab.draw();
         Logger.info("Finished loading tileset: " + baseTileset.getTilesetFile().getName());
         return baseTileset;
     }

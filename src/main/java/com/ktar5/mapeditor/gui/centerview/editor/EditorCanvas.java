@@ -3,8 +3,8 @@ package com.ktar5.mapeditor.gui.centerview.editor;
 import javafx.scene.canvas.Canvas;
 
 public class EditorCanvas extends Canvas {
-    private static final double MAX_SCALE = 10.0d;
-    private static final double MIN_SCALE = .1d;
+    private static final double MAX_SCALE = 5;
+    private static final double MIN_SCALE = .1;
 
     double pressedX, pressedY;
     double origX, origY;
@@ -19,7 +19,7 @@ public class EditorCanvas extends Canvas {
 
 
         setOnScroll(event -> {
-            double delta = 1.2;
+            double delta = 2;
 
             double scale = this.getScaleX(); // currently we only use Y, same value is used for X
             double oldScale = scale;
