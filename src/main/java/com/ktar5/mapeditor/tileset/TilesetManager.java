@@ -1,7 +1,6 @@
 package com.ktar5.mapeditor.tileset;
 
 import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
@@ -69,24 +68,12 @@ public class TilesetManager {
                 createDialog.getOffsetLeft(), createDialog.getOffsetUp());
         tilesetHashMap.put(tileset.getId(), tileset);
         TilesetTab tab;
-        Main.root.getCenterView().getEditorViewPane().addTab(tab =new TilesetTab(tileset.getId()));
+        Main.root.getCenterView().getEditorViewPane().addTab(tab = new TilesetTab(tileset.getId()));
         tab.draw();
         return tileset;
     }
 
-    public BaseTileset loadTileset() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Create Resource File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
-        File loaderFile = fileChooser.showOpenDialog(null);
-        if (loaderFile == null) {
-            Logger.info("Tried to load baseTileset, cancelled or failed");
-            return null;
-        } else if (!loaderFile.exists()) {
-            new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
-            return null;
-        }
-
+    public BaseTileset loadTileset(File loaderFile) {
         Logger.info("Beginning to load baseTileset from file: " + loaderFile.getPath());
 
         String data = StringUtil.readFileAsString(loaderFile);
@@ -106,6 +93,22 @@ public class TilesetManager {
         tilesetTab.draw();
         Logger.info("Finished loading tileset: " + baseTileset.getTilesetFile().getName());
         return baseTileset;
+    }
+
+    public BaseTileset loadTileset() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Create Resource File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
+        File loaderFile = fileChooser.showOpenDialog(null);
+        if (loaderFile == null) {
+            Logger.info("Tried to load baseTileset, cancelled or failed");
+            return null;
+        } else if (!loaderFile.exists()) {
+            new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
+            return null;
+        }
+
+        return loadTileset(loaderFile);
     }
 
     public void saveTileset(UUID id) {
