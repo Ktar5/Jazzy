@@ -55,7 +55,7 @@ public class EditorPane extends ScrollPane {
 
         setOnScroll(event -> {
             //Logger.debug("Scroll");
-            double delta = 2;
+            double delta = 1.2;
 
             double scale = internalPane.getScaleX(); // currently we only use Y, same value is used for X
             double oldScale = scale;
