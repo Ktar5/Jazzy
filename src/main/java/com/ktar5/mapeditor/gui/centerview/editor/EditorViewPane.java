@@ -1,10 +1,10 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.EditorTab;
+import javafx.scene.Group;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
 import java.util.UUID;
@@ -43,8 +43,8 @@ public class EditorViewPane extends TabPane {
         return ((EditorTab) this.getSelectionModel().getSelectedItem());
     }
 
-    public Pane getTabDrawingPane(UUID uuid) {
-        return getTab(uuid).getDrawingPane();
+    public Group getTabDrawingPane(UUID uuid) {
+        return getTab(uuid).getViewport();
     }
 
     public EditorTab getTab(UUID uuid) {

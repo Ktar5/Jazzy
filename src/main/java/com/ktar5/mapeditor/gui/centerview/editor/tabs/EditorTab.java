@@ -3,6 +3,7 @@ package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 import com.ktar5.mapeditor.gui.centerview.editor.EditorPane;
 import com.ktar5.mapeditor.util.Tabbable;
 import javafx.event.Event;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -37,8 +38,8 @@ public abstract class EditorTab extends Tab {
 
     public abstract Tabbable getTabbable();
 
-    public Pane getDrawingPane() {
-        return pane.getInternalPane();
+    public Group getViewport() {
+        return pane.getViewport();
     }
 
     public void setEdit(boolean value) {

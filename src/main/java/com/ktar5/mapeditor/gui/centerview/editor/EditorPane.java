@@ -1,15 +1,14 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
+import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import lombok.Getter;
-import org.pmw.tinylog.Logger;
 
 @Getter
 public class EditorPane extends ScrollPane {
-    private Pane internalPane = new Pane();
+    private Group viewport = new Group();
     private double pressedX, pressedY,
             origX, origY;
     private boolean isDragging;
@@ -22,34 +21,42 @@ public class EditorPane extends ScrollPane {
         this.prefHeight(-1);
         this.prefWidth(-1);
 
-        internalPane.setVisible(true);
+        viewport.setVisible(true);
 
-        this.setContent(internalPane);
+        viewport.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
+            System.out.println("eX: " + e.getX());
+        });
+
+
+        this.setContent(viewport);
 
         this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             //Logger.debug("End dragging");
-            if(e.getButton() != MouseButton.MIDDLE){
+            if (e.getButton() != MouseButton.MIDDLE) {
                 return;
             }
             isDragging = false;
         });
 
         addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
-            if(event.getButton() != MouseButton.MIDDLE){
+            if (event.getButton() != MouseButton.MIDDLE) {
+                return;
+            }
+            if(event.getX() < 0 || event.getY() < 0 || event.getX() > this.getWidth() || event.getY() > this.getHeight()){
                 return;
             }
             if (!isDragging) {
                 //Logger.debug("Set canvas initial drag values");
                 pressedX = event.getX();
                 pressedY = event.getY();
-                origX = internalPane.getTranslateX();
-                origY = internalPane.getTranslateY();
+                origX = viewport.getTranslateX();
+                origY = viewport.getTranslateY();
                 isDragging = true;
             }
             //Logger.debug("Perform drag on canvas");
-            internalPane.setTranslateX(origX + (event.getX() - pressedX));
-            internalPane.setTranslateY(origY + (event.getY() - pressedY));
-            System.out.println("X: " + internalPane.getTranslateX() + " Y: " + internalPane.getTranslateY());
+            viewport.setTranslateX(origX + (event.getX() - pressedX));
+            viewport.setTranslateY(origY + (event.getY() - pressedY));
+            //System.out.println("X: " + internalPane.getTranslateX() + " Y: " + internalPane.getTranslateY());
             event.consume();
         });
 
@@ -57,7 +64,7 @@ public class EditorPane extends ScrollPane {
             //Logger.debug("Scroll");
             double delta = 1.2;
 
-            double scale = internalPane.getScaleX(); // currently we only use Y, same value is used for X
+            double scale = viewport.getScaleX(); // currently we only use Y, same value is used for X
             double oldScale = scale;
 
             if (event.getDeltaY() < 0)
@@ -69,15 +76,15 @@ public class EditorPane extends ScrollPane {
 
             double f = (scale / oldScale) - 1;
 
-            double dx = (event.getSceneX() - (internalPane.getBoundsInParent().getWidth() / 2 + internalPane.getBoundsInParent().getMinX()));
-            double dy = (event.getSceneY() - (internalPane.getBoundsInParent().getHeight() / 2 + internalPane.getBoundsInParent().getMinY()));
+            double dx = (event.getSceneX() - (viewport.getBoundsInParent().getWidth() / 2 + viewport.getBoundsInParent().getMinX()));
+            double dy = (event.getSceneY() - (viewport.getBoundsInParent().getHeight() / 2 + viewport.getBoundsInParent().getMinY()));
 
-            internalPane.setScaleX(scale);
-            internalPane.setScaleY(scale);
+            viewport.setScaleX(scale);
+            viewport.setScaleY(scale);
 
             // note: pivot value must be untransformed, i. e. without scaling
-            internalPane.setTranslateX(internalPane.getTranslateX() - (f * dx));
-            internalPane.setTranslateY(internalPane.getTranslateY() - (f * dy));
+            viewport.setTranslateX(viewport.getTranslateX() - (f * dx));
+            viewport.setTranslateY(viewport.getTranslateY() - (f * dy));
 
             event.consume();
         });

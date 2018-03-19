@@ -6,6 +6,7 @@ import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
+import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -55,7 +56,7 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
 
     @Override
     public void draw() {
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+        Group pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
                 int blockId = ((WholeTile) grid[x][y]).getBlockId();
