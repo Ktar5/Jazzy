@@ -66,7 +66,7 @@ public class MapManager {
 
     public void remove(UUID uuid) {
         if (this.openMaps.containsKey(uuid)) {
-            Logger.debug("Removed tilemap: " + getMap(uuid).getMapName());
+            Logger.debug("Removed tilemap: " + getMap(uuid).getName());
             openMaps.remove(uuid);
         }
     }
@@ -127,7 +127,7 @@ public class MapManager {
         }
         openMaps.put(baseTilemap.getId(), baseTilemap);
         Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
-        Logger.info("Finished loading map: " + baseTilemap.getMapName());
+        Logger.info("Finished loading map: " + baseTilemap.getName());
         return baseTilemap;
     }
 
@@ -147,7 +147,7 @@ public class MapManager {
         try {
             baseTilemap.getSaveFile().createNewFile();
             FileWriter writer = new FileWriter(baseTilemap.getSaveFile());
-            writer.write(baseTilemap.serializeBase().toString(4));
+            writer.write(baseTilemap.serialize().toString(4));
             Main.root.getCenterView().getEditorViewPane().setChanges(baseTilemap.getId(), false);
             writer.close();
         } catch (IOException e) {

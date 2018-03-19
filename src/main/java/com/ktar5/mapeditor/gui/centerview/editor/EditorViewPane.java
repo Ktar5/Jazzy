@@ -39,6 +39,10 @@ public class EditorViewPane extends TabPane {
         getTab(uuid).setEdit(value);
     }
 
+    public EditorTab getCurrentTab() {
+        return ((EditorTab) this.getSelectionModel().getSelectedItem());
+    }
+
     public Pane getTabDrawingPane(UUID uuid) {
         return getTab(uuid).getDrawingPane();
     }

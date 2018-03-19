@@ -14,7 +14,7 @@ public class TopMenu extends MenuBar {
 
     public TopMenu() {
         super();
-        this.getMenus().addAll(fileMenu = new FileMenu(), editMenu = new EditMenu());
+        this.getMenus().addAll(fileMenu = new FileMenu(), editMenu = new EditMenu(), new MapMenu());
         this.setPadding(new Insets(0, 0, 15, 0));
         VBox.setVgrow(this, Priority.NEVER);
     }

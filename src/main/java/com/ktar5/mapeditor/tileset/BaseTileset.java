@@ -1,9 +1,13 @@
 package com.ktar5.mapeditor.tileset;
 
+import com.ktar5.mapeditor.util.Tabbable;
+import com.ktar5.mapeditor.util.ToolSerializeable;
+import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.scene.image.Image;
 import lombok.Getter;
 import org.imgscalr.Scalr;
 import org.json.JSONObject;
+import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.IntMap;
 
 import javax.imageio.ImageIO;
@@ -15,19 +19,19 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Getter
-public abstract class BaseTileset {
+public abstract class BaseTileset implements Tabbable, Disposable {
     private UUID id;
     private IntMap<Image> tileImages;
-    private File sourceFile, tilesetFile;
+    private File sourceFile, saveFile;
     private int tileSize;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
 
     public static final int SCALE = 1;
 
-    public BaseTileset(File tilesetFile, JSONObject json) {
-        this(Paths.get(tilesetFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
-                tilesetFile,
+    public BaseTileset(File saveFile, JSONObject json) {
+        this(Paths.get(saveFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
+                saveFile,
                 json.getInt("tileSize"),
                 json.getJSONObject("padding").getInt("vertical"),
                 json.getJSONObject("padding").getInt("horizontal"),
@@ -35,10 +39,10 @@ public abstract class BaseTileset {
                 json.getJSONObject("offset").getInt("up"));
     }
 
-    public BaseTileset(File sourceFile, File tilesetFile, int tileSize, int paddingVertical, int paddingHorizontal,
+    public BaseTileset(File sourceFile, File saveFile, int tileSize, int paddingVertical, int paddingHorizontal,
                        int offsetLeft, int offsetUp) {
         this.sourceFile = sourceFile;
-        this.tilesetFile = tilesetFile;
+        this.saveFile = saveFile;
         this.tileSize = tileSize;
         this.offsetLeft = offsetLeft;
         this.offsetUp = offsetUp;
@@ -65,6 +69,8 @@ public abstract class BaseTileset {
 
     public abstract void getTilesetImages(BufferedImage image);
 
+    @Override
+    @CallSuper
     public JSONObject serialize() {
         JSONObject json = new JSONObject();
 
@@ -80,13 +86,44 @@ public abstract class BaseTileset {
 
         json.put("tileSize", this.getTileSize());
 
-        Path path = Paths.get(this.getTilesetFile().getPath())
+        Path path = Paths.get(this.getSaveFile().getPath())
                 .relativize(Paths.get(this.getSourceFile().getPath()));
         json.put("sourceFile", path.toString());
         return json;
     }
 
-    public abstract void draw();
+    @Override
+    public void remove() {
 
+    }
 
+    @Override
+    public UUID getId() {
+        return this.id;
+    }
+
+    @Override
+    public void save() {
+        TilesetManager.get().saveTileset(getId());
+    }
+
+    @Override
+    public String getName() {
+        return getSaveFile().getName();
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
+    @Override
+    public File getSaveFile() {
+        return saveFile;
+    }
+
+    @Override
+    public void updateSaveFile(File file) {
+        this.saveFile = file;
+    }
 }

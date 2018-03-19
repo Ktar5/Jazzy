@@ -4,6 +4,7 @@ import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.EditorTab;
 import com.ktar5.mapeditor.tileset.BaseTileset;
+import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.WritableImage;

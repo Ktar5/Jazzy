@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
 import com.ktar5.mapeditor.gui.centerview.editor.EditorPane;
+import com.ktar5.mapeditor.util.Tabbable;
 import javafx.event.Event;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -22,27 +23,23 @@ public abstract class EditorTab extends Tab {
 
     public EditorTab(UUID uuid) {
         this.uuid = uuid;
-        this.setText(getName());
+        this.setText(getTabbable().getName());
         this.setContent(pane = new EditorPane());
         this.setOnCloseRequest(e -> {
             if (this.hasEdits) {
                 newSaveConfirmation(e);
             }
         });
-        this.setOnClosed(e -> removeCurrent());
+        this.setOnClosed(e -> getTabbable().remove());
     }
 
     public abstract void draw();
 
+    public abstract Tabbable getTabbable();
+
     public Pane getDrawingPane() {
         return pane.getInternalPane();
     }
-
-    abstract String getName();
-
-    abstract void saveCurrent();
-
-    abstract void removeCurrent();
 
     public void setEdit(boolean value) {
         if (value == hasEdits) {
@@ -52,7 +49,7 @@ public abstract class EditorTab extends Tab {
         if (hasEdits && !this.getText().startsWith("* ")) {
             this.setText("* " + this.getText());
         } else {
-            this.setText(getName());
+            this.setText(getTabbable().getName());
         }
     }
 
@@ -62,7 +59,7 @@ public abstract class EditorTab extends Tab {
 
         alert.setTitle("Quit Without Saving");
         alert.setContentText("Are you sure you'd like to quit without saving changes to " +
-                getName() + "?");
+                getTabbable().getName() + "?");
 
 
         ButtonType closeNoSave = new ButtonType("Close without saving");
@@ -76,7 +73,7 @@ public abstract class EditorTab extends Tab {
         if (result.get() == closeNoSave) {
             //Do nothing
         } else if (result.get() == saveAndClose) {
-            saveCurrent();
+            getTabbable().save();
         } else if (result.get() == cancel) {
             event.consume();
         } else {

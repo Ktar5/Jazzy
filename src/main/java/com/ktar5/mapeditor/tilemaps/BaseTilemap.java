@@ -3,6 +3,9 @@ package com.ktar5.mapeditor.tilemaps;
 import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
+import com.ktar5.mapeditor.util.Tabbable;
+import com.ktar5.utilities.annotation.callsuper.CallSuper;
+import com.ktar5.utilities.annotation.dontoverride.DontOverride;
 import com.ktar5.utilities.common.constants.Direction;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,22 +20,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-public abstract class BaseTilemap<S extends BaseTileset> {
+public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     private UUID id;
-
-    //File saving/loading stuff
-    private String mapName;
     private File saveFile;
 
-    //BaseTilemap variables
     @Getter(AccessLevel.NONE)
     protected Tile[][] grid;
     private final int width, height, tileSize;
-    private int xStart = 0, yStart = 0;
 
-    //BaseTileset
-    @Setter
-    private S tileset;
+    @Setter private int xStart = 0, yStart = 0;
+    @Setter private S tileset;
 
     protected BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
@@ -40,7 +37,7 @@ public abstract class BaseTilemap<S extends BaseTileset> {
                 json.getInt("tileSize"));
         this.xStart = json.getJSONObject("spawn").getInt("x");
         this.yStart = json.getJSONObject("spawn").getInt("y");
-
+        loadTilesetIfExists(json);
         JSONArray grid = json.getJSONArray("tilemap");
         String[][] blocks = new String[grid.length()][];
         for (int i = 0; i < grid.length(); i++) {
@@ -75,32 +72,12 @@ public abstract class BaseTilemap<S extends BaseTileset> {
         this.width = width;
         this.height = height;
         this.saveFile = saveFile;
-        this.mapName = saveFile.getName();
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
         this.id = UUID.randomUUID();
         if (empty) {
             setEmpty();
         }
-    }
-
-    public void setxStart(int xStart) {
-        this.xStart = xStart;
-    }
-
-    public void setyStart(int yStart) {
-        this.yStart = yStart;
-    }
-
-    public abstract void deserializeBlock(String block, int x, int y);
-
-    protected abstract void setEmpty();
-
-    public abstract void draw();
-
-    public void updateNameAndFile(File file) {
-        this.saveFile = file;
-        this.mapName = file.getName();
     }
 
     public boolean isInMapRange(int x, int y) {
@@ -120,38 +97,15 @@ public abstract class BaseTilemap<S extends BaseTileset> {
         setChanged(true);
     }
 
-    public void save() {
-        MapManager.get().saveMap(getId());
-    }
+    protected abstract void deserializeBlock(String block, int x, int y);
 
-    public void setChanged(boolean value) {
-        Main.root.getCenterView().getEditorViewPane().setChanges(getId(), value);
-    }
+    protected abstract void setEmpty();
+
+    protected abstract void loadTilesetIfExists(JSONObject object);
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BaseTilemap baseTilemap = (BaseTilemap) o;
-        return width == baseTilemap.width &&
-                height == baseTilemap.height &&
-                tileSize == baseTilemap.tileSize &&
-                xStart == baseTilemap.xStart &&
-                yStart == baseTilemap.yStart &&
-                Objects.equals(id, baseTilemap.id) &&
-                Objects.equals(mapName, baseTilemap.mapName) &&
-                Objects.equals(saveFile, baseTilemap.saveFile) &&
-                Arrays.equals(grid, baseTilemap.grid);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(mapName, saveFile, width, height, tileSize, xStart, yStart);
-        result = 31 * result + Arrays.hashCode(grid);
-        return result;
-    }
-
-    public JSONObject serializeBase() {
+    @CallSuper
+    public JSONObject serialize() {
         JSONObject json = new JSONObject();
 
         JSONObject dimensions = new JSONObject();
@@ -180,6 +134,48 @@ public abstract class BaseTilemap<S extends BaseTileset> {
 
         json.put("tilemap", jsonArray);
         return json;
+    }
+
+    @Override
+    public void save() {
+        MapManager.get().saveMap(getId());
+    }
+
+    @Override
+    public String getName() {
+        return getSaveFile().getName();
+    }
+
+    @Override
+    public void remove() {
+        MapManager.get().remove(getId());
+    }
+
+    @Override
+    public void updateSaveFile(File file) {
+        this.saveFile = file;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseTilemap baseTilemap = (BaseTilemap) o;
+        return width == baseTilemap.width &&
+                height == baseTilemap.height &&
+                tileSize == baseTilemap.tileSize &&
+                xStart == baseTilemap.xStart &&
+                yStart == baseTilemap.yStart &&
+                Objects.equals(id, baseTilemap.id) &&
+                Objects.equals(saveFile, baseTilemap.saveFile) &&
+                Arrays.equals(grid, baseTilemap.grid);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(saveFile, width, height, tileSize, xStart, yStart);
+        result = 31 * result + Arrays.hashCode(grid);
+        return result;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
 import com.ktar5.mapeditor.tileset.TilesetManager;
-import javafx.scene.layout.Pane;
+import com.ktar5.mapeditor.util.Tabbable;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -14,22 +14,12 @@ public class TilesetTab extends EditorTab {
 
     @Override
     public void draw() {
-        TilesetManager.get().getTileset(getUuid()).draw();
+        getTabbable().draw();
     }
 
     @Override
-    public String getName() {
-        return TilesetManager.get().getTileset(getUuid()).getTilesetFile().getName();
-    }
-
-    @Override
-    void saveCurrent() {
-        TilesetManager.get().saveTileset(getUuid());
-    }
-
-    @Override
-    void removeCurrent() {
-        TilesetManager.get().remove(getUuid());
+    public Tabbable getTabbable() {
+        return TilesetManager.get().getTileset(getUuid());
     }
 
 }

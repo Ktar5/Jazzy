@@ -34,7 +34,7 @@ public class TilesetManager {
 
     public void remove(UUID uuid) {
         if (this.tilesetHashMap.containsKey(uuid)) {
-            Logger.debug("Removed tileset: " + getTileset(uuid).getTilesetFile().getName());
+            Logger.debug("Removed tileset: " + getTileset(uuid).getSaveFile().getName());
             tilesetHashMap.remove(uuid);
         }
     }
@@ -55,7 +55,7 @@ public class TilesetManager {
 
         File tilesetFile = createDialog.getTilesetFile();
         for (BaseTileset tileset1 : tilesetHashMap.values()) {
-            if (tileset1.getTilesetFile().getPath().equals(tilesetFile.getPath())) {
+            if (tileset1.getSaveFile().getPath().equals(tilesetFile.getPath())) {
                 new GenericAlert("Tileset with path " + tilesetFile.getAbsolutePath() + " already loaded.\n" +
                         "Please close tab for " + tilesetFile.getName() + " then try creating new tileset again.");
                 return null;
@@ -82,16 +82,16 @@ public class TilesetManager {
         }
         BaseTileset baseTileset = new WholeTileset(loaderFile, new JSONObject(data));
         for (BaseTileset temp : tilesetHashMap.values()) {
-            if (temp.getTilesetFile().getPath().equals(baseTileset.getTilesetFile().getPath())) {
-                new GenericAlert("BaseTileset with path " + baseTileset.getTilesetFile().getAbsolutePath() + " already loaded");
-                return null;
+            if (temp.getSaveFile().getPath().equals(baseTileset.getSaveFile().getPath())) {
+                new GenericAlert("BaseTileset with path " + baseTileset.getSaveFile().getAbsolutePath() + " already loaded");
+                return temp;
             }
         }
         tilesetHashMap.put(baseTileset.getId(), baseTileset);
         TilesetTab tilesetTab = new TilesetTab(baseTileset.getId());
         Main.root.getCenterView().getEditorViewPane().addTab(tilesetTab);
         tilesetTab.draw();
-        Logger.info("Finished loading tileset: " + baseTileset.getTilesetFile().getName());
+        Logger.info("Finished loading tileset: " + baseTileset.getSaveFile().getName());
         return baseTileset;
     }
 
@@ -120,22 +120,25 @@ public class TilesetManager {
         }
 
         BaseTileset baseTileset = tilesetHashMap.get(id);
-        if (baseTileset.getTilesetFile().exists()) {
-            baseTileset.getTilesetFile().delete();
+
+        if (baseTileset.getSaveFile().exists()) {
+            baseTileset.getSaveFile().delete();
         }
 
         try {
-            baseTileset.getTilesetFile().createNewFile();
-            FileWriter writer = new FileWriter(baseTileset.getTilesetFile());
+            baseTileset.getSaveFile().createNewFile();
+            FileWriter writer = new FileWriter(baseTileset.getSaveFile());
             writer.write(baseTileset.serialize().toString(4));
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+            Logger.error("An error occured during save");
             return;
         }
 
         Main.root.getCenterView().getEditorViewPane().setChanges(baseTileset.getId(), false);
-        Logger.info("Finished save for baseTileset (" + id + ") in " + "\"" + baseTileset.getTilesetFile() + "\"");
+        Logger.info("Finished save for baseTileset (" + id + ") in " + "\"" + baseTileset.getSaveFile() + "\"");
     }
+
 
 }

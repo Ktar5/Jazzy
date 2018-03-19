@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 
 import com.ktar5.mapeditor.tilemaps.MapManager;
+import com.ktar5.mapeditor.util.Tabbable;
 
 import java.util.UUID;
 
@@ -12,21 +13,11 @@ public class TilemapTab extends EditorTab {
 
     @Override
     public void draw() {
-        MapManager.get().getMap(getUuid()).draw();
+        getTabbable().draw();
     }
 
     @Override
-    public String getName() {
-        return MapManager.get().getMap(getUuid()).getMapName();
-    }
-
-    @Override
-    void saveCurrent() {
-        MapManager.get().saveMap(getUuid());
-    }
-
-    @Override
-    void removeCurrent() {
-        MapManager.get().remove(getUuid());
+    public Tabbable getTabbable() {
+        return MapManager.get().getMap(getUuid());
     }
 }
