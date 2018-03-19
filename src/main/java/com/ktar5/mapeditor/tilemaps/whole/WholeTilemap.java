@@ -7,7 +7,6 @@ import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.scene.Group;
-import javafx.scene.layout.Pane;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -20,6 +19,10 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
 
     public WholeTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
+    }
+
+    public WholeTilemap(File saveFile, int width, int height, int tileSize, boolean empty) {
+        super(saveFile, width, height, tileSize, empty);
     }
 
     public WholeTilemap(File saveFile, int width, int height, int tileSize) {
@@ -60,16 +63,14 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
                 int blockId = ((WholeTile) grid[x][y]).getBlockId();
-                if(blockId == 0){
+                if (blockId == 0) {
                     continue;
                 }
-                PixelatedImageView iv = new PixelatedImageView(this.getTileset().getTileImages().get(blockId));
+                PixelatedImageView iv = new WholeTileset.ImageTestView(((WholeTileset) this.getTileset()), blockId);
                 iv.setVisible(true);
                 iv.setTranslateX(x * getTileSize());
                 iv.setTranslateY(y * getTileSize());
                 pane.getChildren().add(iv);
-
-                //grid[x][y].draw(this, x, y);
             }
         }
     }

@@ -1,11 +1,9 @@
 package com.ktar5.mapeditor.tilemaps;
 
-import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.mapeditor.util.Tabbable;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
-import com.ktar5.utilities.annotation.dontoverride.DontOverride;
 import com.ktar5.utilities.common.constants.Direction;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,8 +26,9 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     protected Tile[][] grid;
     private final int width, height, tileSize;
 
-    @Setter private int xStart = 0, yStart = 0;
-    @Setter private S tileset;
+    @Setter
+    private int xStart = 0, yStart = 0;
+    private S tileset;
 
     protected BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
@@ -65,7 +64,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     }
 
     protected BaseTilemap(File saveFile, int width, int height, int tileSize) {
-        this(saveFile, width, height, tileSize, false);
+        this(saveFile, width, height, tileSize, true);
     }
 
     protected BaseTilemap(File saveFile, int width, int height, int tileSize, boolean empty) {
@@ -95,6 +94,11 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
             System.arraycopy(grid[y], 0, tilemap[y + direction.y * n], direction.x * n, grid[0].length);
         }
         setChanged(true);
+    }
+
+    public void setTileset(S tileset) {
+        this.tileset = tileset;
+        draw();
     }
 
     protected abstract void deserializeBlock(String block, int x, int y);

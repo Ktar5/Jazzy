@@ -5,8 +5,10 @@ import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Group;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
@@ -43,7 +45,7 @@ public class WholeTileset extends BaseTileset {
         }
     }
 
-    public class ImageTestView extends PixelatedImageView{
+    public static class ImageTestView extends PixelatedImageView{
 
         WholeTileset tileset;
         int num;
@@ -66,7 +68,6 @@ public class WholeTileset extends BaseTileset {
     @Override
     public void draw() {
         Group pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
-
         for (int i = 0; i < this.getTileImages().size; i++) {
             PixelatedImageView iv = new ImageTestView(this, i);
             iv.setVisible(true);
@@ -74,15 +75,6 @@ public class WholeTileset extends BaseTileset {
             iv.setTranslateY((((i) / 7) * (this.getTileSize() + 2)));
             pane.getChildren().add(iv);
         }
-
-        /*
-        ColorInput ci = new ColorInput(pane.getLayoutX(),
-                pane.getLayoutY(),
-                pane.getLayoutBounds().getWidth(),
-                pane.getLayoutBounds().getHeight(),
-                Color.BLACK);
-        pane.setEffect(ci);
-        */
 
     }
 

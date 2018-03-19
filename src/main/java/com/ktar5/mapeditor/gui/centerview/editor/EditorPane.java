@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 public class EditorPane extends ScrollPane {
-    private Group viewport = new Group();
+    private Group viewport;
     private double pressedX, pressedY,
             origX, origY;
     private boolean isDragging;
@@ -22,6 +22,8 @@ public class EditorPane extends ScrollPane {
         this.setFitToWidth(true);
         this.prefHeight(-1);
         this.prefWidth(-1);
+
+        viewport = new Group();
 
         viewport.setVisible(true);
 

@@ -26,7 +26,9 @@ public class MapMenu extends Menu {
                 BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getUuid());
                 if(map instanceof WholeTilemap){
                     ((WholeTilemap) map).setTileset(baseTileset);
+                    System.out.println("About to draw tilemap");
                     map.draw();
+                    System.out.println("Drawing tilemap");
                 }
             }
         });
