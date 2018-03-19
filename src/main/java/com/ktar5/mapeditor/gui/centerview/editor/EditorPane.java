@@ -1,6 +1,8 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
+import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -27,6 +29,14 @@ public class EditorPane extends ScrollPane {
             System.out.println("eX: " + e.getX());
         });
 
+        viewport.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
+            Node intersectedNode = event.getPickResult().getIntersectedNode();
+            WholeTileset.ImageTestView view = (WholeTileset.ImageTestView) intersectedNode;
+            view.incrementImage();
+        });
 
         this.setContent(viewport);
 
@@ -42,7 +52,7 @@ public class EditorPane extends ScrollPane {
             if (event.getButton() != MouseButton.MIDDLE) {
                 return;
             }
-            if(event.getX() < 0 || event.getY() < 0 || event.getX() > this.getWidth() || event.getY() > this.getHeight()){
+            if (event.getX() < 0 || event.getY() < 0 || event.getX() > this.getWidth() || event.getY() > this.getHeight()) {
                 return;
             }
             if (!isDragging) {
