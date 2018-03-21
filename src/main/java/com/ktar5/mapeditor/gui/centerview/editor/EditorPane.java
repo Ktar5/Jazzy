@@ -1,15 +1,9 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
-import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import lombok.Getter;
@@ -17,7 +11,7 @@ import org.pmw.tinylog.Logger;
 
 @Getter
 public class EditorPane extends Pane {
-    private Pane viewport;
+    private GridPane viewport;
     private double pressedX, pressedY,
             origX, origY;
     private boolean isDragging;
@@ -25,7 +19,7 @@ public class EditorPane extends Pane {
     public EditorPane(int x, int y) {
         super();
 
-        viewport = new Pane();
+        viewport = new GridPane();
         viewport.setMaxSize(x, y);
 
         //this.setFitToHeight(true);

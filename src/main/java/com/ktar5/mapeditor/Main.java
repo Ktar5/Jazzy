@@ -10,8 +10,6 @@ import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 

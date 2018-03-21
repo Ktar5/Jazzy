@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
-import com.ktar5.mapeditor.tilemaps.BaseTilemap;
+import com.ktar5.mapeditor.gui.PixelatedImageView;
+import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +10,10 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class WholeTile extends Tile {
+public class WholeTile extends Tile<PixelatedImageView, WholeTileset> {
     public static final WholeTile AIR = new WholeTile(0, 0);
+
+    private PixelatedImageView imageView;
 
     private int blockId;
     private int direction;
@@ -26,8 +29,8 @@ public class WholeTile extends Tile {
     }
 
     @Override
-    public void draw(BaseTilemap baseTilemap, int x, int y) {
-
+    public PixelatedImageView draw(WholeTileset tileset) {
+        return null;
     }
 
     @Override
@@ -51,7 +54,6 @@ public class WholeTile extends Tile {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(blockId, direction);
     }
 }

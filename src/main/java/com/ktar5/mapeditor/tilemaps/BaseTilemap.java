@@ -99,7 +99,6 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
 
     public void setTileset(S tileset) {
         this.tileset = tileset;
-        draw();
     }
 
     protected abstract void deserializeBlock(String block, int x, int y);

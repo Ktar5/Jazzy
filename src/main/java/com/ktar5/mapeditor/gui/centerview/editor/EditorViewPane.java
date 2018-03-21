@@ -1,7 +1,6 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.EditorTab;
-import javafx.scene.Group;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;

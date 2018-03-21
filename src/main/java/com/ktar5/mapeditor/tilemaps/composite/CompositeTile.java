@@ -1,12 +1,13 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
-import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.Tile;
+import lombok.Getter;
 
 import java.util.Arrays;
 
+@Getter
 public class CompositeTile extends Tile {
-    CompositeTilePart[] tileparts = new CompositeTilePart[4];
+    private CompositeTilePart[] tileparts = new CompositeTilePart[4];
 
     public CompositeTile() {
         for (int i = 0; i < tileparts.length; i++) {
@@ -26,11 +27,6 @@ public class CompositeTile extends Tile {
     @Override
     public boolean isFoursquare() {
         return true;
-    }
-
-    @Override
-    public void draw(BaseTilemap baseTilemap, int x, int y) {
-
     }
 
     @Override

@@ -5,14 +5,10 @@ import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
-import javafx.scene.Group;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;

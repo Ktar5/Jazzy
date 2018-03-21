@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.Group;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -63,20 +62,22 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
 
     @Override
     public void onClick(MouseEvent event) {
-        if (!event.getButton().equals(MouseButton.PRIMARY)) {
-            return;
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            Node node = event.getPickResult().getIntersectedNode();
+            if (node == null || !(node instanceof WholeTileset.ImageTestView)) {
+                int x = (int) (event.getX() / this.getTileSize());
+                int y = (int) (event.getY() / this.getTileSize());
+                set(x, y, new WholeTile(1, 1));
+            } else {
+                ((WholeTileset.ImageTestView) node).incrementImage();
+            }
+        } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+            Node node = event.getPickResult().getIntersectedNode();
+            if (node != null && (node instanceof WholeTileset.ImageTestView)) {
+                Main.root.getCurrentTab().getPane().getViewport().getChildren().remove(node);
+            }
         }
-        Node node = event.getPickResult().getIntersectedNode();
-        if (node == null) {
-            int x = (int) (event.getX() / this.getTileSize());
-            int y = (int) (event.getY() / this.getTileSize());
-            PixelatedImageView iv = new WholeTileset.ImageTestView((WholeTileset) getTileset(), 0);
-            iv.setVisible(true);
-            iv.setTranslateX(x * this.getTileSize());
-            iv.setTranslateY(y * this.getTileSize());
-        } else {
-            ((WholeTileset.ImageTestView) node).incrementImage();
-        }
+
     }
 
     @Override
@@ -111,12 +112,31 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
 
     public void set(int x, int y, WholeTile tile) {
         this.grid[x][y] = tile;
+
+        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+
+        PixelatedImageView iv = new WholeTileset.ImageTestView((WholeTileset) getTileset(), tile.getBlockId());
+        iv.setRotate(tile.getDirection() * 90);
+        iv.setVisible(true);
+        iv.setTranslateX(x * this.getTileSize());
+        iv.setTranslateY(y * this.getTileSize());
+        pane.getChildren().add(iv);
+
         setChanged(true);
     }
 
     public void remove(int x, int y) {
         this.grid[x][y] = WholeTile.AIR;
-        setChanged(true);
+
+        x *= this.getTileSize();
+        x += 1;
+        y *= this.getTileSize();
+        y += 1;
+
+    }
+
+    public void remove(Node node) {
+        Main.root.getCurrentTab().getPane().getViewport().getChildren().removeAll(node);
     }
 
 

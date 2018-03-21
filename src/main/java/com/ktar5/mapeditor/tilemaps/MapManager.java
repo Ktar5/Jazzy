@@ -127,6 +127,7 @@ public class MapManager {
         }
         openMaps.put(baseTilemap.getId(), baseTilemap);
         Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
+        baseTilemap.draw();
         Logger.info("Finished loading map: " + baseTilemap.getName());
         return baseTilemap;
     }

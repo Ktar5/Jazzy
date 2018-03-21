@@ -4,7 +4,6 @@ import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
-import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
