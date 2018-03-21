@@ -27,6 +27,11 @@ public class CompositeTileset extends BaseTileset {
     }
 
     @Override
+    public void onDrag(MouseEvent event) {
+
+    }
+
+    @Override
     public void draw() {
 
     }

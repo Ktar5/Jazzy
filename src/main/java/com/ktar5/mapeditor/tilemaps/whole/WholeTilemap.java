@@ -75,6 +75,35 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
     }
 
+
+    int previousX = -1, previousY = -1;
+
+    @Override
+    public void onDrag(MouseEvent event) {
+        int x = (int) (event.getX() / this.getTileSize());
+        int y = (int) (event.getY() / this.getTileSize());
+        if(x >= getWidth() || y >= getHeight() || x < 0 || y < 0){
+            return;
+        }
+        if (x != previousX || y != previousY) {
+            previousX = x;
+            previousY = y;
+
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                Node node = event.getPickResult().getIntersectedNode();
+                if (node == null || !(node instanceof PixelatedImageView)) {
+                    set(x, y, new WholeTile(1, 0, getTileset()));
+                } else {
+                    WholeTile wholeTile = (WholeTile) this.grid[x][y];
+                    wholeTile.setBlockId(wholeTile.getBlockId());
+                    wholeTile.updateImageView();
+                }
+            } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                remove(x, y);
+            }
+        }
+    }
+
     @Override
     public void draw() {
         Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());

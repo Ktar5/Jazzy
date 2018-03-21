@@ -36,6 +36,8 @@ public interface Tabbable {
 
     public void onClick(MouseEvent event);
 
+    public void onDrag(MouseEvent event);
+
     public UUID getId();
 
     public Pair<Integer, Integer> getDimensions();

@@ -49,6 +49,11 @@ public class WholeTileset extends BaseTileset {
     }
 
     @Override
+    public void onDrag(MouseEvent event) {
+
+    }
+
+    @Override
     public void draw() {
         Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
 

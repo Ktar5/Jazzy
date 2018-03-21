@@ -32,6 +32,11 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
 
     }
 
+    @Override
+    public void onDrag(MouseEvent event) {
+
+    }
+
     public void draw() {
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {

@@ -32,6 +32,7 @@ public abstract class EditorTab extends Tab {
             }
         });
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, getTabbable()::onClick);
+        pane.getViewport().addEventFilter(MouseEvent.MOUSE_DRAGGED, getTabbable()::onDrag);
         this.setOnClosed(e -> getTabbable().remove());
     }
 
