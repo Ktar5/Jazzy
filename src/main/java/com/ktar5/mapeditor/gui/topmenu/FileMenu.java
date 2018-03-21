@@ -32,7 +32,7 @@ public class FileMenu extends Menu {
         newMap.setOnAction(event -> MapManager.get().createMap());
 
         final MenuItem newTileset = new MenuItem("New Tileset");
-        newMap.setOnAction(event -> TilesetManager.get().createTileset());
+        newTileset.setOnAction(event -> TilesetManager.get().createTileset());
 
         final MenuItem save = new MenuItem("Save Current");
         save.setOnAction(event -> Main.root.getCurrentTab().getTabbable().save());

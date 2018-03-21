@@ -50,12 +50,12 @@ public class EditorViewPane extends TabPane {
 
     public EditorTab getTab(UUID uuid) {
         EditorTab tab = ((EditorTab) this.getSelectionModel().getSelectedItem());
-        if (tab.getUuid().equals(uuid)) {
+        if (tab != null && tab.getUuid().equals(uuid)) {
             return tab;
         }
-        for (Tab itab : this.getTabs()) {
-            if (itab instanceof EditorTab && ((EditorTab) itab).getUuid().equals(uuid)) {
-                return tab;
+        for (Tab forTab : this.getTabs()) {
+            if (forTab instanceof EditorTab && ((EditorTab) forTab).getUuid().equals(uuid)) {
+                return ((EditorTab) forTab);
             }
         }
         return null;

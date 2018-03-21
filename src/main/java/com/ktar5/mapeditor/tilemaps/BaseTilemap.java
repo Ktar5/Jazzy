@@ -29,7 +29,6 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
 
     @Setter
     private int xStart = 0, yStart = 0;
-    @Setter
     private S tileset;
 
     protected BaseTilemap(File saveFile, JSONObject json) {
@@ -96,6 +95,11 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
             System.arraycopy(grid[y], 0, tilemap[y + direction.y * n], direction.x * n, grid[0].length);
         }
         setChanged(true);
+    }
+
+    public void setTileset(S tileset) {
+        this.tileset = tileset;
+        draw();
     }
 
     protected abstract void deserializeBlock(String block, int x, int y);

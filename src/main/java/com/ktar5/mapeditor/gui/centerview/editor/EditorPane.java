@@ -83,7 +83,6 @@ public class EditorPane extends Pane {
                 scale *= delta;
 
             scale = clamp(scale, .1, 10);
-            System.out.println(scale);
 
             double f = (scale / oldScale) - 1;
 

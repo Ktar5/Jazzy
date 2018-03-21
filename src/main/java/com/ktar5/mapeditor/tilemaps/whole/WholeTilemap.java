@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.Group;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -22,6 +23,10 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
 
     public WholeTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
+    }
+
+    public WholeTilemap(File saveFile, int width, int height, int tileSize, boolean empty) {
+        super(saveFile, width, height, tileSize, empty);
     }
 
     public WholeTilemap(File saveFile, int width, int height, int tileSize) {
@@ -83,13 +88,11 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
                 if (blockId == 0) {
                     continue;
                 }
-                PixelatedImageView iv = new PixelatedImageView(this.getTileset().getTileImages().get(blockId));
+                PixelatedImageView iv = new WholeTileset.ImageTestView(((WholeTileset) this.getTileset()), blockId);
                 iv.setVisible(true);
                 iv.setTranslateX(x * getTileSize());
                 iv.setTranslateY(y * getTileSize());
                 pane.getChildren().add(iv);
-
-                //grid[x][y].draw(this, x, y);
             }
         }
     }
