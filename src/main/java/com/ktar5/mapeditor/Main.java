@@ -63,7 +63,7 @@ public class Main extends Application {
 
         //TESTS
         //testSaveTileset();
-        testLoadTileset();
+        //testLoadTileset();
     }
 
     public void testSaveTileset() {
