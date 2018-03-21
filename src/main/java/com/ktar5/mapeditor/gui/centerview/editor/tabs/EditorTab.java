@@ -3,11 +3,11 @@ package com.ktar5.mapeditor.gui.centerview.editor.tabs;
 import com.ktar5.mapeditor.gui.centerview.editor.EditorPane;
 import com.ktar5.mapeditor.util.Tabbable;
 import javafx.event.Event;
-import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.StageStyle;
 import lombok.Getter;
@@ -25,12 +25,13 @@ public abstract class EditorTab extends Tab {
     public EditorTab(UUID uuid) {
         this.uuid = uuid;
         this.setText(getTabbable().getName());
-        this.setContent(pane = new EditorPane());
+        this.setContent(pane = new EditorPane(getTabbable().getDimensions()));
         this.setOnCloseRequest(e -> {
             if (this.hasEdits) {
                 newSaveConfirmation(e);
             }
         });
+        pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, getTabbable()::onClick);
         this.setOnClosed(e -> getTabbable().remove());
     }
 
@@ -38,7 +39,7 @@ public abstract class EditorTab extends Tab {
 
     public abstract Tabbable getTabbable();
 
-    public Group getViewport() {
+    public Pane getViewport() {
         return pane.getViewport();
     }
 

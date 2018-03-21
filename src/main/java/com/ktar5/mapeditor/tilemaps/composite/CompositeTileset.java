@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
 import com.ktar5.mapeditor.tileset.BaseTileset;
+import javafx.scene.input.MouseEvent;
 import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
@@ -18,6 +19,11 @@ public class CompositeTileset extends BaseTileset {
     @Override
     public void getTilesetImages(BufferedImage image) {
         //TODO
+    }
+
+    @Override
+    public void onClick(MouseEvent event) {
+
     }
 
     @Override

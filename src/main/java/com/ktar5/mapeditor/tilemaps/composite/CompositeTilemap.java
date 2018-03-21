@@ -2,6 +2,7 @@ package com.ktar5.mapeditor.tilemaps.composite;
 
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
+import javafx.scene.input.MouseEvent;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -35,6 +36,11 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
 
     @Override
     protected void loadTilesetIfExists(JSONObject object) {
+
+    }
+
+    @Override
+    public void onClick(MouseEvent event) {
 
     }
 

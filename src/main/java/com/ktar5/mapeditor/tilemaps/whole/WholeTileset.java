@@ -4,9 +4,11 @@ import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Group;
-import javafx.scene.image.Image;
+import javafx.scene.Node;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
@@ -43,7 +45,7 @@ public class WholeTileset extends BaseTileset {
         }
     }
 
-    public class ImageTestView extends PixelatedImageView{
+    public static class ImageTestView extends PixelatedImageView {
 
         WholeTileset tileset;
         int num;
@@ -54,9 +56,9 @@ public class WholeTileset extends BaseTileset {
             this.num = num;
         }
 
-        public void incrementImage(){
+        public void incrementImage() {
             this.num++;
-            if(num > tileset.getTileImages().size - 1){
+            if (num > tileset.getTileImages().size - 1) {
                 num = 0;
             }
             this.setImage(tileset.getTileImages().get(num));
@@ -64,14 +66,32 @@ public class WholeTileset extends BaseTileset {
     }
 
     @Override
+    public void onClick(MouseEvent event) {
+        if (!event.getButton().equals(MouseButton.PRIMARY)) {
+            return;
+        }
+        Node node = event.getPickResult().getIntersectedNode();
+        if (node == null) {
+            int x = (int) (event.getX() / this.getTileSize());
+            int y = (int) (event.getY() / this.getTileSize());
+            PixelatedImageView iv = new ImageTestView(this, 0);
+            iv.setVisible(true);
+            iv.setTranslateX(x * this.getTileSize());
+            iv.setTranslateY(y * this.getTileSize());
+        } else {
+            ((ImageTestView) node).incrementImage();
+        }
+    }
+
+    @Override
     public void draw() {
-        Group pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
 
         for (int i = 0; i < this.getTileImages().size; i++) {
             PixelatedImageView iv = new ImageTestView(this, i);
             iv.setVisible(true);
-            iv.setTranslateX(((i % 7) * (this.getTileSize() + 2)));
-            iv.setTranslateY((((i) / 7) * (this.getTileSize() + 2)));
+            iv.setTranslateX(((i % 7) * (this.getTileSize())));
+            iv.setTranslateY((((i) / 7) * (this.getTileSize())));
             pane.getChildren().add(iv);
         }
 

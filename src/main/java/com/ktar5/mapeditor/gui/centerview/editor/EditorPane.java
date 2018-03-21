@@ -1,44 +1,44 @@
 package com.ktar5.mapeditor.gui.centerview.editor;
 
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
-import javafx.scene.Group;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
 import lombok.Getter;
+import org.pmw.tinylog.Logger;
 
 @Getter
-public class EditorPane extends ScrollPane {
-    private Group viewport = new Group();
+public class EditorPane extends Pane {
+    private Pane viewport;
     private double pressedX, pressedY,
             origX, origY;
     private boolean isDragging;
 
-    public EditorPane() {
+    public EditorPane(int x, int y) {
         super();
 
-        this.setFitToHeight(true);
-        this.setFitToWidth(true);
+        viewport = new Pane();
+        viewport.setMaxSize(x, y);
+
+        //this.setFitToHeight(true);
+        //this.setFitToWidth(true);
         this.prefHeight(-1);
         this.prefWidth(-1);
 
+        this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+
         viewport.setVisible(true);
 
-        viewport.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
-            System.out.println("eX: " + e.getX());
-        });
-
-        viewport.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() != MouseButton.PRIMARY) {
-                return;
-            }
-            Node intersectedNode = event.getPickResult().getIntersectedNode();
-            WholeTileset.ImageTestView view = (WholeTileset.ImageTestView) intersectedNode;
-            view.incrementImage();
-        });
-
-        this.setContent(viewport);
+        this.getChildren().add(viewport);
+        //this.setContent(viewport);
 
         this.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             //Logger.debug("End dragging");
@@ -70,8 +70,8 @@ public class EditorPane extends ScrollPane {
             event.consume();
         });
 
-        setOnScroll(event -> {
-            //Logger.debug("Scroll");
+        this.setOnScroll(event -> {
+            Logger.debug("Scroll");
             double delta = 1.2;
 
             double scale = viewport.getScaleX(); // currently we only use Y, same value is used for X
@@ -83,6 +83,7 @@ public class EditorPane extends ScrollPane {
                 scale *= delta;
 
             scale = clamp(scale, .1, 10);
+            System.out.println(scale);
 
             double f = (scale / oldScale) - 1;
 
@@ -100,6 +101,10 @@ public class EditorPane extends ScrollPane {
         });
 
 
+    }
+
+    public EditorPane(Pair<Integer, Integer> dimensions) {
+        this(dimensions.getKey(), dimensions.getValue());
     }
 
     public static double clamp(double value, double min, double max) {

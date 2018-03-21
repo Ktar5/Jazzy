@@ -1,13 +1,12 @@
 package com.ktar5.mapeditor.tileset;
 
 import com.ktar5.mapeditor.util.Tabbable;
-import com.ktar5.mapeditor.util.ToolSerializeable;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.scene.image.Image;
+import javafx.util.Pair;
 import lombok.Getter;
 import org.imgscalr.Scalr;
 import org.json.JSONObject;
-import org.mini2Dx.gdx.utils.Disposable;
 import org.mini2Dx.gdx.utils.IntMap;
 
 import javax.imageio.ImageIO;
@@ -19,13 +18,15 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Getter
-public abstract class BaseTileset implements Tabbable, Disposable {
+public abstract class BaseTileset implements Tabbable {
     private UUID id;
     private IntMap<Image> tileImages;
     private File sourceFile, saveFile;
     private int tileSize;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
+
+    private int dimensionX, dimensionY;
 
     public static final int SCALE = 1;
 
@@ -93,8 +94,13 @@ public abstract class BaseTileset implements Tabbable, Disposable {
     }
 
     @Override
-    public void remove() {
+    public Pair<Integer, Integer> getDimensions() {
+        return new Pair<>(dimensionX, dimensionY);
+    }
 
+    @Override
+    public void remove() {
+        TilesetManager.get().remove(getId());
     }
 
     @Override
@@ -110,11 +116,6 @@ public abstract class BaseTileset implements Tabbable, Disposable {
     @Override
     public String getName() {
         return getSaveFile().getName();
-    }
-
-    @Override
-    public void dispose() {
-
     }
 
     @Override

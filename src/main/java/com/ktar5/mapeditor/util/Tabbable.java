@@ -3,7 +3,9 @@ package com.ktar5.mapeditor.util;
 import com.ktar5.mapeditor.Main;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import com.ktar5.utilities.annotation.dontoverride.DontOverride;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 import org.json.JSONObject;
 import org.pmw.tinylog.Logger;
 
@@ -32,7 +34,11 @@ public interface Tabbable {
         Main.root.getCenterView().getEditorViewPane().getTab(getId()).setEdit(value);
     }
 
+    public void onClick(MouseEvent event);
+
     public UUID getId();
+
+    public Pair<Integer, Integer> getDimensions();
 
     public String getName();
 

@@ -6,7 +6,9 @@ import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
-import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import org.json.JSONObject;
@@ -55,12 +57,30 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
     }
 
     @Override
+    public void onClick(MouseEvent event) {
+        if (!event.getButton().equals(MouseButton.PRIMARY)) {
+            return;
+        }
+        Node node = event.getPickResult().getIntersectedNode();
+        if (node == null) {
+            int x = (int) (event.getX() / this.getTileSize());
+            int y = (int) (event.getY() / this.getTileSize());
+            PixelatedImageView iv = new WholeTileset.ImageTestView((WholeTileset) getTileset(), 0);
+            iv.setVisible(true);
+            iv.setTranslateX(x * this.getTileSize());
+            iv.setTranslateY(y * this.getTileSize());
+        } else {
+            ((WholeTileset.ImageTestView) node).incrementImage();
+        }
+    }
+
+    @Override
     public void draw() {
-        Group pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
                 int blockId = ((WholeTile) grid[x][y]).getBlockId();
-                if(blockId == 0){
+                if (blockId == 0) {
                     continue;
                 }
                 PixelatedImageView iv = new PixelatedImageView(this.getTileset().getTileImages().get(blockId));

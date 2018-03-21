@@ -1,12 +1,11 @@
 package com.ktar5.mapeditor.tilemaps;
 
-import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.mapeditor.util.Tabbable;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
-import com.ktar5.utilities.annotation.dontoverride.DontOverride;
 import com.ktar5.utilities.common.constants.Direction;
+import javafx.util.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +27,10 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     protected Tile[][] grid;
     private final int width, height, tileSize;
 
-    @Setter private int xStart = 0, yStart = 0;
-    @Setter private S tileset;
+    @Setter
+    private int xStart = 0, yStart = 0;
+    @Setter
+    private S tileset;
 
     protected BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
@@ -134,6 +135,11 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
 
         json.put("tilemap", jsonArray);
         return json;
+    }
+
+    @Override
+    public Pair<Integer, Integer> getDimensions() {
+        return new Pair<>(getTileSize() * getWidth(), getTileSize() * getHeight());
     }
 
     @Override

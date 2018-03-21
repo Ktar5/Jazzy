@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 
 import java.util.UUID;
@@ -43,7 +44,7 @@ public class EditorViewPane extends TabPane {
         return ((EditorTab) this.getSelectionModel().getSelectedItem());
     }
 
-    public Group getTabDrawingPane(UUID uuid) {
+    public Pane getTabDrawingPane(UUID uuid) {
         return getTab(uuid).getViewport();
     }
 
