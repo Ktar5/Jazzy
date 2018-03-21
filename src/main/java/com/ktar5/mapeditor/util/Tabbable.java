@@ -24,6 +24,7 @@ public interface Tabbable {
         File saveFile = fileChooser.showSaveDialog(null);
         if (saveFile == null) {
             Logger.info("Tried to save tileset, cancelled or failed");
+            return;
         }
         updateSaveFile(saveFile);
         save();
