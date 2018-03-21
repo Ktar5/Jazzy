@@ -3,7 +3,10 @@ package com.ktar5.mapeditor.gui.centerview.editor;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import lombok.Getter;
@@ -11,7 +14,7 @@ import org.pmw.tinylog.Logger;
 
 @Getter
 public class EditorPane extends Pane {
-    private GridPane viewport;
+    private Pane viewport;
     private double pressedX, pressedY,
             origX, origY;
     private boolean isDragging;
@@ -19,15 +22,16 @@ public class EditorPane extends Pane {
     public EditorPane(int x, int y) {
         super();
 
-        viewport = new GridPane();
+        viewport = new Pane();
         viewport.setMaxSize(x, y);
+        viewport.setPrefSize(x, y);
 
         //this.setFitToHeight(true);
         //this.setFitToWidth(true);
         this.prefHeight(-1);
         this.prefWidth(-1);
 
-        this.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        viewport.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
         viewport.setVisible(true);
 

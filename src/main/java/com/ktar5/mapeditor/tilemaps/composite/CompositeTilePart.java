@@ -1,12 +1,18 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
+import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.util.ToolSerializeable;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
+@Setter(AccessLevel.PACKAGE)
 public class CompositeTilePart implements ToolSerializeable {
+    private PixelatedImageView imageView;
+
     private int baseId;
     private int data;
 
@@ -26,12 +32,8 @@ public class CompositeTilePart implements ToolSerializeable {
         }
     }
 
-    void setData(int data) {
-        this.data = data;
-    }
-
-    void setData(CompositeTilePartData tilepartData) {
-        this.data = tilepartData.ordinal();
+    public void updateImageView(CompositeTileset tileset) {
+        //TODO need to make composite tileset work
     }
 
     @Override
@@ -40,12 +42,6 @@ public class CompositeTilePart implements ToolSerializeable {
             return "0";
         }
         return baseId + "_" + data;
-    }
-
-    public enum CompositeTilePartData {
-        INNER_CORNER,
-        OUTER_CORNER,
-        NORTH_FACE
     }
 
     @Override
@@ -59,7 +55,6 @@ public class CompositeTilePart implements ToolSerializeable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(baseId, data);
     }
 }

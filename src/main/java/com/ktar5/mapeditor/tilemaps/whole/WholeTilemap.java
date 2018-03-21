@@ -3,7 +3,6 @@ package com.ktar5.mapeditor.tilemaps.whole;
 import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
-import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.scene.Node;
@@ -18,14 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Getter
-public class WholeTilemap extends BaseTilemap<BaseTileset> {
+public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
     public WholeTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
-    }
-
-    public WholeTilemap(File saveFile, int width, int height, int tileSize, boolean empty) {
-        super(saveFile, width, height, tileSize, empty);
     }
 
     public WholeTilemap(File saveFile, int width, int height, int tileSize) {
@@ -36,45 +31,45 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
     public void loadTilesetIfExists(JSONObject json) {
         if (json.has("tileset")) {
             File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
-            BaseTileset baseTileset = TilesetManager.get().loadTileset(tileset);
-            this.setTileset(baseTileset);
+            WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset);
+            this.setTileset(tileset1);
         }
     }
 
     @Override
     public void deserializeBlock(String block, int x, int y) {
-        if (block.contains("_")) {
+        if (block.equals("0")) {
+            return;
+        } else if (block.contains("_")) {
             String[] split = block.split("_");
-            this.grid[x][y] = new WholeTile(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
+            this.grid[x][y] = new WholeTile(Integer.valueOf(split[0]), Integer.valueOf(split[1]), getTileset());
         } else {
-            this.grid[x][y] = new WholeTile(Integer.valueOf(block), 0);
-        }
-    }
-
-    @Override
-    public void setEmpty() {
-        for (int x = 0; x < getWidth(); x++) {
-            for (int y = 0; y < getHeight(); y++) {
-                grid[x][y] = WholeTile.AIR;
-            }
+            this.grid[x][y] = new WholeTile(Integer.valueOf(block), 0, getTileset());
         }
     }
 
     @Override
     public void onClick(MouseEvent event) {
+        int x = (int) (event.getX() / this.getTileSize());
+        int y = (int) (event.getY() / this.getTileSize());
+
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             Node node = event.getPickResult().getIntersectedNode();
-            if (node == null || !(node instanceof WholeTileset.ImageTestView)) {
-                int x = (int) (event.getX() / this.getTileSize());
-                int y = (int) (event.getY() / this.getTileSize());
-                set(x, y, new WholeTile(1, 1));
+            if (node == null || !(node instanceof PixelatedImageView)) {
+                set(x, y, new WholeTile(1, 0, getTileset()));
             } else {
-                ((WholeTileset.ImageTestView) node).incrementImage();
+                WholeTile wholeTile = (WholeTile) this.grid[x][y];
+                wholeTile.setBlockId((wholeTile.getBlockId() + 1) % 45);
+                wholeTile.updateImageView();
             }
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+            remove(x, y);
+        } else if(event.getButton().equals(MouseButton.MIDDLE)){
             Node node = event.getPickResult().getIntersectedNode();
-            if (node != null && (node instanceof WholeTileset.ImageTestView)) {
-                Main.root.getCurrentTab().getPane().getViewport().getChildren().remove(node);
+            if (node != null && node instanceof PixelatedImageView) {
+                WholeTile wholeTile = (WholeTile) this.grid[x][y];
+                wholeTile.setDirection((wholeTile.getDirection() + 1) % 4);
+                wholeTile.updateImageView();
             }
         }
 
@@ -85,15 +80,14 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
         Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
+                if (grid[x][y] == null) {
+                    continue;
+                }
                 int blockId = ((WholeTile) grid[x][y]).getBlockId();
                 if (blockId == 0) {
                     continue;
                 }
-                PixelatedImageView iv = new WholeTileset.ImageTestView(((WholeTileset) this.getTileset()), blockId);
-                iv.setVisible(true);
-                iv.setTranslateX(x * getTileSize());
-                iv.setTranslateY(y * getTileSize());
-                pane.getChildren().add(iv);
+                grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
             }
         }
     }
@@ -111,33 +105,21 @@ public class WholeTilemap extends BaseTilemap<BaseTileset> {
     }
 
     public void set(int x, int y, WholeTile tile) {
+        remove(x, y);
         this.grid[x][y] = tile;
-
+        ((WholeTile) this.grid[x][y]).updateImageView();
         Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
-
-        PixelatedImageView iv = new WholeTileset.ImageTestView((WholeTileset) getTileset(), tile.getBlockId());
-        iv.setRotate(tile.getDirection() * 90);
-        iv.setVisible(true);
-        iv.setTranslateX(x * this.getTileSize());
-        iv.setTranslateY(y * this.getTileSize());
-        pane.getChildren().add(iv);
-
+        this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
         setChanged(true);
     }
 
     public void remove(int x, int y) {
-        this.grid[x][y] = WholeTile.AIR;
-
-        x *= this.getTileSize();
-        x += 1;
-        y *= this.getTileSize();
-        y += 1;
-
+        if (grid[x][y] == null) {
+            return;
+        }
+        this.grid[x][y].remove(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()));
+        this.grid[x][y] = null;
+        setChanged(true);
     }
-
-    public void remove(Node node) {
-        Main.root.getCurrentTab().getPane().getViewport().getChildren().removeAll(node);
-    }
-
 
 }

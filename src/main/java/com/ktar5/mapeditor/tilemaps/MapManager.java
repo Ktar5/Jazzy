@@ -95,7 +95,7 @@ public class MapManager {
         }
 
         BaseTilemap baseTilemap = new WholeTilemap(createDialog.getFile(), createDialog.getWidth(),
-                createDialog.getHeight(), createDialog.getTilesize(), true);
+                createDialog.getHeight(), createDialog.getTilesize());
         openMaps.put(baseTilemap.getId(), baseTilemap);
         Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
         return baseTilemap;

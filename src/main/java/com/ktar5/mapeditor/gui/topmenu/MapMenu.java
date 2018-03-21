@@ -5,6 +5,7 @@ import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.event.ActionEvent;
@@ -21,7 +22,7 @@ public class MapMenu extends Menu {
         addTileset.setOnAction((ActionEvent event) -> {
             final Tab selectedItem = Main.root.getCenterView().getEditorViewPane().getSelectionModel().getSelectedItem();
             if (selectedItem instanceof TilemapTab) {
-                BaseTileset baseTileset = TilesetManager.get().loadTileset();
+                WholeTileset baseTileset = TilesetManager.get().loadTileset();
                 BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getUuid());
                 if(map instanceof WholeTilemap){
                     ((WholeTilemap) map).setTileset(baseTileset);

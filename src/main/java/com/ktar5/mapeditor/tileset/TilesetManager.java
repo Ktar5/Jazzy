@@ -4,6 +4,7 @@ import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.util.StringUtil;
 import javafx.stage.FileChooser;
@@ -73,18 +74,18 @@ public class TilesetManager {
         return tileset;
     }
 
-    public BaseTileset loadTileset(File loaderFile) {
+    public WholeTileset loadTileset(File loaderFile) {
         Logger.info("Beginning to load baseTileset from file: " + loaderFile.getPath());
 
         String data = StringUtil.readFileAsString(loaderFile);
         if (data == null || data.isEmpty()) {
             return null;
         }
-        BaseTileset baseTileset = new WholeTileset(loaderFile, new JSONObject(data));
+        WholeTileset baseTileset = new WholeTileset(loaderFile, new JSONObject(data));
         for (BaseTileset temp : tilesetHashMap.values()) {
             if (temp.getSaveFile().getPath().equals(baseTileset.getSaveFile().getPath())) {
                 new GenericAlert("BaseTileset with path " + baseTileset.getSaveFile().getAbsolutePath() + " already loaded");
-                return temp;
+                return ((WholeTileset) temp);
             }
         }
         tilesetHashMap.put(baseTileset.getId(), baseTileset);
@@ -95,7 +96,7 @@ public class TilesetManager {
         return baseTileset;
     }
 
-    public BaseTileset loadTileset() {
+    public WholeTileset loadTileset() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create Resource File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));

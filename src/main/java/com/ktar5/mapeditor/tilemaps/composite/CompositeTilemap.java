@@ -1,5 +1,6 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
+import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import javafx.scene.input.MouseEvent;
@@ -16,22 +17,9 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         super(saveFile, width, height, tileSize);
     }
 
-    protected CompositeTilemap(File saveFile, int width, int height, int tileSize, boolean empty) {
-        super(saveFile, width, height, tileSize, empty);
-    }
-
     @Override
     public void deserializeBlock(String block, int x, int y) {
-        this.grid[x][y] = new CompositeTile(block);
-    }
-
-    @Override
-    public void setEmpty() {
-        for (int x = 0; x < getWidth(); x++) {
-            for (int y = 0; y < getHeight(); y++) {
-                grid[x][y] = WholeTile.AIR;
-            }
-        }
+        this.grid[x][y] = new CompositeTile(getTileset(), block);
     }
 
     @Override
@@ -47,23 +35,31 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
     public void draw() {
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
-                grid[x][y].draw(this, x, y);
+                //TODO
             }
         }
     }
 
     public void set(int x, int y, CompositeTile tile) {
+        remove(x,y);
+        //TODO
         this.grid[x][y] = tile;
+        grid[x][y].draw(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()),
+                x * getTileSize(), y * getTileSize());
         setChanged(true);
     }
 
     public void set(int x, int y, WholeTile tile) {
+        remove(x,y);
         this.grid[x][y] = tile;
+        grid[x][y].draw(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()),
+                x * getTileSize(), y * getTileSize());
         setChanged(true);
     }
 
     public void remove(int x, int y) {
-        this.grid[x][y] = WholeTile.AIR;
+        this.grid[x][y].remove(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()));
+        this.grid[x][y] = null;
         setChanged(true);
     }
 

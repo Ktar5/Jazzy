@@ -45,42 +45,9 @@ public class WholeTileset extends BaseTileset {
         }
     }
 
-    public static class ImageTestView extends PixelatedImageView {
-
-        WholeTileset tileset;
-        int num;
-
-        public ImageTestView(WholeTileset tileset, int num) {
-            super(tileset.getTileImages().get(num));
-            this.tileset = tileset;
-            this.num = num;
-        }
-
-        public void incrementImage() {
-            this.num++;
-            if (num > tileset.getTileImages().size - 1) {
-                num = 0;
-            }
-            this.setImage(tileset.getTileImages().get(num));
-        }
-    }
-
     @Override
     public void onClick(MouseEvent event) {
-        if (!event.getButton().equals(MouseButton.PRIMARY)) {
-            return;
-        }
-        Node node = event.getPickResult().getIntersectedNode();
-        if (node == null) {
-            int x = (int) (event.getX() / this.getTileSize());
-            int y = (int) (event.getY() / this.getTileSize());
-            PixelatedImageView iv = new ImageTestView(this, 0);
-            iv.setVisible(true);
-            iv.setTranslateX(x * this.getTileSize());
-            iv.setTranslateY(y * this.getTileSize());
-        } else {
-            ((ImageTestView) node).incrementImage();
-        }
+
     }
 
     @Override
@@ -88,7 +55,7 @@ public class WholeTileset extends BaseTileset {
         Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
 
         for (int i = 0; i < this.getTileImages().size; i++) {
-            PixelatedImageView iv = new ImageTestView(this, i);
+            PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(0));
             iv.setVisible(true);
             iv.setTranslateX(((i % 7) * (this.getTileSize())));
             iv.setTranslateY((((i) / 7) * (this.getTileSize())));

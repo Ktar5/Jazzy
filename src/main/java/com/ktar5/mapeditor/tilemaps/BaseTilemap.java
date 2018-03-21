@@ -54,30 +54,18 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
                 Hence, data is stored "y-value, row string"
                 */
                 deserializeBlock(blocks[y][x], x, y);
-                if (this.grid[x][y] == null) {
-                    Logger.info("Loading map: " + saveFile.getName() + ". Null found at: " + x + ", " + y);
-                    MapManager.get().remove(getId());
-                    return;
-                }
             }
         }
 
     }
 
     protected BaseTilemap(File saveFile, int width, int height, int tileSize) {
-        this(saveFile, width, height, tileSize, false);
-    }
-
-    protected BaseTilemap(File saveFile, int width, int height, int tileSize, boolean empty) {
         this.width = width;
         this.height = height;
         this.saveFile = saveFile;
         this.tileSize = tileSize;
         this.grid = new Tile[width][height];
         this.id = UUID.randomUUID();
-        if (empty) {
-            setEmpty();
-        }
     }
 
     public boolean isInMapRange(int x, int y) {
@@ -103,8 +91,6 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
 
     protected abstract void deserializeBlock(String block, int x, int y);
 
-    protected abstract void setEmpty();
-
     protected abstract void loadTilesetIfExists(JSONObject object);
 
     @Override
@@ -128,7 +114,11 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         StringBuilder builder = new StringBuilder();
         for (int y = 0; y <= getHeight() - 1; y++) {
             for (int x = 0; x <= getWidth() - 1; x++) {
-                builder.append(grid[x][y].serialize());
+                if (grid[x][y] == null) {
+                    builder.append("0");
+                } else {
+                    builder.append(grid[x][y].serialize());
+                }
                 builder.append(",");
             }
             builder.deleteCharAt(builder.length() - 1);
