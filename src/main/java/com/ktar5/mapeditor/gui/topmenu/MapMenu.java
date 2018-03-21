@@ -6,7 +6,6 @@ import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
-import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Menu;
@@ -24,7 +23,7 @@ public class MapMenu extends Menu {
             if (selectedItem instanceof TilemapTab) {
                 WholeTileset baseTileset = TilesetManager.get().loadTileset();
                 BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getUuid());
-                if(map instanceof WholeTilemap){
+                if (map instanceof WholeTilemap) {
                     ((WholeTilemap) map).setTileset(baseTileset);
                     System.out.println("About to draw tilemap");
                     map.draw();

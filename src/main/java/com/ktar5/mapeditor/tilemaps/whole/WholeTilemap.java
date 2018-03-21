@@ -64,7 +64,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             }
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             remove(x, y);
-        } else if(event.getButton().equals(MouseButton.MIDDLE)){
+        } else if (event.getButton().equals(MouseButton.MIDDLE)) {
             Node node = event.getPickResult().getIntersectedNode();
             if (node != null && node instanceof PixelatedImageView) {
                 WholeTile wholeTile = (WholeTile) this.grid[x][y];

@@ -4,7 +4,6 @@ import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
-import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.util.StringUtil;
 import javafx.stage.FileChooser;
@@ -22,15 +21,15 @@ public class TilesetManager {
 
     private HashMap<UUID, BaseTileset> tilesetHashMap;
 
+    public TilesetManager() {
+        this.tilesetHashMap = new HashMap<>();
+    }
+
     public static TilesetManager get() {
         if (instance == null) {
             instance = new TilesetManager();
         }
         return instance;
-    }
-
-    public TilesetManager() {
-        this.tilesetHashMap = new HashMap<>();
     }
 
     public void remove(UUID uuid) {

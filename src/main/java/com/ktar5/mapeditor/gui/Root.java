@@ -19,7 +19,7 @@ public class Root extends VBox {
                 bottomBar = new BottomBar());
     }
 
-    public EditorTab getCurrentTab(){
+    public EditorTab getCurrentTab() {
         return centerView.getEditorViewPane().getCurrentTab();
     }
 

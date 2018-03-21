@@ -41,7 +41,7 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
     }
 
     public void set(int x, int y, CompositeTile tile) {
-        remove(x,y);
+        remove(x, y);
         //TODO
         this.grid[x][y] = tile;
         grid[x][y].draw(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()),
@@ -50,7 +50,7 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
     }
 
     public void set(int x, int y, WholeTile tile) {
-        remove(x,y);
+        remove(x, y);
         this.grid[x][y] = tile;
         grid[x][y].draw(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()),
                 x * getTileSize(), y * getTileSize());

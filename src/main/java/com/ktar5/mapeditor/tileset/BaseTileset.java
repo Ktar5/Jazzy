@@ -19,16 +19,14 @@ import java.util.UUID;
 
 @Getter
 public abstract class BaseTileset implements Tabbable {
+    public static final int SCALE = 1;
     private UUID id;
     private IntMap<Image> tileImages;
     private File sourceFile, saveFile;
     private int tileSize;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
-
     private int dimensionX, dimensionY;
-
-    public static final int SCALE = 1;
 
     public BaseTileset(File saveFile, JSONObject json) {
         this(Paths.get(saveFile.getPath()).resolve(json.getString("sourceFile")).toFile(),

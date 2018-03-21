@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.pmw.tinylog.Logger;
 
 import java.io.File;
 import java.util.Arrays;
@@ -20,13 +19,11 @@ import java.util.UUID;
 
 @Getter
 public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
-    private UUID id;
-    private File saveFile;
-
+    private final int width, height, tileSize;
     @Getter(AccessLevel.NONE)
     protected Tile[][] grid;
-    private final int width, height, tileSize;
-
+    private UUID id;
+    private File saveFile;
     @Setter
     private int xStart = 0, yStart = 0;
     private S tileset;

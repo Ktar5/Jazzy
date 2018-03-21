@@ -26,23 +26,6 @@ public class CompositeTile extends Tile<CompositeTileset> {
         }
     }
 
-    public enum CompositeTilePartData {
-        INNER_CORNER,
-        OUTER_CORNER,
-        NORTH_FACE,
-        UP_EDGE,
-        RIGHT_EDGE,
-        DOWN_EDGE,
-        LEFT_EDGE
-    }
-
-    public enum Corner {
-        UP_RIGHT,
-        UP_LEFT,
-        DOWN_RIGHT,
-        DOWN_LEFT
-    }
-
     void setData(Corner corner, int data) {
         tileparts[corner.ordinal()].setData(data);
         tileparts[corner.ordinal()].updateImageView(getTileset());
@@ -106,5 +89,22 @@ public class CompositeTile extends Tile<CompositeTileset> {
     @Override
     public String toString() {
         return serialize();
+    }
+
+    public enum CompositeTilePartData {
+        INNER_CORNER,
+        OUTER_CORNER,
+        NORTH_FACE,
+        UP_EDGE,
+        RIGHT_EDGE,
+        DOWN_EDGE,
+        LEFT_EDGE
+    }
+
+    public enum Corner {
+        UP_RIGHT,
+        UP_LEFT,
+        DOWN_RIGHT,
+        DOWN_LEFT
     }
 }
