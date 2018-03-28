@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 public class MapManager {
@@ -62,12 +60,16 @@ public class MapManager {
 
     public BaseTilemap getMap(UUID id) {
         if (!openMaps.containsKey(id)) {
-            throw new RuntimeException("BaseTilemap with id: " + id + " doesn't exist");
+            throw new RuntimeException("Tilemap with id: " + id + " doesn't exist");
         }
         return openMaps.get(id);
     }
 
     public BaseTilemap createMap() {
+        return createMap(WholeOrComposite.getType(WholeTilemap.class, CompositeTilemap.class));
+    }
+
+    public <T extends BaseTilemap> T createMap(Class<? extends T> clazz) {
         CreateBaseTilemap createDialog = CreateBaseTilemap.create();
         if (createDialog == null) {
             new GenericAlert("Something went wrong during the process of creating the map, please try again.");
@@ -77,17 +79,25 @@ public class MapManager {
         File file = createDialog.getFile();
         for (BaseTilemap baseTilemap1 : openMaps.values()) {
             if (baseTilemap1.getSaveFile().getAbsolutePath().equals(file.getAbsolutePath())) {
-                new GenericAlert("BaseTilemap with path " + file.getAbsolutePath() + " already loaded.\n" +
+                new GenericAlert("Tilemap with path " + file.getAbsolutePath() + " already loaded.\n" +
                         "Please close tab for " + file.getName() + " then try creating new map again.");
                 return null;
             }
         }
 
-        BaseTilemap baseTilemap = new WholeTilemap(createDialog.getFile(), createDialog.getWidth(),
-                createDialog.getHeight(), createDialog.getTilesize());
-        openMaps.put(baseTilemap.getId(), baseTilemap);
-        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
-        return baseTilemap;
+        T tilemap;
+        try {
+            Constructor<? extends T> constructor = clazz.getConstructor(File.class, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+            tilemap = constructor.newInstance(createDialog.getFile(), createDialog.getWidth(),
+                    createDialog.getHeight(), createDialog.getTilesize());
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        openMaps.put(tilemap.getId(), tilemap);
+        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(tilemap.getId()));
+        return tilemap;
     }
 
     public BaseTilemap loadMap() {

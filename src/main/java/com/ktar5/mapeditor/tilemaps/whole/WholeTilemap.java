@@ -2,6 +2,7 @@ package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
+import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
@@ -10,6 +11,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -32,6 +35,11 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         if (json.has("tileset")) {
             File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
             WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset, WholeTileset.class);
+            if (tileset1.getTileSize() != getTileSize()) {
+                new GenericAlert("Tileset's tilesize of " + tileset1.getTileSize() + " does not match map's " +
+                        "tilesize of " + getTileSize() + ".");
+                return;
+            }
             this.setTileset(tileset1);
         }
     }
@@ -134,9 +142,12 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
     }
 
     public void set(int x, int y, WholeTile tile) {
+        if (tile == null || getTileset() == null) {
+            return;
+        }
         remove(x, y);
         this.grid[x][y] = tile;
-        ((WholeTile) this.grid[x][y]).updateImageView();
+        this.grid[x][y].updateImageView();
         Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
         setChanged(true);

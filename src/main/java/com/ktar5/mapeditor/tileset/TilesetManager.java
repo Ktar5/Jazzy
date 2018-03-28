@@ -50,7 +50,11 @@ public class TilesetManager {
         return tilesetHashMap.get(id);
     }
 
-    public WholeTileset createTileset() {
+    public BaseTileset createTileset() {
+        return createTileset(WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));
+    }
+
+    public <T extends BaseTileset> T createTileset(Class<? extends T> clazz) {
         CreateWholeTileset createDialog = CreateWholeTileset.create();
         if (createDialog == null) {
             new GenericAlert("Something went wrong during the process of creating the tileset, please try again.");
@@ -66,16 +70,26 @@ public class TilesetManager {
             }
         }
 
-        WholeTileset tileset = new WholeTileset(createDialog.getSourceFile(),
-                createDialog.getTilesetFile(), createDialog.getTileSize(),
-                createDialog.getPaddingVertical(), createDialog.getPaddingHorizontal(),
-                createDialog.getOffsetLeft(), createDialog.getOffsetUp());
+        T tileset;
+        try {
+            Constructor<? extends T> constructor = clazz.getConstructor(File.class, File.class,
+                    Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+            tileset = constructor.newInstance(createDialog.getSourceFile(),
+                    createDialog.getTilesetFile(), createDialog.getTileSize(),
+                    createDialog.getPaddingVertical(), createDialog.getPaddingHorizontal(),
+                    createDialog.getOffsetLeft(), createDialog.getOffsetUp());
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         tilesetHashMap.put(tileset.getId(), tileset);
         TilesetTab tab;
         Main.root.getCenterView().getEditorViewPane().addTab(tab = new TilesetTab(tileset.getId()));
         tab.draw();
         return tileset;
     }
+
 
     public BaseTileset loadTileset() {
         return loadTileset(WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));

@@ -46,7 +46,6 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         double yRemainder = (event.getY() / (double) this.getTileSize()) - y;
         CompositeTile.Corner corner = CompositeTile.Corner.fromRemainders(xRemainder, yRemainder);
 
-
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             Node node = event.getPickResult().getIntersectedNode();
             if (node == null || !(node instanceof PixelatedImageView)) {
