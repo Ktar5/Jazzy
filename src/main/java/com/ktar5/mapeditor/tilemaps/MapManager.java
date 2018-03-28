@@ -28,7 +28,6 @@ import java.util.UUID;
 
 public class MapManager {
     public static MapManager instance;
-    private File tempDir;
     private HashMap<UUID, BaseTilemap> openMaps;
     @Getter
     private UUID currentLevel = null;
@@ -45,20 +44,6 @@ public class MapManager {
                 .addWriter(new org.pmw.tinylog.writers.FileWriter("log.txt"))
                 .formatPattern("{date:mm:ss:SSS} {class_name}.{method}() [{level}]: {message}")
                 .activate();
-
-        //Create the save and temp directories
-        this.tempDir = dir;
-        if (!tempDir.exists() || !tempDir.isDirectory()) {
-            tempDir.mkdir();
-        }
-
-        //Save maps every 5 minutes
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                saveTempAllMaps();
-            }
-        }, 5 * 60 * 1000, 5 * 60 * 1000);
     }
 
     public static MapManager get() {
@@ -175,15 +160,6 @@ public class MapManager {
         }
 
         Logger.info("Finished save for baseTilemap (" + id + ") in " + "\"" + baseTilemap.getSaveFile() + "\"");
-    }
-
-    public void saveTempAllMaps() {
-        Logger.info("Saving map backups");
-        for (HashMap.Entry<UUID, BaseTilemap> openMap : openMaps.entrySet()) {
-            //TODO
-            //saveMap(tempDir, openMap.getKey());
-        }
-        Logger.info("Finished saving map backups");
     }
 
     public BaseTilemap getCurrent() {
