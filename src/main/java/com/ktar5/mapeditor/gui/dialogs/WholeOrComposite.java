@@ -9,9 +9,8 @@ import java.util.Optional;
 public class WholeOrComposite {
 
     public static <T> Class<? extends T> getType(Class<? extends T> whole, Class<? extends T> composite) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog with Custom Actions");
-        alert.setHeaderText(null);
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.setTitle("Please select Composite or Whole");
 
         ButtonType compositeButton = new ButtonType("Composite");
         ButtonType wholeButton = new ButtonType("Whole");
