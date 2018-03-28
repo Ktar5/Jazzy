@@ -4,6 +4,8 @@ import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
+import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
+import com.ktar5.mapeditor.tilemaps.composite.CompositeTileset;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.util.StringUtil;
 import javafx.stage.FileChooser;
@@ -73,6 +75,10 @@ public class TilesetManager {
         Main.root.getCenterView().getEditorViewPane().addTab(tab = new TilesetTab(tileset.getId()));
         tab.draw();
         return tileset;
+    }
+
+    public BaseTileset loadTileset() {
+        return loadTileset(WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));
     }
 
     public <T extends BaseTileset> T loadTileset(File loaderFile, Class<? extends T> clazz) {

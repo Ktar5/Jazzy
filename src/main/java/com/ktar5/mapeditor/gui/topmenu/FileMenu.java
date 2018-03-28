@@ -21,9 +21,7 @@ public class FileMenu extends Menu {
         super("File");
         final MenuItem openTilemap = new MenuItem("Open Tilemap");
         openTilemap.setOnAction(event -> {
-            final BaseTilemap baseTilemap = MapManager.get().loadMap(
-                    WholeOrComposite.getType(WholeTilemap.class, CompositeTilemap.class)
-            );
+            final BaseTilemap baseTilemap = MapManager.get().loadMap();
             if (baseTilemap != null) {
                 Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTilemap.getId());
             }
@@ -32,8 +30,7 @@ public class FileMenu extends Menu {
 
         final MenuItem openTileset = new MenuItem("Open Tileset");
         openTileset.setOnAction(event -> {
-            final BaseTileset baseTileset = TilesetManager.get().loadTileset(
-                    WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));
+            final BaseTileset baseTileset = TilesetManager.get().loadTileset();
             if (baseTileset != null) {
                 Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTileset.getId());
             }

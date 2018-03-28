@@ -5,6 +5,8 @@ import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateBaseTilemap;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.LoadDialog;
+import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
+import com.ktar5.mapeditor.tilemaps.composite.CompositeTilemap;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.util.StringUtil;
 import lombok.Getter;
@@ -101,6 +103,10 @@ public class MapManager {
         openMaps.put(baseTilemap.getId(), baseTilemap);
         Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
         return baseTilemap;
+    }
+
+    public BaseTilemap loadMap() {
+        return loadMap(WholeOrComposite.getType(WholeTilemap.class, CompositeTilemap.class));
     }
 
     public <T extends BaseTilemap> T loadMap(Class<? extends T> clazz) {
