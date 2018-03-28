@@ -14,6 +14,8 @@ public abstract class Tile<T extends BaseTileset> implements ToolSerializeable {
 
     public abstract void remove(Pane pane);
 
+    public abstract void updateImageView();
+
     public abstract void draw(Pane pane, int actualX, int actualY);
 }
 

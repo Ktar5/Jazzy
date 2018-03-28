@@ -1,8 +1,14 @@
 package com.ktar5.mapeditor.gui.topmenu;
 
 import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
+import com.ktar5.mapeditor.tilemaps.composite.CompositeTilemap;
+import com.ktar5.mapeditor.tilemaps.composite.CompositeTileset;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.scene.control.Menu;
@@ -15,7 +21,9 @@ public class FileMenu extends Menu {
         super("File");
         final MenuItem openTilemap = new MenuItem("Open Tilemap");
         openTilemap.setOnAction(event -> {
-            final BaseTilemap baseTilemap = MapManager.get().loadMap();
+            final BaseTilemap baseTilemap = MapManager.get().loadMap(
+                    WholeOrComposite.getType(WholeTilemap.class, CompositeTilemap.class)
+            );
             if (baseTilemap != null) {
                 Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTilemap.getId());
             }
@@ -24,7 +32,8 @@ public class FileMenu extends Menu {
 
         final MenuItem openTileset = new MenuItem("Open Tileset");
         openTileset.setOnAction(event -> {
-            final BaseTileset baseTileset = TilesetManager.get().loadTileset();
+            final BaseTileset baseTileset = TilesetManager.get().loadTileset(
+                    WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));
             if (baseTileset != null) {
                 Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTileset.getId());
             }

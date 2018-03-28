@@ -17,6 +17,8 @@ import org.pmw.tinylog.writers.ConsoleWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,7 +103,7 @@ public class MapManager {
         return baseTilemap;
     }
 
-    public BaseTilemap loadMap() {
+    public <T extends BaseTilemap> T loadMap(Class<? extends T> clazz) {
         File loaderFile = LoadDialog.create("Load a tilemap", "Json Tilemap File", "*.json");
         if (loaderFile == null) {
             Logger.info("Tried to load map, cancelled or failed");
@@ -118,18 +120,28 @@ public class MapManager {
             Logger.error("Data from file: " + loaderFile.getPath() + " is either null or empty.");
             return null;
         }
-        BaseTilemap baseTilemap = new WholeTilemap(loaderFile, new JSONObject(data));
+
+        T tilemap;
+        try {
+            Constructor<? extends T> constructor = clazz.getConstructor(File.class, JSONObject.class);
+            tilemap = constructor.newInstance(loaderFile, new JSONObject(data));
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         for (BaseTilemap temp : openMaps.values()) {
-            if (temp.getSaveFile().getPath().equals(baseTilemap.getSaveFile().getPath())) {
-                new GenericAlert("BaseTilemap with path " + baseTilemap.getSaveFile().getAbsolutePath() + " already loaded");
-                return null;
+            if (temp.getSaveFile().getPath().equals(tilemap.getSaveFile().getPath())) {
+                new GenericAlert("Tilemap with path " + tilemap.getSaveFile().getAbsolutePath() + " already loaded");
+                return clazz.isInstance(temp) ? (T) temp : null;
             }
         }
-        openMaps.put(baseTilemap.getId(), baseTilemap);
-        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(baseTilemap.getId()));
-        baseTilemap.draw();
-        Logger.info("Finished loading map: " + baseTilemap.getName());
-        return baseTilemap;
+        openMaps.put(tilemap.getId(), tilemap);
+        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(tilemap.getId()));
+        tilemap.draw();
+
+        Logger.info("Finished loading map: " + tilemap.getName());
+        return tilemap;
     }
 
     public void saveMap(UUID id) {

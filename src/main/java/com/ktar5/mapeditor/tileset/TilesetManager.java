@@ -13,6 +13,8 @@ import org.pmw.tinylog.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -73,42 +75,52 @@ public class TilesetManager {
         return tileset;
     }
 
-    public WholeTileset loadTileset(File loaderFile) {
-        Logger.info("Beginning to load baseTileset from file: " + loaderFile.getPath());
+    public <T extends BaseTileset> T loadTileset(File loaderFile, Class<? extends T> clazz) {
+        Logger.info("Beginning to load tileset from file: " + loaderFile.getPath());
 
         String data = StringUtil.readFileAsString(loaderFile);
         if (data == null || data.isEmpty()) {
             return null;
         }
-        WholeTileset baseTileset = new WholeTileset(loaderFile, new JSONObject(data));
+
+        T tileset;
+        try {
+            Constructor<? extends T> constructor = clazz.getConstructor(File.class, JSONObject.class);
+            tileset = constructor.newInstance(loaderFile, new JSONObject(data));
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
         for (BaseTileset temp : tilesetHashMap.values()) {
-            if (temp.getSaveFile().getPath().equals(baseTileset.getSaveFile().getPath())) {
-                new GenericAlert("BaseTileset with path " + baseTileset.getSaveFile().getAbsolutePath() + " already loaded");
-                return ((WholeTileset) temp);
+            if (temp.getSaveFile().getPath().equals(tileset.getSaveFile().getPath())) {
+                new GenericAlert("Tileset with path " + tileset.getSaveFile().getAbsolutePath() + " already loaded");
+                return clazz.isInstance(temp) ? (T) temp : null;
             }
         }
-        tilesetHashMap.put(baseTileset.getId(), baseTileset);
-        TilesetTab tilesetTab = new TilesetTab(baseTileset.getId());
+
+        tilesetHashMap.put(tileset.getId(), tileset);
+        TilesetTab tilesetTab = new TilesetTab(tileset.getId());
         Main.root.getCenterView().getEditorViewPane().addTab(tilesetTab);
         tilesetTab.draw();
-        Logger.info("Finished loading tileset: " + baseTileset.getSaveFile().getName());
-        return baseTileset;
+        Logger.info("Finished loading tileset: " + tileset.getSaveFile().getName());
+        return tileset;
     }
 
-    public WholeTileset loadTileset() {
+    public <T extends BaseTileset> T loadTileset(Class<? extends T> clazz) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Create Resource File");
+        fileChooser.setTitle("Load Tileset");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
         File loaderFile = fileChooser.showOpenDialog(null);
         if (loaderFile == null) {
-            Logger.info("Tried to load baseTileset, cancelled or failed");
+            Logger.info("Tried to load tileset, cancelled or failed");
             return null;
         } else if (!loaderFile.exists()) {
             new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
             return null;
         }
 
-        return loadTileset(loaderFile);
+        return loadTileset(loaderFile, clazz);
     }
 
     public void saveTileset(UUID id) {

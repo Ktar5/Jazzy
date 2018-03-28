@@ -60,20 +60,6 @@ public class Main extends Application {
         //Add event listeners
         scene.setOnKeyPressed(new KeyPress());
         scene.setOnScroll(new Scroll());
-
-        //TESTS
-        //testSaveTileset();
-        //testLoadTileset();
-    }
-
-    public void testSaveTileset() {
-        WholeTileset tileset = TilesetManager.get().createTileset();
-        TilesetManager.get().saveTileset(tileset.getId());
-        TilesetManager.get().remove(tileset.getId());
-    }
-
-    public void testLoadTileset() {
-        BaseTileset baseTileset = TilesetManager.get().loadTileset();
     }
 
 }

@@ -31,7 +31,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
     public void loadTilesetIfExists(JSONObject json) {
         if (json.has("tileset")) {
             File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
-            WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset);
+            WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset, WholeTileset.class);
             this.setTileset(tileset1);
         }
     }
@@ -82,7 +82,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
     public void onDrag(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileSize());
         int y = (int) (event.getY() / this.getTileSize());
-        if(x >= getWidth() || y >= getHeight() || x < 0 || y < 0){
+        if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) {
             return;
         }
         if (x != previousX || y != previousY) {

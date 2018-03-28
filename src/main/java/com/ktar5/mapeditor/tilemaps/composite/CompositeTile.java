@@ -27,12 +27,23 @@ public class CompositeTile extends Tile<CompositeTileset> {
     }
 
     void setData(Corner corner, int data) {
+        set(corner, tileparts[corner.ordinal()].getBaseId(), data);
+    }
+
+    void setBaseId(Corner corner, int baseId) {
+        set(corner, baseId, tileparts[corner.ordinal()].getData());
+    }
+
+    void set(Corner corner, int baseId, int data) {
+        tileparts[corner.ordinal()].setBaseId(baseId);
         tileparts[corner.ordinal()].setData(data);
         tileparts[corner.ordinal()].updateImageView(getTileset());
     }
 
-    void setData(Corner corner, CompositeTilePartData tilepartData) {
-        setData(corner, tilepartData.ordinal());
+    public void updateImageView() {
+        for (CompositeTilePart tilePart : tileparts) {
+            tilePart.updateImageView(getTileset());
+        }
     }
 
     @Override
@@ -105,6 +116,19 @@ public class CompositeTile extends Tile<CompositeTileset> {
         UP_RIGHT,
         UP_LEFT,
         DOWN_RIGHT,
-        DOWN_LEFT
+        DOWN_LEFT;
+
+        public static Corner fromRemainders(double xRemainder, double yRemainder) {
+            if (xRemainder > .5 && yRemainder > .5) {
+                return UP_RIGHT;
+            } else if (xRemainder > .5 && yRemainder < .5) {
+                return DOWN_RIGHT;
+            } else if (xRemainder < .5 && yRemainder < .5) {
+                return DOWN_LEFT;
+            } else {
+                return UP_LEFT;
+            }
+        }
+
     }
 }
