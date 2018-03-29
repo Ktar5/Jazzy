@@ -1,8 +1,9 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
-import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
+import com.ktar5.mapeditor.tilemaps.composite.CompositeTile.Corner;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.scene.Node;
@@ -15,11 +16,11 @@ import java.io.File;
 import java.nio.file.Paths;
 
 public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
-    protected CompositeTilemap(File saveFile, JSONObject json) {
+    public CompositeTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
     }
 
-    protected CompositeTilemap(File saveFile, int width, int height, int tileSize) {
+    public CompositeTilemap(File saveFile, int width, int height, int tileSize) {
         super(saveFile, width, height, tileSize);
     }
 
@@ -39,71 +40,94 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
 
     @Override
     public void onClick(MouseEvent event) {
+        if (getTileset() == null) {
+            return;
+        }
         int x = (int) (event.getX() / this.getTileSize());
         int y = (int) (event.getY() / this.getTileSize());
 
         double xRemainder = (event.getX() / (double) this.getTileSize()) - x;
         double yRemainder = (event.getY() / (double) this.getTileSize()) - y;
-        CompositeTile.Corner corner = CompositeTile.Corner.fromRemainders(xRemainder, yRemainder);
+        Corner corner = Corner.fromRemainders(xRemainder, yRemainder);
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            Node node = event.getPickResult().getIntersectedNode();
-            if (node == null || !(node instanceof PixelatedImageView)) {
-                set(x, y, corner, 1, 1);
-            } else {
-                WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                wholeTile.setBlockId((wholeTile.getBlockId() + 1) % 45);
-                wholeTile.updateImageView();
-            }
+            leftClick(event, x, y, corner);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-            remove(x, y);
+            rightClick(event, x, y, corner);
         } else if (event.getButton().equals(MouseButton.MIDDLE)) {
-            Node node = event.getPickResult().getIntersectedNode();
-            if (node != null && node instanceof PixelatedImageView) {
-                WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                wholeTile.setDirection((wholeTile.getDirection() + 1) % 4);
-                wholeTile.updateImageView();
-            }
+            middleClick(event, x, y, corner);
         }
     }
 
-    int previousX = -1, previousY = -1;
-    CompositeTile.Corner previousCorner = CompositeTile.Corner.DOWN_LEFT;
+    private int previousX = -1, previousY = -1;
+    private Corner previousCorner = Corner.DOWN_LEFT;
 
     @Override
     public void onDrag(MouseEvent event) {
+        if (getTileset() == null) {
+            return;
+        }
+
         int x = (int) (event.getX() / this.getTileSize());
         int y = (int) (event.getY() / this.getTileSize());
+
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) {
             return;
         }
 
         double xRemainder = (event.getX() / (double) this.getTileSize()) - x;
         double yRemainder = (event.getY() / (double) this.getTileSize()) - y;
-        CompositeTile.Corner corner = CompositeTile.Corner.fromRemainders(xRemainder, yRemainder);
+        Corner corner = Corner.fromRemainders(xRemainder, yRemainder);
 
-        if (x != previousX || y != previousY && corner != previousCorner) {
-            previousX = x;
-            previousY = y;
-            previousCorner = corner;
+        if (x == previousX && y == previousY && corner == previousCorner) {
+            return;
+        }
+        previousX = x;
+        previousY = y;
+        previousCorner = corner;
 
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                Node node = event.getPickResult().getIntersectedNode();
-                if (node == null || !(node instanceof PixelatedImageView)) {
-                    set(x, y, corner, 1, 1);
-                } else {
-                    WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                    wholeTile.setBlockId(wholeTile.getBlockId());
-                    wholeTile.updateImageView();
-                }
-            } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-                remove(x, y);
-            }
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            leftClick(event, x, y, corner);
+        } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+            rightClick(event, x, y, corner);
         }
     }
 
-    public void draw() {
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+    public void leftClick(MouseEvent event, int x, int y, Corner corner) {
+        Node node = event.getPickResult().getIntersectedNode();
+        if (node == null || !(node instanceof PixelatedImageView)) {
+            set(x, y, corner, 1, 1);
+            return;
+        }
+        if (this.grid[x][y] instanceof WholeTile) {
+            WholeTile tile = ((WholeTile) this.grid[x][y]);
+            tile.setBlockId(tile.getBlockId() + 1);
+            tile.updateImageView();
+        } else if (this.grid[x][y] instanceof CompositeTile) {
+            CompositeTile tile = ((CompositeTile) this.grid[x][y]);
+            tile.set(corner, 1, (tile.getTileparts()[corner.ordinal()].getData() + 1) % 6);
+        }
+    }
+
+    public void rightClick(MouseEvent event, int x, int y, Corner corner) {
+        if (this.grid[x][y] instanceof WholeTile) {
+            remove(x, y);
+        } else if (this.grid[x][y] instanceof CompositeTile) {
+            remove(x, y, corner);
+        }
+    }
+
+    public void middleClick(MouseEvent event, int x, int y, Corner corner) {
+//        Node node = event.getPickResult().getIntersectedNode();
+//        if (node != null && node instanceof PixelatedImageView) {
+//            WholeTile wholeTile = (WholeTile) this.grid[x][y];
+//            wholeTile.setDirection((wholeTile.getDirection() + 1) % 4);
+//            wholeTile.updateImageView();
+//        }
+    }
+
+    @Override
+    public void draw(Pane pane) {
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
                 if (grid[x][y] == null) {
@@ -118,7 +142,7 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         }
     }
 
-    public void set(int x, int y, CompositeTile.Corner corner, int id, int data) {
+    public void set(int x, int y, Corner corner, int id, int data) {
         CompositeTile tile;
         if (grid[x][y] != null && grid[x][y] instanceof CompositeTile) {
             tile = (CompositeTile) grid[x][y];
@@ -139,8 +163,11 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
     }
 
     private void refreshTile(int x, int y) {
+        if (this.grid[x][y] == null) {
+            return;
+        }
         this.grid[x][y].updateImageView();
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+        Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
         setChanged(true);
     }
@@ -149,8 +176,16 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         if (grid[x][y] == null) {
             return;
         }
-        this.grid[x][y].remove(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()));
+        this.grid[x][y].remove(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()));
         this.grid[x][y] = null;
+        setChanged(true);
+    }
+
+    public void remove(int x, int y, Corner corner) {
+        if (grid[x][y] == null || !(grid[x][y] instanceof CompositeTile)) {
+            return;
+        }
+        ((CompositeTile) this.grid[x][y]).remove(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()), corner);
         setChanged(true);
     }
 

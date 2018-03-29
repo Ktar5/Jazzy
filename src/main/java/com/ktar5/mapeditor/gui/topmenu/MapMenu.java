@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.gui.topmenu;
 
-import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
+import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
@@ -21,15 +21,15 @@ public class MapMenu extends Menu {
 
         final MenuItem addTileset = new MenuItem("Add Tileset");
         addTileset.setOnAction((ActionEvent event) -> {
-            final Tab selectedItem = Main.root.getCenterView().getEditorViewPane().getSelectionModel().getSelectedItem();
+            final Tab selectedItem = EditorCoordinator.get().getEditor().getSelectionModel().getSelectedItem();
             if (selectedItem instanceof TilemapTab) {
                 BaseTileset baseTileset = TilesetManager.get().loadTileset(
                         WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class)
                 );
-                BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getUuid());
+                BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getTabId());
                 map.setTileset(baseTileset);
                 System.out.println("About to draw tilemap");
-                map.draw();
+                map.draw(EditorCoordinator.get().getEditor().getTabDrawingPane(map.getId()));
                 System.out.println("Drawing tilemap");
             }
         });

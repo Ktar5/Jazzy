@@ -40,7 +40,19 @@ public class CompositeTile extends Tile<CompositeTileset> {
         tileparts[corner.ordinal()].updateImageView(getTileset());
     }
 
+    public void remove(Pane pane, Corner corner) {
+        CompositeTilePart part = getTileparts()[corner.ordinal()];
+        if (part != null && part.getImageView() != null) {
+            pane.getChildren().remove(part.getImageView());
+            part.setImageView(null);
+        }
+
+    }
+
     public void updateImageView() {
+        if (getTileset() == null) {
+            return;
+        }
         for (CompositeTilePart tilePart : tileparts) {
             tilePart.updateImageView(getTileset());
         }
@@ -48,16 +60,16 @@ public class CompositeTile extends Tile<CompositeTileset> {
 
     @Override
     public void remove(Pane pane) {
-        for (CompositeTilePart part : tileparts) {
-            if (part != null && part.getImageView() != null) {
-                pane.getChildren().remove(part.getImageView());
-                part.setImageView(null);
-            }
+        for (Corner corner : Corner.values()) {
+            remove(pane, corner);
         }
     }
 
     @Override
     public void draw(Pane pane, int actualX, int actualY) {
+        if (getTileset() == null) {
+            return;
+        }
         for (CompositeTilePart part : tileparts) {
             if (part == null) {
                 continue;

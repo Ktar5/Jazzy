@@ -51,6 +51,8 @@ public abstract class BaseTileset implements Tabbable {
         this.id = UUID.randomUUID();
         try {
             final BufferedImage readImage = ImageIO.read(sourceFile);
+            this.dimensionX = readImage.getWidth();
+            this.dimensionY = readImage.getHeight();
             getTilesetImages(readImage);
         } catch (IOException e) {
             e.printStackTrace();

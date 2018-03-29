@@ -1,9 +1,10 @@
 package com.ktar5.mapeditor.util;
 
-import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import com.ktar5.utilities.annotation.dontoverride.DontOverride;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 import org.json.JSONObject;
@@ -32,7 +33,7 @@ public interface Tabbable {
 
     @DontOverride
     public default void setChanged(boolean value) {
-        Main.root.getCenterView().getEditorViewPane().getTab(getId()).setEdit(value);
+        EditorCoordinator.get().getEditor().getTab(getId()).setEdit(value);
     }
 
     public void onClick(MouseEvent event);
@@ -51,7 +52,7 @@ public interface Tabbable {
 
     public void updateSaveFile(File file);
 
-    public void draw();
+    public void draw(Pane pane);
 
     @CallSuper
     public JSONObject serialize();

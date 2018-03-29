@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor.gui.topmenu;
 
-import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import com.ktar5.mapeditor.tileset.BaseTileset;
@@ -19,7 +19,7 @@ public class FileMenu extends Menu {
         openTilemap.setOnAction(event -> {
             final BaseTilemap baseTilemap = MapManager.get().loadMap();
             if (baseTilemap != null) {
-                Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTilemap.getId());
+                EditorCoordinator.get().getEditor().setSelectedTab(baseTilemap.getId());
             }
         });
         openTilemap.setAccelerator(KeyCombination.keyCombination("SHORTCUT+O"));
@@ -28,7 +28,7 @@ public class FileMenu extends Menu {
         openTileset.setOnAction(event -> {
             final BaseTileset baseTileset = TilesetManager.get().loadTileset();
             if (baseTileset != null) {
-                Main.root.getCenterView().getEditorViewPane().setSelectedTab(baseTileset.getId());
+                EditorCoordinator.get().getEditor().setSelectedTab(baseTileset.getId());
             }
         });
         openTileset.setAccelerator(KeyCombination.keyCombination("SHORTCUT+SHIFT+O"));
@@ -50,15 +50,15 @@ public class FileMenu extends Menu {
 
         final MenuItem save = new MenuItem("Save Current");
         save.setOnAction(event -> {
-            if (Main.root.getCurrentTab() != null)
-                Main.root.getCurrentTab().getTabbable().save();
+            if (EditorCoordinator.get().getCurrentTab() != null)
+                EditorCoordinator.get().getCurrentTab().getTabbable().save();
         });
         save.setAccelerator(KeyCombination.keyCombination("SHORTCUT+S"));
 
         final MenuItem saveAs = new MenuItem("Save As..");
         saveAs.setOnAction(event -> {
-            if (Main.root.getCurrentTab() != null)
-                Main.root.getCurrentTab().getTabbable().saveAs();
+            if (EditorCoordinator.get().getCurrentTab() != null)
+                EditorCoordinator.get().getCurrentTab().getTabbable().saveAs();
         });
         saveAs.setAccelerator(KeyCombination.keyCombination("SHORTCUT+SHIFT+S"));
 

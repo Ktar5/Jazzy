@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
-import com.ktar5.mapeditor.Main;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
@@ -11,8 +11,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -113,8 +111,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
     }
 
     @Override
-    public void draw() {
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+    public void draw(Pane pane) {
         for (int y = getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x <= getWidth() - 1; x++) {
                 if (grid[x][y] == null) {
@@ -148,7 +145,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         remove(x, y);
         this.grid[x][y] = tile;
         this.grid[x][y].updateImageView();
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
+        Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
         setChanged(true);
     }
@@ -157,7 +154,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         if (grid[x][y] == null) {
             return;
         }
-        this.grid[x][y].remove(Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId()));
+        this.grid[x][y].remove(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()));
         this.grid[x][y] = null;
         setChanged(true);
     }

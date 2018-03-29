@@ -1,12 +1,7 @@
 package com.ktar5.mapeditor;
 
 import com.ktar5.mapeditor.gui.Root;
-import com.ktar5.mapeditor.input.KeyPress;
-import com.ktar5.mapeditor.input.Scroll;
 import com.ktar5.mapeditor.tilemaps.MapManager;
-import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
-import com.ktar5.mapeditor.tileset.BaseTileset;
-import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -16,9 +11,6 @@ import javafx.stage.Window;
 import java.io.File;
 
 public class Main extends Application {
-    //Multiple types of grids
-    //Multiple types of tileset
-
     public static Window window;
     public static Root root;
 
@@ -56,10 +48,6 @@ public class Main extends Application {
 
         //Initialize window
         window = scene.getWindow();
-
-        //Add event listeners
-        scene.setOnKeyPressed(new KeyPress());
-        scene.setOnScroll(new Scroll());
     }
 
 }

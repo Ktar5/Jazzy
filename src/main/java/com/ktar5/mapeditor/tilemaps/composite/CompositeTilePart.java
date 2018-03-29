@@ -33,6 +33,9 @@ public class CompositeTilePart implements ToolSerializeable {
     }
 
     public void updateImageView(CompositeTileset tileset) {
+        if (tileset == null) {
+            return;
+        }
         if (this.imageView == null) {
             this.imageView = new PixelatedImageView(tileset.getTileImages().get(5));
         } else {

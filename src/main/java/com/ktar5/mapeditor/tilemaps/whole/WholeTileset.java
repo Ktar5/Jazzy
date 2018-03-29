@@ -1,12 +1,12 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
-import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import lombok.Getter;
 import org.json.JSONObject;
 
 import java.awt.image.BufferedImage;
@@ -54,15 +54,27 @@ public class WholeTileset extends BaseTileset {
     }
 
     @Override
-    public void draw() {
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
-
+    public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
-            PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(0));
+            WholeTilesetImageView iv = new WholeTilesetImageView(this, i);
             iv.setVisible(true);
             iv.setTranslateX(((i % 7) * (this.getTileSize())));
             iv.setTranslateY((((i) / 7) * (this.getTileSize())));
             pane.getChildren().add(iv);
+        }
+
+    }
+
+
+    @Getter
+    public class WholeTilesetImageView extends PixelatedImageView {
+        private WholeTileset tileset;
+        private int tileId;
+
+        public WholeTilesetImageView(WholeTileset tileset, int tileId) {
+            super(tileset.getTileImages().get(tileId));
+            this.tileId = tileId;
+            this.tileset = tileset;
         }
 
     }

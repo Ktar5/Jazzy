@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.tileset;
 
-import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilesetTab;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
+import com.ktar5.mapeditor.gui.centerview.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
@@ -85,7 +85,7 @@ public class TilesetManager {
 
         tilesetHashMap.put(tileset.getId(), tileset);
         TilesetTab tab;
-        Main.root.getCenterView().getEditorViewPane().addTab(tab = new TilesetTab(tileset.getId()));
+        EditorCoordinator.get().getEditor().addTab(tab = new TilesetTab(tileset.getId()));
         tab.draw();
         return tileset;
     }
@@ -121,7 +121,7 @@ public class TilesetManager {
 
         tilesetHashMap.put(tileset.getId(), tileset);
         TilesetTab tilesetTab = new TilesetTab(tileset.getId());
-        Main.root.getCenterView().getEditorViewPane().addTab(tilesetTab);
+        EditorCoordinator.get().getEditor().addTab(tilesetTab);
         tilesetTab.draw();
         Logger.info("Finished loading tileset: " + tileset.getSaveFile().getName());
         return tileset;
@@ -168,7 +168,7 @@ public class TilesetManager {
             return;
         }
 
-        Main.root.getCenterView().getEditorViewPane().setChanges(baseTileset.getId(), false);
+        EditorCoordinator.get().getEditor().setChanges(baseTileset.getId(), false);
         Logger.info("Finished save for baseTileset (" + id + ") in " + "\"" + baseTileset.getSaveFile() + "\"");
     }
 

@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.tilemaps;
 
-import com.ktar5.mapeditor.Main;
-import com.ktar5.mapeditor.gui.centerview.editor.tabs.TilemapTab;
+import com.ktar5.mapeditor.coordination.EditorCoordinator;
+import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateBaseTilemap;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.LoadDialog;
@@ -96,7 +96,7 @@ public class MapManager {
         }
 
         openMaps.put(tilemap.getId(), tilemap);
-        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(tilemap.getId()));
+        EditorCoordinator.get().getEditor().addTab(new TilemapTab(tilemap.getId()));
         return tilemap;
     }
 
@@ -138,8 +138,8 @@ public class MapManager {
             }
         }
         openMaps.put(tilemap.getId(), tilemap);
-        Main.root.getCenterView().getEditorViewPane().addTab(new TilemapTab(tilemap.getId()));
-        tilemap.draw();
+        EditorCoordinator.get().getEditor().addTab(new TilemapTab(tilemap.getId()));
+        tilemap.draw(EditorCoordinator.get().getEditor().getTabDrawingPane(tilemap.getId()));
 
         Logger.info("Finished loading map: " + tilemap.getName());
         return tilemap;
@@ -162,7 +162,7 @@ public class MapManager {
             baseTilemap.getSaveFile().createNewFile();
             FileWriter writer = new FileWriter(baseTilemap.getSaveFile());
             writer.write(baseTilemap.serialize().toString(4));
-            Main.root.getCenterView().getEditorViewPane().setChanges(baseTilemap.getId(), false);
+            EditorCoordinator.get().getEditor().setChanges(baseTilemap.getId(), false);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

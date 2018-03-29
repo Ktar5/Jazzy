@@ -1,6 +1,5 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
-import com.ktar5.mapeditor.Main;
 import com.ktar5.mapeditor.gui.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
@@ -53,9 +52,7 @@ public class CompositeTileset extends BaseTileset {
     }
 
     @Override
-    public void draw() {
-        Pane pane = Main.root.getCenterView().getEditorViewPane().getTabDrawingPane(getId());
-
+    public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
             PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(0));
             iv.setVisible(true);
