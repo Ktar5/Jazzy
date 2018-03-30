@@ -3,8 +3,6 @@ package com.ktar5.mapeditor;
 import javafx.animation.Animation;
 import javafx.animation.Transition;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;

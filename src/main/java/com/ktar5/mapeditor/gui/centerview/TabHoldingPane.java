@@ -3,7 +3,6 @@ package com.ktar5.mapeditor.gui.centerview;
 import com.ktar5.mapeditor.gui.centerview.tabs.AbstractTab;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;

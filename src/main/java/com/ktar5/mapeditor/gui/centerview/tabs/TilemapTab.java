@@ -9,12 +9,10 @@ import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import com.ktar5.mapeditor.util.Tabbable;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lombok.Getter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;
-import org.controlsfx.control.HiddenSidesPane;
 
 import java.util.UUID;
 
