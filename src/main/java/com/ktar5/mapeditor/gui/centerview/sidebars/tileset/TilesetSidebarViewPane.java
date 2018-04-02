@@ -2,48 +2,31 @@ package com.ktar5.mapeditor.gui.centerview.sidebars.tileset;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.coordination.EventCoordinator;
-import com.ktar5.mapeditor.gui.Scrollable;
+import com.ktar5.mapeditor.gui.utils.ZoomablePannablePane;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.tileset.BaseTileset;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.*;
 import lombok.Getter;
 
 @Getter
-public class TilesetSidebarTabScrollPane extends ScrollPane {
-    private Scrollable scrollable;
+public class TilesetSidebarViewPane extends Pane {
     private Pane viewport;
 
     private BaseTileset tileset;
 
-
-    public TilesetSidebarTabScrollPane() {
-        this.scrollable = new Scrollable();
-
+    public TilesetSidebarViewPane() {
         viewport = new Pane();
 
-        this.setContent(this.viewport);
+        VBox.setVgrow(this, Priority.ALWAYS);
 
-        viewport.setVisible(true);
-        viewport.setMaxSize(250, 250);
-        viewport.setPrefSize(250, 250);
+        AnchorPane set = new ZoomablePannablePane().set(viewport);
+        set.prefHeightProperty().bind(this.heightProperty());
+        set.prefWidthProperty().bind(this.widthProperty());
 
-        viewport.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        this.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        this.setHbarPolicy(ScrollBarPolicy.ALWAYS);
-        this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-
-        scrollable.setAll(this, viewport);
+        this.getChildren().add(set);
 
         viewport.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() != MouseButton.PRIMARY) return;

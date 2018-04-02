@@ -1,5 +1,6 @@
 package com.ktar5.mapeditor.gui.centerview.tabs;
 
+import com.ktar5.mapeditor.gui.centerview.EditorPane;
 import com.ktar5.mapeditor.gui.centerview.sidebars.DetailsSidebar;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.mapeditor.util.Tabbable;
@@ -23,6 +24,11 @@ public class TilesetTab extends AbstractTab {
                 detailsSidebar = new DetailsSidebar(),
                 this.pane
         );
+    }
+
+    @Override
+    protected EditorPane getEditorPane() {
+        return new EditorPane(getTabbable().getDimensions());
     }
 
 

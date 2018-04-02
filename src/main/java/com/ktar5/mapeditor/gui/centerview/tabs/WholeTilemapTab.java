@@ -1,15 +1,16 @@
 package com.ktar5.mapeditor.gui.centerview.tabs;
 
 import com.ktar5.mapeditor.coordination.EventCoordinator;
-import com.ktar5.mapeditor.gui.PixelatedImageView;
+import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
+import com.ktar5.mapeditor.gui.centerview.EditorPane;
 import com.ktar5.mapeditor.gui.centerview.sidebars.DetailsSidebar;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TileSelectEvent;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TilesetSidebar;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import com.ktar5.mapeditor.util.Tabbable;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.HBox;
 import lombok.Getter;
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;
@@ -18,25 +19,24 @@ import java.util.UUID;
 
 @Getter
 @Listener
-public class TilemapTab extends AbstractTab {
-    private HBox hBox;
-
+public class WholeTilemapTab extends AbstractTab {
     private DetailsSidebar detailsSidebar;
     private TilesetSidebar tilesetSidebar;
 
-    public TilemapTab(UUID tilemap) {
+    public WholeTilemapTab(UUID tilemap) {
         super(tilemap);
         EventCoordinator.get().registerListener(this);
 
-        this.hBox = new HBox();
-        hBox.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        SplitPane sp = new SplitPane();
+        sp.getItems().addAll(detailsSidebar = new DetailsSidebar(), this.pane, tilesetSidebar = new TilesetSidebar());
+        sp.setDividerPositions(0.2, .75);
 
-        hBox.getChildren().addAll(
-                detailsSidebar = new DetailsSidebar(),
-                this.pane,
-                tilesetSidebar = new TilesetSidebar());
+        this.setContent(sp);
+    }
 
-        this.setContent(hBox);
+    @Override
+    protected EditorPane getEditorPane() {
+        return new EditorPane(getTabbable().getDimensions());
     }
 
 

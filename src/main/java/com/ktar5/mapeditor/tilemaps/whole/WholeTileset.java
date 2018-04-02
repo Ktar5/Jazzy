@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
-import com.ktar5.mapeditor.gui.PixelatedImageView;
+import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;

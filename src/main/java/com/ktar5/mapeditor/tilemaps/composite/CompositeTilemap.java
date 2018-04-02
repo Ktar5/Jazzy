@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.composite;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
-import com.ktar5.mapeditor.gui.PixelatedImageView;
+import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.composite.CompositeTile.Corner;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTile;

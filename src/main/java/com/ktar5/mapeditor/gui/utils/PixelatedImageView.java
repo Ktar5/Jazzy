@@ -1,4 +1,4 @@
-package com.ktar5.mapeditor.gui;
+package com.ktar5.mapeditor.gui.utils;
 
 import com.sun.javafx.sg.prism.NGImageView;
 import com.sun.javafx.sg.prism.NGNode;

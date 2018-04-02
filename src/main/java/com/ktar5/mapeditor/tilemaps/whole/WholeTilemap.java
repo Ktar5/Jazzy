@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
-import com.ktar5.mapeditor.gui.PixelatedImageView;
+import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.TilesetManager;
@@ -70,14 +70,16 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             }
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             remove(x, y);
-        } else if (event.getButton().equals(MouseButton.MIDDLE)) {
+        }
+        /*
+        else if (event.getButton().equals(MouseButton.MIDDLE) && event.isControlDown()) {
             Node node = event.getPickResult().getIntersectedNode();
             if (node != null && node instanceof PixelatedImageView) {
                 WholeTile wholeTile = (WholeTile) this.grid[x][y];
                 wholeTile.setDirection((wholeTile.getDirection() + 1) % 4);
                 wholeTile.updateImageView();
             }
-        }
+        }*/
 
     }
 

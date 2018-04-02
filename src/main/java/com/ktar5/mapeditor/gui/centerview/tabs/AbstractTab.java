@@ -25,7 +25,7 @@ public abstract class AbstractTab extends Tab {
 
         this.setText(getTabbable().getName());
 
-        pane = new EditorPane(getTabbable().getDimensions());
+        pane = getEditorPane();
 
         this.setOnCloseRequest(e -> {
             if (this.hasEdits) quitSaveConfirmation(e, getTabbable());
@@ -38,6 +38,8 @@ public abstract class AbstractTab extends Tab {
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, getTabbable()::onClick);
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_DRAGGED, getTabbable()::onDrag);
     }
+
+    protected abstract EditorPane getEditorPane();
 
     public abstract void draw();
 

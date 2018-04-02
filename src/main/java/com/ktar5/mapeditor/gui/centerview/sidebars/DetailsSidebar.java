@@ -15,8 +15,6 @@ public class DetailsSidebar extends Pane {
         this.setMinSize(100, 100);
         this.setMaxWidth(200);
         this.setPrefWidth(200);
-        this.getChildren().add(new Pane());
-        this.setVisible(true);
     }
 
 }

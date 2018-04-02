@@ -2,7 +2,7 @@ package com.ktar5.mapeditor.tilemaps;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.centerview.tabs.AbstractTab;
-import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
+import com.ktar5.mapeditor.gui.centerview.tabs.WholeTilemapTab;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.mapeditor.util.Tabbable;
@@ -88,8 +88,8 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     public void setTileset(S tileset) {
         this.tileset = tileset;
         AbstractTab currentTab = EditorCoordinator.get().getEditor().getCurrentTab();
-        if (currentTab instanceof TilemapTab) {
-            ((TilemapTab) currentTab).getTilesetSidebar().getTilesetView().setTileset(getTileset());
+        if (currentTab instanceof WholeTilemapTab) {
+            ((WholeTilemapTab) currentTab).getTilesetSidebar().getTilesetView().setTileset(getTileset());
         }
     }
 

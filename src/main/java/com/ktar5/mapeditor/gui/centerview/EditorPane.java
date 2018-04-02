@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.gui.centerview;
 
-import com.ktar5.mapeditor.gui.Scrollable;
+import com.ktar5.mapeditor.gui.utils.ResizableGrid;
+import com.ktar5.mapeditor.gui.utils.ZoomablePannablePane;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -11,7 +12,6 @@ import lombok.Getter;
 @Getter
 public class EditorPane extends Pane {
     private Pane viewport;
-    private Scrollable scrollable;
 
     public EditorPane(int x, int y) {
         super();
@@ -24,13 +24,23 @@ public class EditorPane extends Pane {
         HBox.setHgrow(this, Priority.ALWAYS);
 
         viewport.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        AnchorPane set = new ZoomablePannablePane().set(viewport);
+
+        set.prefHeightProperty().bind(this.heightProperty());
+        set.prefWidthProperty().bind(this.widthProperty());
+
+        ResizableGrid resizableGrid = new ResizableGrid();
+        resizableGrid.prefWidthProperty().bind(this.widthProperty());
+        resizableGrid.prefHeightProperty().bind(this.heightProperty());
+
+        resizableGrid.setPickOnBounds(false);
+        resizableGrid.setMouseTransparent(true);
+
 
         viewport.setVisible(true);
 
-        this.getChildren().add(viewport);
-
-        this.scrollable = new Scrollable();
-        scrollable.setAll(this, viewport);
+        this.getChildren().add(set);
+        this.getChildren().add(resizableGrid);
 
         // create rectangle with sizes of pane,
         // don't need to set x and y explicitly

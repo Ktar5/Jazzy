@@ -3,6 +3,9 @@ package com.ktar5.mapeditor.gui.dialogs;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 
 import java.util.Optional;
 
@@ -10,10 +13,11 @@ public class WholeOrComposite {
 
     public static <T> Class<? extends T> getType(Class<? extends T> whole, Class<? extends T> composite) {
         Alert alert = new Alert(Alert.AlertType.NONE);
-        alert.setTitle("Please select Composite or Whole");
+        alert.setTitle("Alert");
+        alert.setContentText("Please select Composite or Whole");
 
-        ButtonType compositeButton = new ButtonType("Composite");
-        ButtonType wholeButton = new ButtonType("Whole");
+        ButtonType compositeButton = new ButtonType("_Composite");
+        ButtonType wholeButton = new ButtonType("_Whole");
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         alert.getButtonTypes().setAll(compositeButton, wholeButton, cancelButton);
