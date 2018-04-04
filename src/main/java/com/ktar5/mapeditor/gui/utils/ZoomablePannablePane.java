@@ -1,8 +1,5 @@
 package com.ktar5.mapeditor.gui.utils;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.EventHandler;
@@ -14,7 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
 import lombok.Getter;
 
 @Getter
@@ -22,6 +18,34 @@ public class ZoomablePannablePane extends ScrollPane {
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0d);
     private final DoubleProperty deltaY = new SimpleDoubleProperty(0.0d);
 
+
+    /*
+        0.015625,
+        0.03125,
+        0.0625,
+        0.125,
+        0.25,
+        0.33,
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        4.0,
+        5.5,
+        8.0,
+        11.0,
+        16.0,
+        23.0,
+        32.0,
+        45.0,
+        64.0,
+        90.0,
+        128.0,
+        180.0,
+        256.0
+     */
     PanAndZoomPane panAndZoomPane;
     private final Group group = new Group();
 
@@ -65,13 +89,8 @@ public class ZoomablePannablePane extends ScrollPane {
         public static final double DEFAULT_DELTA = 1.3d;
         DoubleProperty myScale = new SimpleDoubleProperty(1.0);
         public DoubleProperty deltaY = new SimpleDoubleProperty(0.0);
-        private Timeline timeline;
-
 
         public PanAndZoomPane() {
-
-            this.timeline = new Timeline(60);
-
             // add scale transform
             scaleXProperty().bind(myScale);
             scaleYProperty().bind(myScale);
@@ -88,15 +107,9 @@ public class ZoomablePannablePane extends ScrollPane {
 
         public void setPivot(double x, double y, double scale) {
             // note: pivot value must be untransformed, i. e. without scaling
-            // timeline that scales and moves the node
-            timeline.getKeyFrames().clear();
-            timeline.getKeyFrames().addAll(
-                    new KeyFrame(Duration.millis(50), new KeyValue(translateXProperty(), getTranslateX() - x)),
-                    new KeyFrame(Duration.millis(50), new KeyValue(translateYProperty(), getTranslateY() - y)),
-                    new KeyFrame(Duration.millis(50), new KeyValue(myScale, scale))
-            );
-            timeline.play();
-
+            setTranslateX((int) getTranslateX() - x);
+            setTranslateY((int) getTranslateY() - y);
+            myScale.set(scale);
         }
 
         /**
@@ -211,6 +224,7 @@ public class ZoomablePannablePane extends ScrollPane {
 
             @Override
             public void handle(ScrollEvent event) {
+
                 if (!event.isControlDown()) {
                     event.consume();
                     return;

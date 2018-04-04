@@ -10,6 +10,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import lombok.Getter;
 
 import java.util.UUID;
 
@@ -30,8 +31,6 @@ public abstract class AbstractTab extends Tab {
         this.setOnCloseRequest(e -> {
             if (this.hasEdits) quitSaveConfirmation(e, getTabbable());
         });
-
-        pane.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         this.setOnClosed(e -> getTabbable().remove());
 

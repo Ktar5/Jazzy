@@ -123,7 +123,7 @@ public class ResizableGrid extends Pane {
         final int left = (int) snappedLeftInset();
         final int width = (int) getWidth() - left - right;
         final int height = (int) getHeight() - top - bottom;
-        final double spacing = gridSpacing.get().doubleValue() + .05;
+        final double spacing = gridSpacing.get().doubleValue();
 
         canvas.setLayoutX(left + 1);
         canvas.setLayoutY(top + 1);
@@ -142,11 +142,11 @@ public class ResizableGrid extends Pane {
             final int hLineCount = (int) Math.floor((height + 1) / spacing) - 1;
             final int vLineCount = (int) Math.floor((width + 1) / spacing) - 1;
             for (int i = 0; i < hLineCount; i++) {
-                g.strokeLine(-2, snap((i + 1) * spacing * zoom), width * zoom, snap((i + 1) * spacing * zoom));
+                g.strokeLine(0, snap((i + 1) * spacing * zoom), width * zoom, snap((i + 1) * spacing * zoom));
             }
 
             for (int i = 0; i < vLineCount; i++) {
-                g.strokeLine(snap((i + 1) * spacing * zoom), -2, snap((i + 1) * spacing * zoom), height * zoom);
+                g.strokeLine(snap((i + 1) * spacing * zoom), 0, snap((i + 1) * spacing * zoom), height * zoom);
             }
 
             needsLayout = false;

@@ -2,14 +2,10 @@ package com.ktar5.mapeditor.gui.centerview;
 
 import com.ktar5.mapeditor.gui.utils.ResizableGrid;
 import com.ktar5.mapeditor.gui.utils.ZoomablePannablePane;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import lombok.Getter;
@@ -17,6 +13,8 @@ import lombok.Getter;
 @Getter
 public class EditorPane extends Pane {
     private Pane viewport;
+    private ResizableGrid resizableGrid;
+    private final ZoomablePannablePane zoomablePannablePane;
 
     public EditorPane(int x, int y) {
         super();
@@ -29,19 +27,17 @@ public class EditorPane extends Pane {
         HBox.setHgrow(this, Priority.ALWAYS);
 
         //viewport.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        final ZoomablePannablePane zoomablePannablePane = new ZoomablePannablePane();
+        zoomablePannablePane = new ZoomablePannablePane();
         AnchorPane set = zoomablePannablePane.set(viewport);
 
         set.prefHeightProperty().bind(this.heightProperty());
         set.prefWidthProperty().bind(this.widthProperty());
 
-        ResizableGrid resizableGrid = new ResizableGrid(zoomablePannablePane);
-        resizableGrid.prefWidthProperty().bind(viewport.widthProperty());
-        resizableGrid.prefHeightProperty().bind(viewport.heightProperty());
+        resizableGrid = new ResizableGrid(zoomablePannablePane);
+        resizableGrid.setPrefSize(viewport.getPrefWidth(), viewport.getPrefHeight());
 
         resizableGrid.setPickOnBounds(false);
         resizableGrid.setMouseTransparent(true);
-
 
         viewport.setVisible(true);
 
