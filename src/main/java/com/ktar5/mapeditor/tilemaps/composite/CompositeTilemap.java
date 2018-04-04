@@ -93,6 +93,11 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         }
     }
 
+    @Override
+    public void onMove(MouseEvent event) {
+
+    }
+
     public void leftClick(MouseEvent event, int x, int y, Corner corner) {
         Node node = event.getPickResult().getIntersectedNode();
         if (node == null || !(node instanceof PixelatedImageView)) {

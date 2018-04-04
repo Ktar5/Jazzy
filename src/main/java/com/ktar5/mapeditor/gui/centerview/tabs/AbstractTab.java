@@ -2,14 +2,9 @@ package com.ktar5.mapeditor.gui.centerview.tabs;
 
 import com.ktar5.mapeditor.gui.centerview.EditorPane;
 import com.ktar5.mapeditor.util.Tabbable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -20,6 +15,9 @@ public abstract class AbstractTab extends Tab {
     private final UUID tabId;
     private boolean hasEdits = false;
     protected EditorPane pane;
+
+    @Getter
+    private boolean dragging = false;
 
     public AbstractTab(UUID uuid) {
         this.tabId = uuid;
@@ -34,8 +32,23 @@ public abstract class AbstractTab extends Tab {
 
         this.setOnClosed(e -> getTabbable().remove());
 
-        pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, getTabbable()::onClick);
-        pane.getViewport().addEventFilter(MouseEvent.MOUSE_DRAGGED, getTabbable()::onDrag);
+        pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, (event) -> {
+            if (isDragging()) {
+                dragging = false;
+                getTabbable().onDragEnd(event);
+            } else {
+                getTabbable().onClick(event);
+            }
+        });
+        pane.getViewport().addEventFilter(MouseEvent.MOUSE_MOVED, getTabbable()::onMove);
+        pane.getViewport().addEventFilter(MouseEvent.MOUSE_DRAGGED, (event) -> {
+            if (!isDragging()) {
+                dragging = true;
+                getTabbable().onDragStart(event);
+            } else {
+                getTabbable().onDrag(event);
+            }
+        });
     }
 
     protected abstract EditorPane getEditorPane();

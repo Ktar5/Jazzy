@@ -54,6 +54,11 @@ public class WholeTileset extends BaseTileset {
     }
 
     @Override
+    public void onMove(MouseEvent event) {
+
+    }
+
+    @Override
     public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
             WholeTilesetImageView iv = new WholeTilesetImageView(this, i);

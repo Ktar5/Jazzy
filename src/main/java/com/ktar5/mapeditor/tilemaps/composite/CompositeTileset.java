@@ -52,6 +52,11 @@ public class CompositeTileset extends BaseTileset {
     }
 
     @Override
+    public void onMove(MouseEvent event) {
+
+    }
+
+    @Override
     public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
             PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(0));

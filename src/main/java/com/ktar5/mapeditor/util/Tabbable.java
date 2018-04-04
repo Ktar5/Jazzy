@@ -3,6 +3,7 @@ package com.ktar5.mapeditor.util;
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import com.ktar5.utilities.annotation.dontoverride.DontOverride;
+import javafx.event.Event;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -13,7 +14,7 @@ import org.pmw.tinylog.Logger;
 import java.io.File;
 import java.util.UUID;
 
-public interface Tabbable {
+public interface Tabbable extends Interactable{
 
     public void save();
 
@@ -35,10 +36,6 @@ public interface Tabbable {
     public default void setChanged(boolean value) {
         EditorCoordinator.get().getEditor().getTab(getId()).setEdit(value);
     }
-
-    public void onClick(MouseEvent event);
-
-    public void onDrag(MouseEvent event);
 
     public UUID getId();
 

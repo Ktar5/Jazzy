@@ -1,8 +1,8 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
-import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
+import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
@@ -54,6 +54,14 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         }
     }
 
+    int previousX = -1, previousY = -1;
+
+    @Override
+    public void onDragEnd(MouseEvent event) {
+        previousX = -1;
+        previousY = -1;
+    }
+
     @Override
     public void onClick(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileSize());
@@ -83,9 +91,6 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
     }
 
-
-    int previousX = -1, previousY = -1;
-
     @Override
     public void onDrag(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileSize());
@@ -110,6 +115,11 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
                 remove(x, y);
             }
         }
+    }
+
+    @Override
+    public void onMove(MouseEvent event) {
+
     }
 
     @Override
