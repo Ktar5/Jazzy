@@ -2,6 +2,11 @@ package com.ktar5.mapeditor.gui.centerview;
 
 import com.ktar5.mapeditor.gui.utils.ResizableGrid;
 import com.ktar5.mapeditor.gui.utils.ZoomablePannablePane;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -34,11 +39,6 @@ public class EditorPane extends Pane {
         resizableGrid.prefWidthProperty().bind(viewport.widthProperty());
         resizableGrid.prefHeightProperty().bind(viewport.heightProperty());
 
-        //95.8???????????
-        final double maxX = zoomablePannablePane.getPanAndZoomPane().boundsInParentProperty().get().getMaxX();
-        resizableGrid.translateXProperty().bind(zoomablePannablePane.getPanAndZoomPane().translateXProperty());
-        resizableGrid.translateYProperty().bind(zoomablePannablePane.getPanAndZoomPane().translateYProperty());
-
         resizableGrid.setPickOnBounds(false);
         resizableGrid.setMouseTransparent(true);
 
@@ -46,7 +46,6 @@ public class EditorPane extends Pane {
         viewport.setVisible(true);
 
         this.getChildren().add(set);
-        //viewport.getChildren().add(resizableGrid);
         this.getChildren().add(resizableGrid);
 
         // create rectangle with sizes of pane,

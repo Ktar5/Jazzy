@@ -223,9 +223,9 @@ public class ZoomablePannablePane extends ScrollPane {
 
                 panAndZoomPane.setDeltaY(event.getDeltaY());
                 if (panAndZoomPane.deltaY.get() < 0) {
-                    scale /= delta;
+                    scale = scale / delta < 1.0 ? 1.0 : scale / delta;
                 } else {
-                    scale *= delta;
+                    scale = scale * delta > 10 ? 10 : scale * delta;
                 }
 
                 double f = (scale / oldScale) - 1;

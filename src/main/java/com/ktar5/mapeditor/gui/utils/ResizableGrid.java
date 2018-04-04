@@ -4,6 +4,7 @@ import com.sun.javafx.css.converters.PaintConverter;
 import com.sun.javafx.css.converters.SizeConverter;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableObjectProperty;
@@ -14,7 +15,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ResizableGrid extends Pane {
 
@@ -90,15 +93,26 @@ public class ResizableGrid extends Pane {
         getStyleClass().add("graph-grid");
         getChildren().add(canvas);
         zoomProperty.bind(region.getZoomProperty());
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                needsLayout = true;
-                System.out.println(zoomProperty.get());
-                layoutChildren();
+
+        DoubleProperty xTrans = new SimpleDoubleProperty(region.getPanAndZoomPane().getTranslateX());
+        DoubleProperty yTrans = new SimpleDoubleProperty(region.getPanAndZoomPane().getTranslateY());
+        region.getPanAndZoomPane().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+            xTrans.setValue(newValue.getMinX());
+            yTrans.setValue(newValue.getMinY());
+        });
+        this.translateXProperty().bind(xTrans);
+        this.translateYProperty().bind(yTrans);
+
+        region.getZoomProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || observable == null) {
+                return;
             }
-        }, 1000, 1000);
+            needsLayout = true;
+            layoutChildren();
+        });
+
+        needsLayout = true;
+        layoutChildren();
     }
 
     @Override
@@ -109,12 +123,10 @@ public class ResizableGrid extends Pane {
         final int left = (int) snappedLeftInset();
         final int width = (int) getWidth() - left - right;
         final int height = (int) getHeight() - top - bottom;
-        final double spacing = gridSpacing.get().doubleValue();
+        final double spacing = gridSpacing.get().doubleValue() + .05;
 
-        //canvas.setLayoutX((zoomProperty.get() - 1) * gridSpacing.get().intValue() * -1);
-        //canvas.setLayoutY((zoomProperty.get() - 1) * gridSpacing.get().intValue() * -1);
-        canvas.setLayoutX(0);
-        canvas.setLayoutY(0);
+        canvas.setLayoutX(left + 1);
+        canvas.setLayoutY(top + 1);
 
         if (width != canvas.getWidth() || height != canvas.getHeight() || needsLayout) {
             double zoom = zoomProperty.get();
@@ -122,19 +134,19 @@ public class ResizableGrid extends Pane {
             canvas.setHeight(height * zoom);
 
             GraphicsContext g = canvas.getGraphicsContext2D();
-            //g.clearRect(0, 0, width, height);
+            g.clearRect(0, 0, width * zoom, height * zoom);
             //g.setFill(gridColor.get());
             g.setLineWidth(1);
+            g.setLineDashes(4);
 
-            final int hLineCount = (int) Math.floor((height + 1) / spacing);
-            final int vLineCount = (int) Math.floor((width + 1) / spacing);
+            final int hLineCount = (int) Math.floor((height + 1) / spacing) - 1;
+            final int vLineCount = (int) Math.floor((width + 1) / spacing) - 1;
             for (int i = 0; i < hLineCount; i++) {
-                //g.fillRect(canvas.getWidth(), snap((i + 1) * spacing), canvas.getWidth(), 1);
-                g.strokeLine(0, snap((i + 1) * spacing * zoom), width * zoom, snap((i + 1) * spacing * zoom));
+                g.strokeLine(-2, snap((i + 1) * spacing * zoom), width * zoom, snap((i + 1) * spacing * zoom));
             }
 
             for (int i = 0; i < vLineCount; i++) {
-                g.strokeLine(snap((i + 1) * spacing * zoom), 0, snap((i + 1) * spacing * zoom), height * zoom);
+                g.strokeLine(snap((i + 1) * spacing * zoom), -2, snap((i + 1) * spacing * zoom), height * zoom);
             }
 
             needsLayout = false;
