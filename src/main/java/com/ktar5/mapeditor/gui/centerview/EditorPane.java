@@ -23,15 +23,21 @@ public class EditorPane extends Pane {
         this.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         HBox.setHgrow(this, Priority.ALWAYS);
 
-        viewport.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-        AnchorPane set = new ZoomablePannablePane().set(viewport);
+        //viewport.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+        final ZoomablePannablePane zoomablePannablePane = new ZoomablePannablePane();
+        AnchorPane set = zoomablePannablePane.set(viewport);
 
         set.prefHeightProperty().bind(this.heightProperty());
         set.prefWidthProperty().bind(this.widthProperty());
 
-        ResizableGrid resizableGrid = new ResizableGrid();
-        resizableGrid.prefWidthProperty().bind(this.widthProperty());
-        resizableGrid.prefHeightProperty().bind(this.heightProperty());
+        ResizableGrid resizableGrid = new ResizableGrid(zoomablePannablePane);
+        resizableGrid.prefWidthProperty().bind(viewport.widthProperty());
+        resizableGrid.prefHeightProperty().bind(viewport.heightProperty());
+
+        //95.8???????????
+        final double maxX = zoomablePannablePane.getPanAndZoomPane().boundsInParentProperty().get().getMaxX();
+        resizableGrid.translateXProperty().bind(zoomablePannablePane.getPanAndZoomPane().translateXProperty());
+        resizableGrid.translateYProperty().bind(zoomablePannablePane.getPanAndZoomPane().translateYProperty());
 
         resizableGrid.setPickOnBounds(false);
         resizableGrid.setMouseTransparent(true);
@@ -40,6 +46,7 @@ public class EditorPane extends Pane {
         viewport.setVisible(true);
 
         this.getChildren().add(set);
+        //viewport.getChildren().add(resizableGrid);
         this.getChildren().add(resizableGrid);
 
         // create rectangle with sizes of pane,

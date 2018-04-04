@@ -2,6 +2,8 @@ package com.ktar5.mapeditor.gui.utils;
 
 import com.sun.javafx.css.converters.PaintConverter;
 import com.sun.javafx.css.converters.SizeConverter;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.DoublePropertyBase;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableObjectProperty;
@@ -12,9 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ResizableGrid extends Pane {
 
@@ -23,6 +23,19 @@ public class ResizableGrid extends Pane {
 
     private final Canvas canvas = new Canvas();
     private boolean needsLayout = false;
+
+    private final DoubleProperty zoomProperty = new DoublePropertyBase(1) {
+        @Override
+        public Object getBean() {
+            return ResizableGrid.this;
+        }
+
+        @Override
+        public String getName() {
+            return "zoom";
+        }
+    };
+
 
     private final StyleableObjectProperty<Paint> gridColor = new StyleableObjectProperty<Paint>(
             Color.rgb(222, 248, 255)) {
@@ -49,7 +62,7 @@ public class ResizableGrid extends Pane {
         }
     };
 
-    private final StyleableObjectProperty<Number> gridSpacing = new StyleableObjectProperty<Number>(15) {
+    private final StyleableObjectProperty<Number> gridSpacing = new StyleableObjectProperty<Number>(16) {
 
         @Override
         public CssMetaData<? extends Styleable, Number> getCssMetaData() {
@@ -73,9 +86,19 @@ public class ResizableGrid extends Pane {
         }
     };
 
-    public ResizableGrid() {
+    public ResizableGrid(ZoomablePannablePane region) {
         getStyleClass().add("graph-grid");
         getChildren().add(canvas);
+        zoomProperty.bind(region.getZoomProperty());
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                needsLayout = true;
+                System.out.println(zoomProperty.get());
+                layoutChildren();
+            }
+        }, 1000, 1000);
     }
 
     @Override
@@ -88,26 +111,30 @@ public class ResizableGrid extends Pane {
         final int height = (int) getHeight() - top - bottom;
         final double spacing = gridSpacing.get().doubleValue();
 
-        canvas.setLayoutX(left);
-        canvas.setLayoutY(top);
+        //canvas.setLayoutX((zoomProperty.get() - 1) * gridSpacing.get().intValue() * -1);
+        //canvas.setLayoutY((zoomProperty.get() - 1) * gridSpacing.get().intValue() * -1);
+        canvas.setLayoutX(0);
+        canvas.setLayoutY(0);
 
         if (width != canvas.getWidth() || height != canvas.getHeight() || needsLayout) {
-            canvas.setWidth(width);
-            canvas.setHeight(height);
+            double zoom = zoomProperty.get();
+            canvas.setWidth(width * zoom);
+            canvas.setHeight(height * zoom);
 
             GraphicsContext g = canvas.getGraphicsContext2D();
             //g.clearRect(0, 0, width, height);
             //g.setFill(gridColor.get());
+            g.setLineWidth(1);
 
             final int hLineCount = (int) Math.floor((height + 1) / spacing);
             final int vLineCount = (int) Math.floor((width + 1) / spacing);
-
             for (int i = 0; i < hLineCount; i++) {
-                g.strokeLine(0, snap((i + 1) * spacing), width, snap((i + 1) * spacing));
+                //g.fillRect(canvas.getWidth(), snap((i + 1) * spacing), canvas.getWidth(), 1);
+                g.strokeLine(0, snap((i + 1) * spacing * zoom), width * zoom, snap((i + 1) * spacing * zoom));
             }
 
             for (int i = 0; i < vLineCount; i++) {
-                g.strokeLine(snap((i + 1) * spacing), 0, snap((i + 1) * spacing), height);
+                g.strokeLine(snap((i + 1) * spacing * zoom), 0, snap((i + 1) * spacing * zoom), height * zoom);
             }
 
             needsLayout = false;
@@ -120,7 +147,7 @@ public class ResizableGrid extends Pane {
 
     /**
      * @return The CssMetaData associated with this class, including the
-     *         CssMetaData of its super classes.
+     * CssMetaData of its super classes.
      */
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
         return StyleableProperties.STYLEABLES;
@@ -162,6 +189,7 @@ public class ResizableGrid extends Pane {
         };
 
         private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
         static {
             List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(
                     Pane.getClassCssMetaData());

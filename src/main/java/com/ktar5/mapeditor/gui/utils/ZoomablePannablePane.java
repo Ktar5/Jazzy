@@ -15,12 +15,14 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import lombok.Getter;
 
+@Getter
 public class ZoomablePannablePane extends ScrollPane {
-
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0d);
     private final DoubleProperty deltaY = new SimpleDoubleProperty(0.0d);
 
+    PanAndZoomPane panAndZoomPane;
     private final Group group = new Group();
 
     public AnchorPane set(Node node) {
@@ -40,7 +42,7 @@ public class ZoomablePannablePane extends ScrollPane {
         group.getChildren().add(node);
 
         // create canvas
-        PanAndZoomPane panAndZoomPane = new PanAndZoomPane();
+        panAndZoomPane = new PanAndZoomPane();
         zoomProperty.bind(panAndZoomPane.myScale);
         deltaY.bind(panAndZoomPane.deltaY);
         panAndZoomPane.getChildren().add(group);
@@ -58,7 +60,7 @@ public class ZoomablePannablePane extends ScrollPane {
         return root;
     }
 
-    class PanAndZoomPane extends Pane {
+    public class PanAndZoomPane extends Pane {
 
         public static final double DEFAULT_DELTA = 1.3d;
         DoubleProperty myScale = new SimpleDoubleProperty(1.0);
