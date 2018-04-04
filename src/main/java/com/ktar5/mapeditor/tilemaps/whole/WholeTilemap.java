@@ -54,13 +54,8 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         }
     }
 
+    //region Tabbable interactions
     int previousX = -1, previousY = -1;
-
-    @Override
-    public void onDragEnd(MouseEvent event) {
-        previousX = -1;
-        previousY = -1;
-    }
 
     @Override
     public void onClick(MouseEvent event) {
@@ -69,7 +64,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             Node node = event.getPickResult().getIntersectedNode();
-            if (node == null || !(node instanceof PixelatedImageView)) {
+            if (!(node instanceof PixelatedImageView)) {
                 set(x, y, new WholeTile(1, 0, getTileset()));
             } else {
                 WholeTile wholeTile = (WholeTile) this.grid[x][y];
@@ -95,32 +90,46 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
     public void onDrag(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileSize());
         int y = (int) (event.getY() / this.getTileSize());
-        if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) {
-            return;
-        }
-        if (x != previousX || y != previousY) {
-            previousX = x;
-            previousY = y;
 
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                Node node = event.getPickResult().getIntersectedNode();
-                if (node == null || !(node instanceof PixelatedImageView)) {
-                    set(x, y, new WholeTile(1, 0, getTileset()));
-                } else {
-                    WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                    wholeTile.setBlockId(wholeTile.getBlockId());
-                    wholeTile.updateImageView();
-                }
-            } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-                remove(x, y);
+        if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
+        if (isDragging() && x == previousX && y == previousY) return;
+
+        previousX = x;
+        previousY = y;
+
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            Node node = event.getPickResult().getIntersectedNode();
+            if (!(node instanceof PixelatedImageView)) {
+                set(x, y, new WholeTile(1, 0, getTileset()));
+            } else {
+                WholeTile wholeTile = (WholeTile) this.grid[x][y];
+                wholeTile.setBlockId(wholeTile.getBlockId());
+                wholeTile.updateImageView();
             }
+        } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+            remove(x, y);
         }
     }
 
     @Override
-    public void onMove(MouseEvent event) {
-
+    public void onDragStart(MouseEvent event) {
+        onDrag(event);
     }
+
+    @Override
+    public void onMove(MouseEvent event) {
+        int x = (int) (event.getX() / this.getTileSize());
+        int y = (int) (event.getY() / this.getTileSize());
+
+        if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
+        if (x == previousX && y == previousY) return;
+
+        previousX = x;
+        previousY = y;
+
+        //TODO SET THE HIGHLIGHT
+    }
+    //endregion
 
     @Override
     public void draw(Pane pane) {
@@ -170,5 +179,20 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         this.grid[x][y] = null;
         setChanged(true);
     }
+
+
+    //region dragging boolean
+    private boolean dragging = false;
+
+    @Override
+    public void setDragging(boolean value) {
+        dragging = true;
+    }
+
+    @Override
+    public boolean isDragging() {
+        return dragging;
+    }
+    //endregion
 
 }

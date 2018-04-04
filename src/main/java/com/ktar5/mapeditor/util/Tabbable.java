@@ -37,6 +37,10 @@ public interface Tabbable extends Interactable{
         EditorCoordinator.get().getEditor().getTab(getId()).setEdit(value);
     }
 
+    public void setDragging(boolean dragging);
+
+    public boolean isDragging();
+
     public UUID getId();
 
     public Pair<Integer, Integer> getDimensions();

@@ -16,9 +16,6 @@ public abstract class AbstractTab extends Tab {
     private boolean hasEdits = false;
     protected EditorPane pane;
 
-    @Getter
-    private boolean dragging = false;
-
     public AbstractTab(UUID uuid) {
         this.tabId = uuid;
 
