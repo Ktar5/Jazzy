@@ -14,7 +14,7 @@ import javafx.scene.layout.Pane;
 import lombok.Getter;
 
 @Getter
-public class ZoomablePannablePane extends ScrollPane {
+public class ZoomablePannablePane extends AnchorPane {
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0d);
     private final DoubleProperty deltaY = new SimpleDoubleProperty(0.0d);
 
@@ -46,23 +46,11 @@ public class ZoomablePannablePane extends ScrollPane {
         180.0,
         256.0
      */
-    PanAndZoomPane panAndZoomPane;
+    private PanAndZoomPane panAndZoomPane;
     private final Group group = new Group();
 
-    public AnchorPane set(Node node) {
+    public ZoomablePannablePane(Node node) {
         //this.setPannable(true);
-        this.setHbarPolicy(ScrollBarPolicy.NEVER);
-        this.setVbarPolicy(ScrollBarPolicy.NEVER);
-
-        AnchorPane.setTopAnchor(this, 0d);
-        AnchorPane.setRightAnchor(this, 0d);
-        AnchorPane.setBottomAnchor(this, 0d);
-        AnchorPane.setLeftAnchor(this, 0d);
-
-        AnchorPane root = new AnchorPane();
-
-        root.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
         group.getChildren().add(node);
 
         // create canvas
@@ -73,15 +61,13 @@ public class ZoomablePannablePane extends ScrollPane {
 
         SceneGestures sceneGestures = new SceneGestures(panAndZoomPane);
 
-        this.setContent(panAndZoomPane);
         panAndZoomPane.toBack();
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, sceneGestures.getOnMouseClickedEventHandler());
         this.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
         this.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         this.addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
 
-        root.getChildren().add(this);
-        return root;
+        this.getChildren().add(panAndZoomPane);
     }
 
     public class PanAndZoomPane extends Pane {

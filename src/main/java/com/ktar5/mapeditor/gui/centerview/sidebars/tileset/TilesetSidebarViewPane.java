@@ -25,19 +25,10 @@ public class TilesetSidebarViewPane extends Pane {
 
         VBox.setVgrow(this, Priority.ALWAYS);
 
-        ZoomablePannablePane zoomablePannablePane = new ZoomablePannablePane();
-        AnchorPane set = zoomablePannablePane.set(viewport);
-        set.prefHeightProperty().bind(this.heightProperty());
-        set.prefWidthProperty().bind(this.widthProperty());
+        ZoomablePannablePane zoomablePannablePane = new ZoomablePannablePane(viewport);
+        resizableGrid = new ResizableGrid(zoomablePannablePane.getPanAndZoomPane(), zoomablePannablePane.getZoomProperty());
 
-        resizableGrid = new ResizableGrid(zoomablePannablePane);
-        resizableGrid.setMaxSize(viewport.getPrefWidth(), viewport.getPrefHeight());
-        resizableGrid.setPrefSize(viewport.getPrefWidth(), viewport.getPrefHeight());
-
-        resizableGrid.setPickOnBounds(false);
-        resizableGrid.setMouseTransparent(true);
-
-        this.getChildren().add(set);
+        this.getChildren().add(zoomablePannablePane);
         this.getChildren().add(resizableGrid);
 
         viewport.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {

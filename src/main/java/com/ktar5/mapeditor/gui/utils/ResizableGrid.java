@@ -20,12 +20,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ResizableGrid extends Pane {
-
     // This is to make the stroke be drawn 'on pixel'.
     private static final double HALF_PIXEL_OFFSET = -0.5;
 
     private final Canvas canvas = new Canvas();
-    private boolean needsLayout = false;
+    private boolean needsLayout;
 
     private final DoubleProperty zoomProperty = new DoublePropertyBase(1) {
         @Override
@@ -89,27 +88,26 @@ public class ResizableGrid extends Pane {
         }
     };
 
-    public ResizableGrid(ZoomablePannablePane region) {
+    public ResizableGrid(Pane region, DoubleProperty regionZoomProperty) {
         getStyleClass().add("graph-grid");
         getChildren().add(canvas);
-        zoomProperty.bind(region.getZoomProperty());
+        zoomProperty.bind(regionZoomProperty);
 
-        DoubleProperty xTrans = new SimpleDoubleProperty(region.getPanAndZoomPane().getTranslateX());
-        DoubleProperty yTrans = new SimpleDoubleProperty(region.getPanAndZoomPane().getTranslateY());
-        region.getPanAndZoomPane().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-            xTrans.setValue(newValue.getMinX());
-            yTrans.setValue(newValue.getMinY());
+        region.boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+            this.setTranslateX(newValue.getMinX());
+            this.setTranslateY(newValue.getMinY());
         });
-        this.translateXProperty().bind(xTrans);
-        this.translateYProperty().bind(yTrans);
 
-        region.getZoomProperty().addListener((observable, oldValue, newValue) -> {
+        regionZoomProperty.addListener((observable, oldValue, newValue) -> {
             if (newValue == null || observable == null) {
                 return;
             }
             needsLayout = true;
             layoutChildren();
         });
+
+        this.setPickOnBounds(false);
+        this.setMouseTransparent(true);
 
         needsLayout = true;
         layoutChildren();
