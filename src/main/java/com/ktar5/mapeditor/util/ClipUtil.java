@@ -5,7 +5,7 @@ import javafx.scene.shape.Rectangle;
 
 public class ClipUtil {
 
-    public static void clip(Pane viewport){
+    public static void clip(Pane viewport) {
         // create rectangle with sizes of pane,
         // don't need to set x and y explicitly
         // as positions of clip node are relative to parent node

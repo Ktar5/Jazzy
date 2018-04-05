@@ -5,7 +5,6 @@ import com.ktar5.mapeditor.util.Tabbable;
 import javafx.scene.control.Tab;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import lombok.Getter;
 
 import java.util.UUID;
 

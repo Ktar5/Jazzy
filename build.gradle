@@ -8,10 +8,6 @@ mainClassName = "com.ktar5.mapeditor.Main"
 
 sourceCompatibility = 1.8
 
-applicationDefaultJvmArgs = [
-  //      "-javaagent:scenicView.jar"
-]
-
 repositories {
     mavenLocal()
     mavenCentral()

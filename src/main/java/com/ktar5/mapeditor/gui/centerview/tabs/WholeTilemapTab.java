@@ -1,14 +1,13 @@
 package com.ktar5.mapeditor.gui.centerview.tabs;
 
 import com.ktar5.mapeditor.coordination.EventCoordinator;
-import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.gui.centerview.EditorPane;
 import com.ktar5.mapeditor.gui.centerview.sidebars.DetailsSidebar;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TileSelectEvent;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TilesetSidebar;
+import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
-import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.util.Tabbable;
 import javafx.scene.control.SplitPane;
@@ -40,7 +39,6 @@ public class WholeTilemapTab extends AbstractTab {
     protected EditorPane getEditorPane() {
         return new EditorPane(getTabbable().getDimensions());
     }
-
 
     @Override
     public void draw() {

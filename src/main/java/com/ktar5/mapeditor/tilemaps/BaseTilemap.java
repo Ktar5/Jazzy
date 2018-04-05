@@ -30,7 +30,8 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     @Setter
     private int xStart = 0, yStart = 0;
     private S tileset;
-    @Setter private boolean dragging;
+    @Setter
+    private boolean dragging;
 
     protected BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),

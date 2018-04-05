@@ -30,7 +30,8 @@ public abstract class BaseTileset implements Tabbable {
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
     private int dimensionX, dimensionY, columns, rows;
-    @Setter private boolean dragging;
+    @Setter
+    private boolean dragging;
 
     public BaseTileset(File saveFile, JSONObject json) {
         this(Paths.get(saveFile.getPath()).resolve(json.getString("sourceFile")).toFile(),

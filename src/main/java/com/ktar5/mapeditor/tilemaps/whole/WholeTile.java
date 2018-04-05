@@ -46,7 +46,7 @@ public class WholeTile extends Tile<WholeTileset> {
     }
 
     public void updateImageView() {
-        if (this.imageView == null ) {
+        if (this.imageView == null) {
             this.imageView = new PixelatedImageView(getTileset().getTileImages().get(blockId));
         } else {
             this.imageView.setImage(getTileset().getTileImages().get(blockId));

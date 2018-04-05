@@ -3,11 +3,9 @@ package com.ktar5.mapeditor.gui.centerview;
 import com.ktar5.mapeditor.gui.utils.ResizableGrid;
 import com.ktar5.mapeditor.gui.utils.ZoomablePannablePane;
 import com.ktar5.mapeditor.util.ClipUtil;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import lombok.Getter;
 
