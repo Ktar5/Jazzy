@@ -17,34 +17,13 @@ public class ZoomablePannablePane extends AnchorPane {
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0d);
     private final DoubleProperty deltaY = new SimpleDoubleProperty(0.0d);
 
+    private static final double[] ZOOM_LEVELS = {
+            0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.33, 0.5,
+            0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.5, 8.0, 11.0, 16.0,
+            23.0, 32.0, 45.0, 64.0, 90.0, 128.0, 180.0, 256.0
+    };
+    int zoomLevel = 8;
 
-    /*
-        0.015625,
-        0.03125,
-        0.0625,
-        0.125,
-        0.25,
-        0.33,
-        0.5,
-        0.75,
-        1.0,
-        1.5,
-        2.0,
-        3.0,
-        4.0,
-        5.5,
-        8.0,
-        11.0,
-        16.0,
-        23.0,
-        32.0,
-        45.0,
-        64.0,
-        90.0,
-        128.0,
-        180.0,
-        256.0
-     */
     private PanAndZoomPane panAndZoomPane;
     private final Group group = new Group();
 
@@ -115,7 +94,6 @@ public class ZoomablePannablePane extends AnchorPane {
             double newY = f * dy + getBoundsInParent().getMinY();
 
             setPivot(newX, newY, scale);
-
         }
 
         public void resetZoom() {
@@ -220,12 +198,21 @@ public class ZoomablePannablePane extends AnchorPane {
                 double scale = panAndZoomPane.getScale(); // currently we only use Y, same value is used for X
                 double oldScale = scale;
 
+                zoomLevel += event.getDeltaY() < 0 ? -1 : 1;
+                if (scale >= ZOOM_LEVELS.length) {
+                    zoomLevel -= 1;
+                } else if (scale <= 0) {
+                    zoomLevel = 0;
+                }
+                scale = ZOOM_LEVELS[zoomLevel];
+
                 panAndZoomPane.setDeltaY(event.getDeltaY());
+                /*
                 if (panAndZoomPane.deltaY.get() < 0) {
                     scale = scale / delta < 1.0 ? 1.0 : scale / delta;
                 } else {
                     scale = scale * delta > 10 ? 10 : scale * delta;
-                }
+                }*/
 
                 double f = (scale / oldScale) - 1;
 
@@ -233,7 +220,7 @@ public class ZoomablePannablePane extends AnchorPane {
                 double dy = (event.getY() - (panAndZoomPane.getBoundsInParent().getHeight() / 2 + panAndZoomPane.getBoundsInParent().getMinY()));
 
                 panAndZoomPane.setPivot(f * dx, f * dy, scale);
-
+                System.out.println(scale);
                 event.consume();
             }
         };

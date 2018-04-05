@@ -1,7 +1,7 @@
 package com.ktar5.mapeditor.tilemaps;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
-import com.ktar5.mapeditor.gui.centerview.tabs.WholeTilemapTab;
+import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateBaseTilemap;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.LoadDialog;
@@ -96,7 +96,7 @@ public class MapManager {
         }
 
         openMaps.put(tilemap.getId(), tilemap);
-        EditorCoordinator.get().getEditor().addTab(new WholeTilemapTab(tilemap.getId()));
+        EditorCoordinator.get().getEditor().addTab(new TilemapTab.WholeTilemapTab(tilemap.getId()));
         return tilemap;
     }
 
@@ -138,7 +138,7 @@ public class MapManager {
             }
         }
         openMaps.put(tilemap.getId(), tilemap);
-        EditorCoordinator.get().getEditor().addTab(new WholeTilemapTab(tilemap.getId()));
+        EditorCoordinator.get().getEditor().addTab(new TilemapTab.WholeTilemapTab(tilemap.getId()));
         tilemap.draw(EditorCoordinator.get().getEditor().getTabDrawingPane(tilemap.getId()));
 
         Logger.info("Finished loading map: " + tilemap.getName());

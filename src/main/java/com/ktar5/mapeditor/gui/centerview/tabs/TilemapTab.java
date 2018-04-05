@@ -19,14 +19,12 @@ import net.engio.mbassy.listener.Listener;
 import java.util.UUID;
 
 @Getter
-@Listener
-public class WholeTilemapTab extends AbstractTab {
+public abstract class TilemapTab extends AbstractTab {
     private DetailsSidebar detailsSidebar;
     private TilesetSidebar tilesetSidebar;
 
-    public WholeTilemapTab(UUID tilemap) {
+    public TilemapTab(UUID tilemap) {
         super(tilemap);
-        EventCoordinator.get().registerListener(this);
 
         SplitPane sp = new SplitPane();
         sp.getItems().addAll(detailsSidebar = new DetailsSidebar(), this.pane, tilesetSidebar = new TilesetSidebar());
@@ -55,13 +53,39 @@ public class WholeTilemapTab extends AbstractTab {
         this.getTilesetSidebar().getTilesetView().setTileset(((BaseTilemap) getTabbable()).getTileset());
     }
 
-    @Handler
-    public void onSelectTile(TileSelectEvent event) {
-        if (event.getTab().equals(this.getTabId())) {
-            Image image = event.getTileset().getTileImages().get(event.getId());
-            getTilesetSidebar().getSelectedTileView().setTile(new PixelatedImageView(image));
-            WholeTilemap tilemap = ((WholeTilemap) getTabbable());
-            tilemap.setCurrentData(event.getId(), 0);
+    @Listener
+    public static class WholeTilemapTab extends TilemapTab {
+        public WholeTilemapTab(UUID tilemap) {
+            super(tilemap);
+            EventCoordinator.get().registerListener(this);
+        }
+
+        @Handler
+        public void onSelectTile(TileSelectEvent event) {
+            if (event.getTab().equals(this.getTabId())) {
+                Image image = event.getTileset().getTileImages().get(event.getId());
+                getTilesetSidebar().getSelectedTileView().setTile(new PixelatedImageView(image));
+                WholeTilemap tilemap = ((WholeTilemap) getTabbable());
+                tilemap.setCurrentData(event.getId(), 0);
+            }
+        }
+    }
+
+    @Listener
+    public static class CompositeTilemapTab extends TilemapTab {
+        public CompositeTilemapTab(UUID tilemap) {
+            super(tilemap);
+            EventCoordinator.get().registerListener(this);
+        }
+
+        @Handler
+        public void onSelectTile(TileSelectEvent event) {
+            if (event.getTab().equals(this.getTabId())) {
+                Image image = event.getTileset().getTileImages().get(event.getId());
+                getTilesetSidebar().getSelectedTileView().setTile(new PixelatedImageView(image));
+                WholeTilemap tilemap = ((WholeTilemap) getTabbable());
+                tilemap.setCurrentData(event.getId(), 0);
+            }
         }
     }
 
