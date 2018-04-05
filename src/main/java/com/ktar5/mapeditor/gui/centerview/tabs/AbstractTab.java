@@ -30,8 +30,8 @@ public abstract class AbstractTab extends Tab {
         this.setOnClosed(e -> getTabbable().remove());
 
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, (event) -> {
-            if (isDragging()) {
-                dragging = false;
+            if (getTabbable().isDragging()) {
+                getTabbable().setDragging(false);
                 getTabbable().onDragEnd(event);
             } else {
                 getTabbable().onClick(event);
@@ -39,9 +39,10 @@ public abstract class AbstractTab extends Tab {
         });
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_MOVED, getTabbable()::onMove);
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_DRAGGED, (event) -> {
-            if (!isDragging()) {
-                dragging = true;
+            if (!getTabbable().isDragging()) {
                 getTabbable().onDragStart(event);
+                //VERY IMPORTANT TO SET DRAG AFTER DRAG START
+                getTabbable().setDragging(true);
             } else {
                 getTabbable().onDrag(event);
             }

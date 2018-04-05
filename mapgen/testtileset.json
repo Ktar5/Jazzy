@@ -1,0 +1,12 @@
+{
+    "padding": {
+        "horizontal": 0,
+        "vertical": 0
+    },
+    "offset": {
+        "left": 0,
+        "up": 0
+    },
+    "tileSize": 16,
+    "sourceFile": "..\\image.png"
+}

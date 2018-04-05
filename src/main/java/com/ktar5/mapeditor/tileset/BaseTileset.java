@@ -2,9 +2,11 @@ package com.ktar5.mapeditor.tileset;
 
 import com.ktar5.mapeditor.util.Tabbable;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.util.Pair;
 import lombok.Getter;
+import lombok.Setter;
 import org.imgscalr.Scalr;
 import org.json.JSONObject;
 import org.mini2Dx.gdx.utils.IntMap;
@@ -22,11 +24,13 @@ public abstract class BaseTileset implements Tabbable {
     public static final int SCALE = 1;
     private UUID id;
     private IntMap<Image> tileImages;
+    private Image originalImage;
     private File sourceFile, saveFile;
     private int tileSize;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
-    private int dimensionX, dimensionY;
+    private int dimensionX, dimensionY, columns, rows;
+    @Setter private boolean dragging;
 
     public BaseTileset(File saveFile, JSONObject json) {
         this(Paths.get(saveFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
@@ -51,8 +55,11 @@ public abstract class BaseTileset implements Tabbable {
         this.id = UUID.randomUUID();
         try {
             final BufferedImage readImage = ImageIO.read(sourceFile);
-            this.dimensionX = readImage.getWidth();
-            this.dimensionY = readImage.getHeight();
+            columns = (readImage.getWidth() - getOffsetLeft()) / (getTileSize() + getPaddingHorizontal());
+            rows = (readImage.getHeight() - getOffsetUp()) / (getTileSize() + getPaddingVertical());
+            originalImage = SwingFXUtils.toFXImage(readImage, null);
+            this.dimensionX = columns * getTileSize();
+            this.dimensionY = rows * getTileSize();
             getTilesetImages(readImage);
         } catch (IOException e) {
             e.printStackTrace();

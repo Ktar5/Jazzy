@@ -10,6 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -19,6 +21,13 @@ import java.nio.file.Paths;
 
 @Getter
 public class WholeTilemap extends BaseTilemap<WholeTileset> {
+    int currentData = 0;
+    int currentId = 1;
+
+    public void setCurrentData(int id, int currentData) {
+        this.currentData = currentData;
+        this.currentId = id;
+    }
 
     public WholeTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
@@ -65,7 +74,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             Node node = event.getPickResult().getIntersectedNode();
             if (!(node instanceof PixelatedImageView)) {
-                set(x, y, new WholeTile(1, 0, getTileset()));
+                set(x, y, new WholeTile(currentId, currentData, getTileset()));
             } else {
                 WholeTile wholeTile = (WholeTile) this.grid[x][y];
                 wholeTile.setBlockId((wholeTile.getBlockId() + 1) % 45);
@@ -100,7 +109,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             Node node = event.getPickResult().getIntersectedNode();
             if (!(node instanceof PixelatedImageView)) {
-                set(x, y, new WholeTile(1, 0, getTileset()));
+                set(x, y, new WholeTile(currentId, currentData, getTileset()));
             } else {
                 WholeTile wholeTile = (WholeTile) this.grid[x][y];
                 wholeTile.setBlockId(wholeTile.getBlockId());
@@ -109,11 +118,25 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             remove(x, y);
         }
+        refreshHighlight(x, y);
     }
 
     @Override
     public void onDragStart(MouseEvent event) {
         onDrag(event);
+    }
+
+    private Rectangle rect;
+
+    private void refreshHighlight(int x, int y){
+        if(rect == null){
+            rect = new Rectangle(0, 0, 16, 16);
+            rect.setFill(Color.AQUA.deriveColor(0,1,1, .5f));
+            EditorCoordinator.get().getEditor().getTabDrawingPane(getId()).getChildren().add(rect);
+        }
+        rect.toFront();
+        rect.setTranslateX(x * this.getTileSize());
+        rect.setTranslateY(y * this.getTileSize());
     }
 
     @Override
@@ -127,7 +150,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         previousX = x;
         previousY = y;
 
-        //TODO SET THE HIGHLIGHT
+        refreshHighlight(x, y);
     }
     //endregion
 
@@ -179,20 +202,5 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         this.grid[x][y] = null;
         setChanged(true);
     }
-
-
-    //region dragging boolean
-    private boolean dragging = false;
-
-    @Override
-    public void setDragging(boolean value) {
-        dragging = true;
-    }
-
-    @Override
-    public boolean isDragging() {
-        return dragging;
-    }
-    //endregion
 
 }

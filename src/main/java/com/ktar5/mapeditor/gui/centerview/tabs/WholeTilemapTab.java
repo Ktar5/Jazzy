@@ -8,6 +8,8 @@ import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TileSelectEvent;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TilesetSidebar;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
+import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.util.Tabbable;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
@@ -60,6 +62,8 @@ public class WholeTilemapTab extends AbstractTab {
         if (event.getTab().equals(this.getTabId())) {
             Image image = event.getTileset().getTileImages().get(event.getId());
             getTilesetSidebar().getSelectedTileView().setTile(new PixelatedImageView(image));
+            WholeTilemap tilemap = ((WholeTilemap) getTabbable());
+            tilemap.setCurrentData(event.getId(), 0);
         }
     }
 

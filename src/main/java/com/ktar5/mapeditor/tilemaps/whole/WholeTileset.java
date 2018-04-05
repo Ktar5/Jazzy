@@ -27,11 +27,8 @@ public class WholeTileset extends BaseTileset {
     public void getTilesetImages(BufferedImage image) {
         int index = 0;
 
-        int columns = (image.getWidth() - getOffsetLeft()) / (getTileSize() + getPaddingHorizontal());
-        int rows = (image.getHeight() - getOffsetUp()) / (getTileSize() + getPaddingVertical());
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
+        for (int row = 0; row < getRows(); row++) {
+            for (int col = 0; col < getColumns(); col++) {
                 BufferedImage subImage = image.getSubimage(
                         getOffsetLeft() + ((getPaddingHorizontal() + getTileSize()) * col),
                         getOffsetUp() + ((getPaddingVertical() + getTileSize()) * row),
@@ -63,8 +60,8 @@ public class WholeTileset extends BaseTileset {
         for (int i = 0; i < this.getTileImages().size; i++) {
             WholeTilesetImageView iv = new WholeTilesetImageView(this, i);
             iv.setVisible(true);
-            iv.setTranslateX(((i % 7) * (this.getTileSize())));
-            iv.setTranslateY((((i) / 7) * (this.getTileSize())));
+            iv.setTranslateX(((i % getColumns()) * (this.getTileSize())));
+            iv.setTranslateY((((i) / getColumns()) * (this.getTileSize())));
             pane.getChildren().add(iv);
         }
 
@@ -72,7 +69,7 @@ public class WholeTileset extends BaseTileset {
 
 
     @Getter
-    public class WholeTilesetImageView extends PixelatedImageView {
+    public static class WholeTilesetImageView extends PixelatedImageView {
         private WholeTileset tileset;
         private int tileId;
 
