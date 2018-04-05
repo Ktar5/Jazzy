@@ -24,13 +24,13 @@ public class TilesetTab extends AbstractTab {
                 detailsSidebar = new DetailsSidebar(),
                 this.pane
         );
+        this.setContent(viewportLayout);
     }
 
     @Override
     protected EditorPane getEditorPane() {
         return new EditorPane(getTabbable().getDimensions());
     }
-
 
     @Override
     public void draw() {
