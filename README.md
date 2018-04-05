@@ -1,7 +1,7 @@
 <h1 align="center"> Java-Tilemap-Editor </h1> <br>
 <p align="center">
   <a href="https://github.com/Ktar5/Java-Tilemap-Editor">
-    <img alt="Header" title="Header" src="https://i.imgur.com/rqWMZLc.gifv">
+    <img alt="Header" title="Header" src="https://i.imgur.com/rqWMZLc.gif">
   </a>
 </p>
 <div align="center">
