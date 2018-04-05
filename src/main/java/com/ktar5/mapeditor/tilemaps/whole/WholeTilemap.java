@@ -2,11 +2,9 @@ package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
-import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -72,27 +70,10 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         int y = (int) (event.getY() / this.getTileSize());
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            Node node = event.getPickResult().getIntersectedNode();
-            if (!(node instanceof PixelatedImageView)) {
-                set(x, y, new WholeTile(currentId, currentData, getTileset()));
-            } else {
-                WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                wholeTile.setBlockId((wholeTile.getBlockId() + 1) % 45);
-                wholeTile.updateImageView();
-            }
+            setCurrent(x, y);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             remove(x, y);
         }
-        /*
-        else if (event.getButton().equals(MouseButton.MIDDLE) && event.isControlDown()) {
-            Node node = event.getPickResult().getIntersectedNode();
-            if (node != null && node instanceof PixelatedImageView) {
-                WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                wholeTile.setDirection((wholeTile.getDirection() + 1) % 4);
-                wholeTile.updateImageView();
-            }
-        }*/
-
     }
 
     @Override
@@ -107,14 +88,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         previousY = y;
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            Node node = event.getPickResult().getIntersectedNode();
-            if (!(node instanceof PixelatedImageView)) {
-                set(x, y, new WholeTile(currentId, currentData, getTileset()));
-            } else {
-                WholeTile wholeTile = (WholeTile) this.grid[x][y];
-                wholeTile.setBlockId(wholeTile.getBlockId());
-                wholeTile.updateImageView();
-            }
+            setCurrent(x, y);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             remove(x, y);
         }
@@ -128,10 +102,10 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
     private Rectangle rect;
 
-    private void refreshHighlight(int x, int y){
-        if(rect == null){
+    private void refreshHighlight(int x, int y) {
+        if (rect == null) {
             rect = new Rectangle(0, 0, 16, 16);
-            rect.setFill(Color.AQUA.deriveColor(0,1,1, .5f));
+            rect.setFill(Color.AQUA.deriveColor(0, 1, 1, .5f));
             EditorCoordinator.get().getEditor().getTabDrawingPane(getId()).getChildren().add(rect);
         }
         rect.toFront();
@@ -191,6 +165,24 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         this.grid[x][y].updateImageView();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+        setChanged(true);
+    }
+
+    public void setCurrent(int x, int y) {
+        if (getTileset() == null) return;
+
+        if (grid[x][y] != null && grid[x][y] instanceof WholeTile) {
+            WholeTile wholeTile = (WholeTile) this.grid[x][y];
+            wholeTile.setBlockId(currentId);
+            wholeTile.setDirection(currentData);
+            wholeTile.updateImageView();
+        } else {
+            remove(x, y);
+            this.grid[x][y] = new WholeTile(currentId, currentData, getTileset());
+            this.grid[x][y].updateImageView();
+            Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
+            this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+        }
         setChanged(true);
     }
 

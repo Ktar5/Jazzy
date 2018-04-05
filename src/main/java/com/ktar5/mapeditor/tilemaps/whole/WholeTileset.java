@@ -35,6 +35,7 @@ public class WholeTileset extends BaseTileset {
                         getTileSize(), getTileSize());
                 subImage = scale(subImage, SCALE);
                 final WritableImage writableImage = SwingFXUtils.toFXImage(subImage, null);
+
                 this.getTileImages().put(index++, writableImage);
             }
         }
