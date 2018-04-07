@@ -41,7 +41,7 @@ public interface Tabbable extends Interactable {
 
     public UUID getId();
 
-    public Pair<Integer, Integer> getDimensions();
+    public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions();
 
     public String getName();
 

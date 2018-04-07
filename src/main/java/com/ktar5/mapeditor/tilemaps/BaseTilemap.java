@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Getter
 public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
-    private final int width, height, tileSize;
+    private final int width, height, tileWidth, tileHeight;
     @Getter(AccessLevel.NONE)
     protected Tile[][] grid;
     private UUID id;
@@ -33,10 +33,10 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     @Setter
     private boolean dragging;
 
-    protected BaseTilemap(File saveFile, JSONObject json) {
+    public BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
                 json.getJSONObject("dimensions").getInt("height"),
-                json.getInt("tileSize"));
+                json.getInt("tileWidth"), json.getInt("tileHeight"));
         this.xStart = json.getJSONObject("spawn").getInt("x");
         this.yStart = json.getJSONObject("spawn").getInt("y");
         loadTilesetIfExists(json);
@@ -61,11 +61,12 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
 
     }
 
-    protected BaseTilemap(File saveFile, int width, int height, int tileSize) {
+    public BaseTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         this.width = width;
         this.height = height;
         this.saveFile = saveFile;
-        this.tileSize = tileSize;
+        this.tileHeight = tileHeight;
+        this.tileWidth = tileWidth;
         this.grid = new Tile[width][height];
         this.id = UUID.randomUUID();
     }
@@ -114,7 +115,8 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         spawn.put("y", getYStart());
         json.put("spawn", spawn);
 
-        json.put("tileSize", getTileSize());
+        json.put("tileWidth", getTileWidth());
+        json.put("tileHeight", getTileHeight());
 
         JSONArray jsonArray = new JSONArray();
         StringBuilder builder = new StringBuilder();
@@ -137,8 +139,8 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     }
 
     @Override
-    public Pair<Integer, Integer> getDimensions() {
-        return new Pair<>(getTileSize() * getWidth(), getTileSize() * getHeight());
+    public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions() {
+        return new Pair<>(new Pair<>(getTileWidth() * getWidth(), getTileHeight() * getHeight()), new Pair<>(getTileWidth(), getTileHeight()));
     }
 
     @Override
@@ -168,7 +170,8 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         BaseTilemap baseTilemap = (BaseTilemap) o;
         return width == baseTilemap.width &&
                 height == baseTilemap.height &&
-                tileSize == baseTilemap.tileSize &&
+                tileHeight == baseTilemap.tileHeight &&
+                tileWidth == baseTilemap.tileWidth &&
                 xStart == baseTilemap.xStart &&
                 yStart == baseTilemap.yStart &&
                 Objects.equals(id, baseTilemap.id) &&
@@ -178,7 +181,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(saveFile, width, height, tileSize, xStart, yStart);
+        int result = Objects.hash(saveFile, width, height, tileWidth, tileHeight, xStart, yStart);
         result = 31 * result + Arrays.hashCode(grid);
         return result;
     }

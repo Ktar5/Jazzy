@@ -26,7 +26,7 @@ public abstract class BaseTileset implements Tabbable {
     private IntMap<Image> tileImages;
     private Image originalImage;
     private File sourceFile, saveFile;
-    private int tileSize;
+    private int tileWidth, tileHeight;
     private int paddingVertical, paddingHorizontal;
     private int offsetLeft, offsetUp;
     private int dimensionX, dimensionY, columns, rows;
@@ -36,18 +36,20 @@ public abstract class BaseTileset implements Tabbable {
     public BaseTileset(File saveFile, JSONObject json) {
         this(Paths.get(saveFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
                 saveFile,
-                json.getInt("tileSize"),
                 json.getJSONObject("padding").getInt("vertical"),
                 json.getJSONObject("padding").getInt("horizontal"),
                 json.getJSONObject("offset").getInt("left"),
-                json.getJSONObject("offset").getInt("up"));
+                json.getJSONObject("offset").getInt("up"),
+                json.getInt("tileWidth"),
+                json.getInt("tileHeight"));
     }
 
-    public BaseTileset(File sourceFile, File saveFile, int tileSize, int paddingVertical, int paddingHorizontal,
-                       int offsetLeft, int offsetUp) {
+    public BaseTileset(File sourceFile, File saveFile, int paddingVertical, int paddingHorizontal,
+                       int offsetLeft, int offsetUp, int tileWidth, int tileHeight) {
         this.sourceFile = sourceFile;
         this.saveFile = saveFile;
-        this.tileSize = tileSize;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
         this.offsetLeft = offsetLeft;
         this.offsetUp = offsetUp;
         this.paddingHorizontal = paddingHorizontal;
@@ -56,16 +58,17 @@ public abstract class BaseTileset implements Tabbable {
         this.id = UUID.randomUUID();
         try {
             final BufferedImage readImage = ImageIO.read(sourceFile);
-            columns = (readImage.getWidth() - getOffsetLeft()) / (getTileSize() + getPaddingHorizontal());
-            rows = (readImage.getHeight() - getOffsetUp()) / (getTileSize() + getPaddingVertical());
+            columns = (readImage.getWidth() - getOffsetLeft()) / (getTileWidth() + getPaddingHorizontal());
+            rows = (readImage.getHeight() - getOffsetUp()) / (getTileHeight() + getPaddingVertical());
             originalImage = SwingFXUtils.toFXImage(readImage, null);
-            this.dimensionX = columns * getTileSize();
-            this.dimensionY = rows * getTileSize();
+            this.dimensionX = columns * getTileWidth();
+            this.dimensionY = rows * getTileHeight();
             getTilesetImages(readImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.tileSize = tileSize * SCALE;
+        this.tileHeight *= SCALE;
+        this.tileWidth *= SCALE;
         this.offsetLeft = offsetLeft * SCALE;
         this.offsetUp = offsetUp * SCALE;
         this.paddingHorizontal = paddingHorizontal * SCALE;
@@ -93,7 +96,8 @@ public abstract class BaseTileset implements Tabbable {
         offset.put("up", this.getOffsetUp());
         json.put("offset", offset);
 
-        json.put("tileSize", this.getTileSize());
+        json.put("tileWidth", tileWidth);
+        json.put("tileHeight", tileHeight);
 
         Path path = Paths.get(this.getSaveFile().getPath())
                 .relativize(Paths.get(this.getSourceFile().getPath()));
@@ -102,8 +106,8 @@ public abstract class BaseTileset implements Tabbable {
     }
 
     @Override
-    public Pair<Integer, Integer> getDimensions() {
-        return new Pair<>(dimensionX, dimensionY);
+    public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions() {
+        return new Pair<>(new Pair<>(dimensionX, dimensionY), new Pair<>(getTileWidth(), getTileHeight()));
     }
 
     @Override

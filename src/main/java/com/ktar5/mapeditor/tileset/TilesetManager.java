@@ -73,11 +73,11 @@ public class TilesetManager {
         T tileset;
         try {
             Constructor<? extends T> constructor = clazz.getConstructor(File.class, File.class,
-                    Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
-            tileset = constructor.newInstance(createDialog.getSourceFile(),
-                    createDialog.getTilesetFile(), createDialog.getTileSize(),
+                    Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+            tileset = constructor.newInstance(createDialog.getSourceFile(), createDialog.getTilesetFile(),
                     createDialog.getPaddingVertical(), createDialog.getPaddingHorizontal(),
-                    createDialog.getOffsetLeft(), createDialog.getOffsetUp());
+                    createDialog.getOffsetLeft(), createDialog.getOffsetUp(),
+                    createDialog.getTileWidth(), createDialog.getTileHeight());
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
             return null;

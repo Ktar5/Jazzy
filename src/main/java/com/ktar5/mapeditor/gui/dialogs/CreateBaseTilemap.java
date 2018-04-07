@@ -2,9 +2,11 @@ package com.ktar5.mapeditor.gui.dialogs;
 
 import com.ktar5.mapeditor.gui.utils.NumberTextField;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +19,7 @@ import static com.ktar5.mapeditor.gui.utils.GuiUtils.addListener;
 @Builder
 @Getter
 public class CreateBaseTilemap {
-    private int width, height, tilesize;
+    private int width, height, tileHeight, tileWidth;
     private File file;
 
     public static CreateBaseTilemap create() {
@@ -35,23 +37,20 @@ public class CreateBaseTilemap {
         ButtonType loginButtonType = new ButtonType("Done", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-        // Create the username and password labels and fields.
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Create Resource File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Json File", "*.json"));
 
+
         TextField filePath = new TextField();
+        filePath.setMaxWidth(240);
+        filePath.setPrefWidth(filePath.getMaxWidth());
         filePath.setEditable(false);
 
         NumberTextField width = new NumberTextField("Map Width:");
-        NumberTextField heigh = new NumberTextField("Map Height:");
-        NumberTextField tilesize = new NumberTextField("Tile Size:");
+        NumberTextField height = new NumberTextField("Map Height:");
+        NumberTextField tileHeight = new NumberTextField("Tile Height:");
+        NumberTextField tileWidth = new NumberTextField("Tile Width:");
 
         Button openFileButton = new Button("Select File");
         openFileButton.setOnAction(event -> {
@@ -64,30 +63,52 @@ public class CreateBaseTilemap {
             }
         });
 
-        grid.add(new Label("File Path:"), 0, 0);
-        grid.add(openFileButton, 2, 0);
-        grid.add(filePath, 1, 0);
-        grid.add(new Label("Width:"), 0, 1);
-        grid.add(width, 1, 1);
-        grid.add(new Label("Height:"), 0, 2);
-        grid.add(heigh, 1, 2);
-        grid.add(new Label("Tile Size:"), 0, 3);
-        grid.add(tilesize, 1, 3);
+
+        GridPane largeValues = new GridPane();
+        largeValues.setHgap(10);
+        largeValues.setVgap(10);
+        largeValues.setPadding(new Insets(20, 150, 10, 10));
+
+        largeValues.add(new Label("File Path:"), 0, 0);
+        largeValues.add(filePath, 1, 0);
+        largeValues.add(openFileButton, 4, 0);
+
+        GridPane smallValues = new GridPane();
+        smallValues.setHgap(10);
+        smallValues.setVgap(10);
+        smallValues.setPadding(new Insets(20, 10, 10, 10));
+
+        smallValues.add(new Label("Width:"), 0, 0);
+        smallValues.add(width, 1, 0);
+
+        smallValues.add(new Label("Height:"), 0, 1);
+        smallValues.add(height, 1, 1);
+
+
+        smallValues.add(new Label("Tile Height:"), 2, 0);
+        smallValues.add(tileHeight, 3, 0);
+
+        smallValues.add(new Label("Tile Width:"), 2, 1);
+        smallValues.add(tileWidth, 3, 1);
 
         // Enable/Disable login button depending on whether a username was entered.
         Node doneButton = dialog.getDialogPane().lookupButton(loginButtonType);
         doneButton.setDisable(true);
 
         addListener((observable, oldValue, newValue) -> doneButton.setDisable(newValue.trim().isEmpty()),
-                width, filePath, heigh, tilesize);
+                width, filePath, height, tileHeight, tileWidth);
 
-        dialog.getDialogPane().setContent(grid);
+        final VBox vBox = new VBox();
+        vBox.getChildren().addAll(largeValues, smallValues);
+
+        dialog.getDialogPane().setContent(vBox);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                builder.height(heigh.getNumber());
+                builder.height(height.getNumber());
                 builder.width(width.getNumber());
-                builder.tilesize(tilesize.getNumber());
+                builder.tileHeight(tileHeight.getNumber());
+                builder.tileWidth(tileWidth.getNumber());
                 return builder.build();
             }
             return null;

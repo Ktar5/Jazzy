@@ -31,8 +31,8 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         super(saveFile, json);
     }
 
-    public WholeTilemap(File saveFile, int width, int height, int tileSize) {
-        super(saveFile, width, height, tileSize);
+    public WholeTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
+        super(saveFile, width, height, tileWidth, tileHeight);
     }
 
     @Override
@@ -40,9 +40,8 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         if (json.has("tileset")) {
             File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
             WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset, WholeTileset.class);
-            if (tileset1.getTileSize() != getTileSize()) {
-                new GenericAlert("Tileset's tilesize of " + tileset1.getTileSize() + " does not match map's " +
-                        "tilesize of " + getTileSize() + ".");
+            if (tileset1.getTileHeight() != getTileHeight() || tileset1.getTileWidth() != getTileWidth()) {
+                new GenericAlert("Tileset's tilesize does not match map's tilesize");
                 return;
             }
             this.setTileset(tileset1);
@@ -66,8 +65,8 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
     @Override
     public void onClick(MouseEvent event) {
-        int x = (int) (event.getX() / this.getTileSize());
-        int y = (int) (event.getY() / this.getTileSize());
+        int x = (int) (event.getX() / this.getTileWidth());
+        int y = (int) (event.getY() / this.getTileHeight());
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setCurrent(x, y);
@@ -78,8 +77,8 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
 
     @Override
     public void onDrag(MouseEvent event) {
-        int x = (int) (event.getX() / this.getTileSize());
-        int y = (int) (event.getY() / this.getTileSize());
+        int x = (int) (event.getX() / this.getTileWidth());
+        int y = (int) (event.getY() / this.getTileHeight());
 
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
         if (isDragging() && x == previousX && y == previousY) return;
@@ -109,14 +108,14 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             EditorCoordinator.get().getEditor().getTabDrawingPane(getId()).getChildren().add(rect);
         }
         rect.toFront();
-        rect.setTranslateX(x * this.getTileSize());
-        rect.setTranslateY(y * this.getTileSize());
+        rect.setTranslateX(x * this.getTileWidth());
+        rect.setTranslateY(y * this.getTileWidth());
     }
 
     @Override
     public void onMove(MouseEvent event) {
-        int x = (int) (event.getX() / this.getTileSize());
-        int y = (int) (event.getY() / this.getTileSize());
+        int x = (int) (event.getX() / this.getTileWidth());
+        int y = (int) (event.getY() / this.getTileHeight());
 
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
         if (x == previousX && y == previousY) return;
@@ -139,7 +138,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
                 if (blockId == 0) {
                     continue;
                 }
-                grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+                grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
             }
         }
     }
@@ -164,7 +163,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         this.grid[x][y] = tile;
         this.grid[x][y].updateImageView();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
-        this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+        this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);
     }
 
@@ -181,7 +180,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             this.grid[x][y] = new WholeTile(currentId, currentData, getTileset());
             this.grid[x][y].updateImageView();
             Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
-            this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+            this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileWidth());
         }
         setChanged(true);
     }

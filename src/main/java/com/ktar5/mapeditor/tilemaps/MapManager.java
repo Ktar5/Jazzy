@@ -87,9 +87,9 @@ public class MapManager {
 
         T tilemap;
         try {
-            Constructor<? extends T> constructor = clazz.getConstructor(File.class, Integer.TYPE, Integer.TYPE, Integer.TYPE);
+            Constructor<? extends T> constructor = clazz.getConstructor(File.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
             tilemap = constructor.newInstance(createDialog.getFile(), createDialog.getWidth(),
-                    createDialog.getHeight(), createDialog.getTilesize());
+                    createDialog.getHeight(), createDialog.getTileWidth(), createDialog.getTileHeight());
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
             return null;

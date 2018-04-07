@@ -18,9 +18,8 @@ public class WholeTileset extends BaseTileset {
         super(tilesetFile, json);
     }
 
-    public WholeTileset(File sourceFile, File tilesetFile, int tileSize, int paddingVertical, int paddingHorizontal,
-                        int offsetLeft, int offsetUp) {
-        super(sourceFile, tilesetFile, tileSize, paddingVertical, paddingHorizontal, offsetLeft, offsetUp);
+    public WholeTileset(File sourceFile, File saveFile, int paddingVertical, int paddingHorizontal, int offsetLeft, int offsetUp, int tileWidth, int tileHeight) {
+        super(sourceFile, saveFile, paddingVertical, paddingHorizontal, offsetLeft, offsetUp, tileWidth, tileHeight);
     }
 
     @Override
@@ -30,9 +29,9 @@ public class WholeTileset extends BaseTileset {
         for (int row = 0; row < getRows(); row++) {
             for (int col = 0; col < getColumns(); col++) {
                 BufferedImage subImage = image.getSubimage(
-                        getOffsetLeft() + ((getPaddingHorizontal() + getTileSize()) * col),
-                        getOffsetUp() + ((getPaddingVertical() + getTileSize()) * row),
-                        getTileSize(), getTileSize());
+                        getOffsetLeft() + ((getPaddingHorizontal() + getTileWidth()) * col),
+                        getOffsetUp() + ((getPaddingVertical() + getTileHeight()) * row),
+                        getTileWidth(), getTileHeight());
                 subImage = scale(subImage, SCALE);
                 final WritableImage writableImage = SwingFXUtils.toFXImage(subImage, null);
 
@@ -61,8 +60,8 @@ public class WholeTileset extends BaseTileset {
         for (int i = 0; i < this.getTileImages().size; i++) {
             WholeTilesetImageView iv = new WholeTilesetImageView(this, i);
             iv.setVisible(true);
-            iv.setTranslateX(((i % getColumns()) * (this.getTileSize())));
-            iv.setTranslateY((((i) / getColumns()) * (this.getTileSize())));
+            iv.setTranslateX(((i % getColumns()) * (this.getTileWidth())));
+            iv.setTranslateY((((i) / getColumns()) * (this.getTileHeight())));
             pane.getChildren().add(iv);
         }
 

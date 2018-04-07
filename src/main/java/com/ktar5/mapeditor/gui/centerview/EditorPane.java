@@ -15,7 +15,7 @@ public class EditorPane extends Pane {
     private ResizableGrid resizableGrid;
     private final ZoomablePannablePane zoomablePannablePane;
 
-    public EditorPane(int x, int y) {
+    public EditorPane(int x, int y, int gridXSpacing, int gridYSpacing) {
         super();
 
         viewport = new Pane();
@@ -27,7 +27,8 @@ public class EditorPane extends Pane {
 
         zoomablePannablePane = new ZoomablePannablePane(viewport);
 
-        resizableGrid = new ResizableGrid(zoomablePannablePane.getPanAndZoomPane(), zoomablePannablePane.getZoomProperty());
+        resizableGrid = new ResizableGrid(zoomablePannablePane.getPanAndZoomPane(), zoomablePannablePane.getZoomProperty(),
+                gridXSpacing, gridYSpacing);
         resizableGrid.setPrefSize(viewport.getPrefWidth(), viewport.getPrefHeight());
 
         this.getChildren().addAll(zoomablePannablePane, resizableGrid);
@@ -35,8 +36,9 @@ public class EditorPane extends Pane {
         ClipUtil.clip(this);
     }
 
-    public EditorPane(Pair<Integer, Integer> dimensions) {
-        this(dimensions.getKey(), dimensions.getValue());
+    public EditorPane(Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> dimensions) {
+        this(dimensions.getKey().getKey(), dimensions.getKey().getValue(),
+                dimensions.getValue().getKey(), dimensions.getValue().getValue());
     }
 
 }

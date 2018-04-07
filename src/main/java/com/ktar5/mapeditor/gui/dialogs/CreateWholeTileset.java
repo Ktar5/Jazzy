@@ -20,7 +20,7 @@ import static com.ktar5.mapeditor.gui.utils.GuiUtils.addListener;
 @Getter
 public class CreateWholeTileset {
     private File sourceFile, tilesetFile;
-    private int tileSize, paddingVertical, paddingHorizontal, offsetLeft, offsetUp;
+    private int tileWidth, tileHeight, paddingVertical, paddingHorizontal, offsetLeft, offsetUp;
 
     public static CreateWholeTileset create() {
         CreateWholeTilesetBuilder builder = new CreateWholeTilesetBuilder();
@@ -51,14 +51,15 @@ public class CreateWholeTileset {
         imagePath.setPrefWidth(imagePath.getMaxWidth());
         tilesetPath.setEditable(false);
 
-        NumberTextField tilesizeField = new NumberTextField("Tile Size", 16);
+        NumberTextField tileHeightField = new NumberTextField("Tile Height", 16);
+        NumberTextField tileWidthField = new NumberTextField("Tile Width", 16);
         NumberTextField paddingVertField = new NumberTextField("Vertical Padding", 0);
         NumberTextField paddingHorzField = new NumberTextField("Horizontal Padding", 0);
         NumberTextField offsetLeftField = new NumberTextField("Left Offset", 0);
         NumberTextField offsetUpField = new NumberTextField("Up Offset", 0);
 
         GuiUtils.forAll(field -> field.setPrefWidth(45),
-                tilesizeField, paddingVertField, paddingHorzField, offsetLeftField, offsetUpField);
+                tileWidthField, tileHeightField, paddingVertField, paddingHorzField, offsetLeftField, offsetUpField);
 
         Button selectImageFileButton = new Button("Select Image File");
         selectImageFileButton.setOnAction(event -> {
@@ -113,8 +114,11 @@ public class CreateWholeTileset {
         smallValues.add(new Label("Offset Left:"), 2, 1);
         smallValues.add(offsetLeftField, 3, 1);
 
-        smallValues.add(new Label("Tile Size:"), 4, 0);
-        smallValues.add(tilesizeField, 5, 0);
+        smallValues.add(new Label("Tile Width:"), 4, 0);
+        smallValues.add(tileWidthField, 5, 0);
+
+        smallValues.add(new Label("Tile Height:"), 4, 1);
+        smallValues.add(tileHeightField, 5, 1);
 
 
         // Enable/Disable login button depending on whether a username was entered.
@@ -124,7 +128,7 @@ public class CreateWholeTileset {
         // Do some validation (using the Java 8 lambda syntax).
         addListener((observable, oldValue, newValue) -> doneButton.setDisable(newValue.trim().isEmpty()),
                 offsetLeftField, offsetUpField, paddingHorzField, paddingVertField,
-                tilesizeField, imagePath, tilesetPath);
+                tileWidthField, tileHeightField, imagePath, tilesetPath);
 
         final VBox vBox = new VBox();
         vBox.getChildren().addAll(largeValues, smallValues);
@@ -133,7 +137,8 @@ public class CreateWholeTileset {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                builder.tileSize(tilesizeField.getNumber());
+                builder.tileWidth(tileWidthField.getNumber());
+                builder.tileHeight(tileHeightField.getNumber());
                 builder.paddingVertical(paddingVertField.getNumber());
                 builder.paddingHorizontal(paddingHorzField.getNumber());
                 builder.offsetLeft(offsetLeftField.getNumber());

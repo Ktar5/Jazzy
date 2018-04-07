@@ -27,7 +27,9 @@ public class TilesetSidebarViewPane extends Pane {
         VBox.setVgrow(this, Priority.ALWAYS);
 
         ZoomablePannablePane zoomablePannablePane = new ZoomablePannablePane(viewport);
-        resizableGrid = new ResizableGrid(zoomablePannablePane.getPanAndZoomPane(), zoomablePannablePane.getZoomProperty());
+        resizableGrid = new ResizableGrid(zoomablePannablePane.getPanAndZoomPane(), zoomablePannablePane.getZoomProperty(),
+                1, 1);
+        resizableGrid.setVisible(false);
 
         this.getChildren().add(zoomablePannablePane);
         this.getChildren().add(resizableGrid);
@@ -49,7 +51,10 @@ public class TilesetSidebarViewPane extends Pane {
         viewport.setPrefSize(tileset.getDimensionX(), tileset.getDimensionY());
         resizableGrid.setMaxSize(viewport.getPrefWidth(), viewport.getPrefHeight());
         resizableGrid.setPrefSize(viewport.getPrefWidth(), viewport.getPrefHeight());
+        resizableGrid.gridHorizontalSpacing.setValue(tileset.getTileWidth());
+        resizableGrid.gridVerticalSpacing.setValue(tileset.getTileHeight());
         resizableGrid.toFront();
+        resizableGrid.setVisible(true);
         redraw();
     }
 

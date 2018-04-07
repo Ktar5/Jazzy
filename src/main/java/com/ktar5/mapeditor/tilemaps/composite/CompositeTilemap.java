@@ -20,8 +20,8 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         super(saveFile, json);
     }
 
-    public CompositeTilemap(File saveFile, int width, int height, int tileSize) {
-        super(saveFile, width, height, tileSize);
+    protected CompositeTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
+        super(saveFile, width, height, tileWidth, tileHeight);
     }
 
     @Override
@@ -43,11 +43,11 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         if (getTileset() == null) {
             return;
         }
-        int x = (int) (event.getX() / this.getTileSize());
-        int y = (int) (event.getY() / this.getTileSize());
+        int x = (int) (event.getX() / this.getTileWidth());
+        int y = (int) (event.getY() / this.getTileHeight());
 
-        double xRemainder = (event.getX() / (double) this.getTileSize()) - x;
-        double yRemainder = (event.getY() / (double) this.getTileSize()) - y;
+        double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
+        double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
         Corner corner = Corner.fromRemainders(xRemainder, yRemainder);
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -68,15 +68,15 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
             return;
         }
 
-        int x = (int) (event.getX() / this.getTileSize());
-        int y = (int) (event.getY() / this.getTileSize());
+        int x = (int) (event.getX() / this.getTileWidth());
+        int y = (int) (event.getY() / this.getTileHeight());
 
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) {
             return;
         }
 
-        double xRemainder = (event.getX() / (double) this.getTileSize()) - x;
-        double yRemainder = (event.getY() / (double) this.getTileSize()) - y;
+        double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
+        double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
         Corner corner = Corner.fromRemainders(xRemainder, yRemainder);
 
         if (x == previousX && y == previousY && corner == previousCorner) {
@@ -142,7 +142,7 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
                 if (blockId == 0) {
                     continue;
                 }
-                grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+                grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
             }
         }
     }
@@ -173,7 +173,7 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
         }
         this.grid[x][y].updateImageView();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
-        this.grid[x][y].draw(pane, x * getTileSize(), y * getTileSize());
+        this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);
     }
 
