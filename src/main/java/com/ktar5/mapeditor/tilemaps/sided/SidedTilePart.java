@@ -1,4 +1,4 @@
-package com.ktar5.mapeditor.tilemaps.composite;
+package com.ktar5.mapeditor.tilemaps.sided;
 
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.util.ToolSerializeable;
@@ -10,18 +10,18 @@ import java.util.Objects;
 
 @Getter
 @Setter(AccessLevel.PACKAGE)
-public class CompositeTilePart implements ToolSerializeable {
+public class SidedTilePart implements ToolSerializeable {
     private PixelatedImageView imageView;
-
+    
     private int baseId;
     private int data;
-
-    public CompositeTilePart(int baseId, int data) {
+    
+    public SidedTilePart(int baseId, int data) {
         this.baseId = baseId;
         this.data = data;
     }
-
-    public CompositeTilePart(String s) {
+    
+    public SidedTilePart(String s) {
         if (s.length() == 1 || s.charAt(0) == '0') {
             baseId = 0;
             data = 0;
@@ -31,20 +31,24 @@ public class CompositeTilePart implements ToolSerializeable {
             data = Integer.valueOf(split[1]);
         }
     }
-
-    public void updateImageView(CompositeTileset tileset) {
+    
+    public void updateImageView(SidedTileset tileset) {
         if (tileset == null) {
             return;
         }
         if (this.imageView == null) {
-            this.imageView = new PixelatedImageView(tileset.getTileImages().get(5));
+            if (baseId == 0) {
+                this.imageView = new PixelatedImageView(null);
+            } else {
+                this.imageView = new PixelatedImageView(data);
+            }
         } else {
-            this.imageView.setImage(tileset.getTileImages().get(5));
+            this.imageView.setImage(data);
         }
-        this.imageView.setRotate(90 * 5);
-        //TODO need to make composite tileset work
+        this.imageView.setRotate(90 * (data % 2));
+        //TODO need to make sided tileset work
     }
-
+    
     @Override
     public String serialize() {
         if (baseId == 0) {
@@ -52,16 +56,16 @@ public class CompositeTilePart implements ToolSerializeable {
         }
         return baseId + "_" + data;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CompositeTilePart that = (CompositeTilePart) o;
+        SidedTilePart that = (SidedTilePart) o;
         return baseId == that.baseId &&
                 data == that.data;
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(baseId, data);

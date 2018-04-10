@@ -30,6 +30,7 @@ public abstract class TilemapTab extends AbstractTab {
         sp.getItems().addAll(detailsSidebar = new DetailsSidebar(), this.pane, tilesetSidebar = new TilesetSidebar());
         sp.setDividerPositions(0.2, .75);
 
+
         this.setContent(sp);
     }
 

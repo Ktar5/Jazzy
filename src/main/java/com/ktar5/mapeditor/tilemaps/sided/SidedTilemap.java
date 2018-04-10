@@ -1,9 +1,9 @@
-package com.ktar5.mapeditor.tilemaps.composite;
+package com.ktar5.mapeditor.tilemaps.sided;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
-import com.ktar5.mapeditor.tilemaps.composite.CompositeTile.Corner;
+import com.ktar5.mapeditor.tilemaps.sided.SidedTile.Corner;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import javafx.scene.Node;
@@ -15,25 +15,25 @@ import org.json.JSONObject;
 import java.io.File;
 import java.nio.file.Paths;
 
-public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
-    public CompositeTilemap(File saveFile, JSONObject json) {
+public class SidedTilemap extends BaseTilemap<SidedTileset> {
+    public SidedTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
     }
 
-    protected CompositeTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
+    protected SidedTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         super(saveFile, width, height, tileWidth, tileHeight);
     }
 
     @Override
     public void deserializeBlock(String block, int x, int y) {
-        this.grid[x][y] = new CompositeTile(getTileset(), block);
+        this.grid[x][y] = new SidedTile(getTileset(), block);
     }
 
     @Override
     protected void loadTilesetIfExists(JSONObject json) {
         if (json.has("tileset")) {
             File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
-            CompositeTileset tileset1 = TilesetManager.get().loadTileset(tileset, CompositeTileset.class);
+            SidedTileset tileset1 = TilesetManager.get().loadTileset(tileset, SidedTileset.class);
             this.setTileset(tileset1);
         }
     }
@@ -108,16 +108,16 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
             WholeTile tile = ((WholeTile) this.grid[x][y]);
             tile.setBlockId(tile.getBlockId() + 1);
             tile.updateImageView();
-        } else if (this.grid[x][y] instanceof CompositeTile) {
-            CompositeTile tile = ((CompositeTile) this.grid[x][y]);
-            tile.set(corner, 1, (tile.getTileparts()[corner.ordinal()].getData() + 1) % 6);
+        } else if (this.grid[x][y] instanceof SidedTile) {
+            SidedTile tile = ((SidedTile) this.grid[x][y]);
+            tile.set(corner, 1);
         }
     }
 
     public void rightClick(MouseEvent event, int x, int y, Corner corner) {
         if (this.grid[x][y] instanceof WholeTile) {
             remove(x, y);
-        } else if (this.grid[x][y] instanceof CompositeTile) {
+        } else if (this.grid[x][y] instanceof SidedTile) {
             remove(x, y, corner);
         }
     }
@@ -148,14 +148,14 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
     }
 
     public void set(int x, int y, Corner corner, int id, int data) {
-        CompositeTile tile;
-        if (grid[x][y] != null && grid[x][y] instanceof CompositeTile) {
-            tile = (CompositeTile) grid[x][y];
+        SidedTile tile;
+        if (grid[x][y] != null && grid[x][y] instanceof SidedTile) {
+            tile = (SidedTile) grid[x][y];
             tile.set(corner, id, data);
             tile.updateImageView();
         } else {
             remove(x, y);
-            tile = new CompositeTile(getTileset());
+            tile = new SidedTile(getTileset());
             this.grid[x][y] = tile;
             refreshTile(x, y);
         }
@@ -187,10 +187,10 @@ public class CompositeTilemap extends BaseTilemap<CompositeTileset> {
     }
 
     public void remove(int x, int y, Corner corner) {
-        if (grid[x][y] == null || !(grid[x][y] instanceof CompositeTile)) {
+        if (grid[x][y] == null || !(grid[x][y] instanceof SidedTile)) {
             return;
         }
-        ((CompositeTile) this.grid[x][y]).remove(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()), corner);
+        ((SidedTile) this.grid[x][y]).remove(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()), corner);
         setChanged(true);
     }
 

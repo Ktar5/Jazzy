@@ -1,4 +1,4 @@
-package com.ktar5.mapeditor.tilemaps.composite;
+package com.ktar5.mapeditor.tilemaps.sided;
 
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
@@ -11,12 +11,12 @@ import org.json.JSONObject;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public class CompositeTileset extends BaseTileset {
-    public CompositeTileset(File tilesetFile, JSONObject json) {
+public class SidedTileset extends BaseTileset {
+    public SidedTileset(File tilesetFile, JSONObject json) {
         super(tilesetFile, json);
     }
 
-    public CompositeTileset(File sourceFile, File saveFile, int paddingVertical, int paddingHorizontal, int offsetLeft, int offsetUp, int tileWidth, int tileHeight) {
+    public SidedTileset(File sourceFile, File saveFile, int paddingVertical, int paddingHorizontal, int offsetLeft, int offsetUp, int tileWidth, int tileHeight) {
         super(sourceFile, saveFile, paddingVertical, paddingHorizontal, offsetLeft, offsetUp, tileWidth, tileHeight);
     }
 

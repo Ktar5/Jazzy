@@ -5,7 +5,7 @@ import com.ktar5.mapeditor.gui.centerview.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
-import com.ktar5.mapeditor.tilemaps.composite.CompositeTileset;
+import com.ktar5.mapeditor.tilemaps.sided.SidedTileset;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.util.StringUtil;
 import javafx.stage.FileChooser;
@@ -51,7 +51,7 @@ public class TilesetManager {
     }
 
     public BaseTileset createTileset() {
-        return createTileset(WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));
+        return createTileset(WholeOrComposite.getType(WholeTileset.class, SidedTileset.class));
     }
 
     public <T extends BaseTileset> T createTileset(Class<? extends T> clazz) {
@@ -92,7 +92,7 @@ public class TilesetManager {
 
 
     public BaseTileset loadTileset() {
-        return loadTileset(WholeOrComposite.getType(WholeTileset.class, CompositeTileset.class));
+        return loadTileset(WholeOrComposite.getType(WholeTileset.class, SidedTileset.class));
     }
 
     public <T extends BaseTileset> T loadTileset(File loaderFile, Class<? extends T> clazz) {

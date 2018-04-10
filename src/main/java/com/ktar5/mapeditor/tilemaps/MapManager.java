@@ -6,7 +6,7 @@ import com.ktar5.mapeditor.gui.dialogs.CreateBaseTilemap;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.LoadDialog;
 import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
-import com.ktar5.mapeditor.tilemaps.composite.CompositeTilemap;
+import com.ktar5.mapeditor.tilemaps.sided.SidedTilemap;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.util.StringUtil;
 import lombok.Getter;
@@ -66,7 +66,7 @@ public class MapManager {
     }
 
     public BaseTilemap createMap() {
-        return createMap(WholeOrComposite.getType(WholeTilemap.class, CompositeTilemap.class));
+        return createMap(WholeOrComposite.getType(WholeTilemap.class, SidedTilemap.class));
     }
 
     public <T extends BaseTilemap> T createMap(Class<? extends T> clazz) {
@@ -101,7 +101,7 @@ public class MapManager {
     }
 
     public BaseTilemap loadMap() {
-        return loadMap(WholeOrComposite.getType(WholeTilemap.class, CompositeTilemap.class));
+        return loadMap(WholeOrComposite.getType(WholeTilemap.class, SidedTilemap.class));
     }
 
     public <T extends BaseTilemap> T loadMap(Class<? extends T> clazz) {
