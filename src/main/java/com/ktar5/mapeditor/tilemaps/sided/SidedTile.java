@@ -101,10 +101,7 @@ public class SidedTile extends Tile<SidedTileset> {
     @Override
     public void remove(Pane pane) {
         for (Side side : Side.values()) {
-            /*if (part != null && part.getImageView() != null) {
-                pane.getChildren().remove(part.getImageView());
-                part.setImageView(null);
-            }*/
+            this.setSide(side, 0);
         }
     }
 
@@ -121,6 +118,7 @@ public class SidedTile extends Tile<SidedTileset> {
                 part.updateImageView(getTileset());
             }
             if (part.getImageView() == null) {
+                System.out.println("It is null :|");
                 return;
             }
             pane.getChildren().add(part.getImageView());
@@ -168,21 +166,10 @@ public class SidedTile extends Tile<SidedTileset> {
         UP, RIGHT, DOWN, LEFT;
 
         public static Side fromRemainders(double xRemainder, double yRemainder) {
-            System.out.println();
-            System.out.println(xRemainder + "  ---  " + yRemainder);
-            if (xRemainder > .8) {
-                System.out.println("right");
-                return RIGHT;
-            } else if (xRemainder < .2) {
-                System.out.println("left");
-                return LEFT;
-            } else if (yRemainder > .8) {
-                System.out.println("up");
-                return UP;
-            } else {
-                System.out.println("down");
-                return DOWN;
-            }
+            int angle = (int) Math.toDegrees(Math.atan2(yRemainder - .5, xRemainder - .5));
+            angle += 360 + 90 + 45;
+            angle = angle % 360;
+            return Side.values()[angle / 90];
         }
 
         public int getValue(SidedTile tile) {

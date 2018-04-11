@@ -110,15 +110,12 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         Node node = event.getPickResult().getIntersectedNode();
         if (node == null || !(node instanceof PixelatedImageView)) {
             set(x, y, side, 1);
-            return;
-        }
-        if (this.grid[x][y] instanceof WholeTile) {
+        } else if (this.grid[x][y] instanceof WholeTile) {
             WholeTile tile = ((WholeTile) this.grid[x][y]);
             tile.setBlockId(tile.getBlockId() + 1);
             tile.updateImageView();
         } else if (this.grid[x][y] instanceof SidedTile) {
-            SidedTile tile = ((SidedTile) this.grid[x][y]);
-            tile.setSide(side, 3);
+            set(x, y, side, 1);
         }
     }
 
@@ -157,13 +154,11 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             tile = (SidedTile) grid[x][y];
             tile.setSide(side, id);
             tile.updateImageView();
-            System.out.println("not null");
         } else {
             remove(x, y);
             tile = new SidedTile(getTileset());
             this.grid[x][y] = tile;
             refreshTile(x, y);
-            System.out.println("yes null");
         }
     }
 
