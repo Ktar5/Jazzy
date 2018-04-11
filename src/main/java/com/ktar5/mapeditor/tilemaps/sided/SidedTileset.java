@@ -58,10 +58,10 @@ public class SidedTileset extends BaseTileset {
     @Override
     public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
-            PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(0));
+            PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(i));
             iv.setVisible(true);
-            iv.setTranslateX(((i % 7) * (this.getTileWidth())));
-            iv.setTranslateY((((i) / 7) * (this.getTileHeight())));
+            iv.setTranslateX(((i % getColumns()) * (this.getTileWidth())));
+            iv.setTranslateY((((i) / getRows()) * (this.getTileHeight())));
             pane.getChildren().add(iv);
         }
 

@@ -14,39 +14,42 @@ public class SidedTilePart implements ToolSerializeable {
     private PixelatedImageView imageView;
     
     private int baseId;
-    private int data;
+    private SidedTile.Data data;
+    //0 = none
+    //1 = outer corner
+    //2 = corner
+    //3-6 = sides
     
-    public SidedTilePart(int baseId, int data) {
+    public SidedTilePart(int baseId, SidedTile.Data data) {
         this.baseId = baseId;
         this.data = data;
     }
-    
-    public SidedTilePart(String s) {
-        if (s.length() == 1 || s.charAt(0) == '0') {
-            baseId = 0;
-            data = 0;
-        } else if (s.contains("_")) {
-            String[] split = s.split("_");
-            baseId = Integer.valueOf(split[0]);
-            data = Integer.valueOf(split[1]);
-        }
-    }
-    
+
     public void updateImageView(SidedTileset tileset) {
         if (tileset == null) {
             return;
         }
         if (this.imageView == null) {
             if (baseId == 0) {
-                this.imageView = new PixelatedImageView(null);
+                this.imageView = new PixelatedImageView(tileset.getTileImages().get(1));
             } else {
-                this.imageView = new PixelatedImageView(data);
+                int i = data.ordinal();
+                if(i == 0) return;
+                if(i > 3) i -= 3;
+                this.imageView = new PixelatedImageView(tileset.getTileImages().get((baseId * 3) + i));
+                if(data.ordinal() > SidedTile.Data.UP_SIDE.ordinal()){
+                    imageView.setRotate(i * 90);
+                }
             }
         } else {
-            this.imageView.setImage(data);
+            int i = data.ordinal();
+            if(i == 0) return;
+            if(i > 3) i -= 3;
+            this.imageView.setImage(tileset.getTileImages().get((baseId * 3) + i));
+            if(data.ordinal() > SidedTile.Data.UP_SIDE.ordinal()){
+                imageView.setRotate(i * 90);
+            }
         }
-        this.imageView.setRotate(90 * (data % 2));
-        //TODO need to make sided tileset work
     }
     
     @Override
@@ -54,7 +57,7 @@ public class SidedTilePart implements ToolSerializeable {
         if (baseId == 0) {
             return "0";
         }
-        return baseId + "_" + data;
+        return baseId + "_" + data.ordinal();
     }
     
     @Override

@@ -3,9 +3,10 @@ package com.ktar5.mapeditor.tilemaps.sided;
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
-import com.ktar5.mapeditor.tilemaps.sided.SidedTile.Corner;
+import com.ktar5.mapeditor.tilemaps.sided.SidedTile.Side;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tileset.TilesetManager;
+import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,19 +14,26 @@ import javafx.scene.layout.Pane;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class SidedTilemap extends BaseTilemap<SidedTileset> {
+    int currentId = 3;
+
     public SidedTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
     }
 
-    protected SidedTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
+    public SidedTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         super(saveFile, width, height, tileWidth, tileHeight);
     }
 
     @Override
     public void deserializeBlock(String block, int x, int y) {
+        if (block.length() == 1) {
+            this.grid[x][y] = new SidedTile(getTileset());
+            return;
+        }
         this.grid[x][y] = new SidedTile(getTileset(), block);
     }
 
@@ -48,19 +56,19 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
 
         double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
         double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
-        Corner corner = Corner.fromRemainders(xRemainder, yRemainder);
+        Side side = Side.fromRemainders(xRemainder, yRemainder);
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            leftClick(event, x, y, corner);
+            leftClick(event, x, y, side);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-            rightClick(event, x, y, corner);
+            rightClick(event, x, y, side);
         } else if (event.getButton().equals(MouseButton.MIDDLE)) {
-            middleClick(event, x, y, corner);
+            middleClick(event, x, y, side);
         }
     }
 
     private int previousX = -1, previousY = -1;
-    private Corner previousCorner = Corner.DOWN_LEFT;
+    private Side previousSide = Side.UP;
 
     @Override
     public void onDrag(MouseEvent event) {
@@ -77,19 +85,19 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
 
         double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
         double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
-        Corner corner = Corner.fromRemainders(xRemainder, yRemainder);
+        Side side = Side.fromRemainders(xRemainder, yRemainder);
 
-        if (x == previousX && y == previousY && corner == previousCorner) {
+        if (x == previousX && y == previousY && side == previousSide) {
             return;
         }
         previousX = x;
         previousY = y;
-        previousCorner = corner;
+        previousSide = side;
 
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            leftClick(event, x, y, corner);
+            leftClick(event, x, y, side);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-            rightClick(event, x, y, corner);
+            rightClick(event, x, y, side);
         }
     }
 
@@ -98,10 +106,10 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
 
     }
 
-    public void leftClick(MouseEvent event, int x, int y, Corner corner) {
+    public void leftClick(MouseEvent event, int x, int y, Side side) {
         Node node = event.getPickResult().getIntersectedNode();
         if (node == null || !(node instanceof PixelatedImageView)) {
-            set(x, y, corner, 1, 1);
+            set(x, y, side, 1);
             return;
         }
         if (this.grid[x][y] instanceof WholeTile) {
@@ -110,11 +118,11 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             tile.updateImageView();
         } else if (this.grid[x][y] instanceof SidedTile) {
             SidedTile tile = ((SidedTile) this.grid[x][y]);
-            tile.set(corner, 1);
+            tile.setSide(side, 3);
         }
     }
 
-    public void rightClick(MouseEvent event, int x, int y, Corner corner) {
+    public void rightClick(MouseEvent event, int x, int y, Side corner) {
         if (this.grid[x][y] instanceof WholeTile) {
             remove(x, y);
         } else if (this.grid[x][y] instanceof SidedTile) {
@@ -122,7 +130,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         }
     }
 
-    public void middleClick(MouseEvent event, int x, int y, Corner corner) {
+    public void middleClick(MouseEvent event, int x, int y, Side corner) {
 //        Node node = event.getPickResult().getIntersectedNode();
 //        if (node != null && node instanceof PixelatedImageView) {
 //            WholeTile wholeTile = (WholeTile) this.grid[x][y];
@@ -138,26 +146,24 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
                 if (grid[x][y] == null) {
                     continue;
                 }
-                int blockId = ((WholeTile) grid[x][y]).getBlockId();
-                if (blockId == 0) {
-                    continue;
-                }
                 grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
             }
         }
     }
 
-    public void set(int x, int y, Corner corner, int id, int data) {
+    public void set(int x, int y, Side side, int id) {
         SidedTile tile;
         if (grid[x][y] != null && grid[x][y] instanceof SidedTile) {
             tile = (SidedTile) grid[x][y];
-            tile.set(corner, id, data);
+            tile.setSide(side, id);
             tile.updateImageView();
+            System.out.println("not null");
         } else {
             remove(x, y);
             tile = new SidedTile(getTileset());
             this.grid[x][y] = tile;
             refreshTile(x, y);
+            System.out.println("yes null");
         }
     }
 
@@ -186,12 +192,24 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         setChanged(true);
     }
 
-    public void remove(int x, int y, Corner corner) {
+    public void remove(int x, int y, Side side) {
         if (grid[x][y] == null || !(grid[x][y] instanceof SidedTile)) {
             return;
         }
-        ((SidedTile) this.grid[x][y]).remove(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()), corner);
+        ((SidedTile) grid[x][y]).setSide(side, 0);
         setChanged(true);
+    }
+
+    @Override
+    @CallSuper
+    public JSONObject serialize() {
+        final JSONObject json = super.serialize();
+        if (this.getTileset() != null) {
+            Path path = Paths.get(this.getSaveFile().getPath())
+                    .relativize(Paths.get(this.getTileset().getSaveFile().getPath()));
+            json.put("tileset", path.toString());
+        }
+        return json;
     }
 
 }
