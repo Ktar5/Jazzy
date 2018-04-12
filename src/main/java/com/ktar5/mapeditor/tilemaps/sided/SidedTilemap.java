@@ -11,6 +11,8 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -19,24 +21,22 @@ import java.nio.file.Paths;
 
 public class SidedTilemap extends BaseTilemap<SidedTileset> {
     int currentId = 3;
-
+    
     public SidedTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
     }
-
+    
     public SidedTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         super(saveFile, width, height, tileWidth, tileHeight);
     }
-
+    
     @Override
     public void deserializeBlock(String block, int x, int y) {
-        if (block.length() == 1) {
-            this.grid[x][y] = new SidedTile(getTileset());
-            return;
+        if (block.length() != 1) {
+            this.grid[x][y] = new SidedTile(getTileset(), block);
         }
-        this.grid[x][y] = new SidedTile(getTileset(), block);
     }
-
+    
     @Override
     protected void loadTilesetIfExists(JSONObject json) {
         if (json.has("tileset")) {
@@ -45,7 +45,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             this.setTileset(tileset1);
         }
     }
-
+    
     @Override
     public void onClick(MouseEvent event) {
         if (getTileset() == null) {
@@ -53,11 +53,11 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         }
         int x = (int) (event.getX() / this.getTileWidth());
         int y = (int) (event.getY() / this.getTileHeight());
-
+        
         double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
         double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
         Side side = Side.fromRemainders(xRemainder, yRemainder);
-
+        
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             leftClick(event, x, y, side);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
@@ -66,46 +66,69 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             middleClick(event, x, y, side);
         }
     }
-
+    
     private int previousX = -1, previousY = -1;
     private Side previousSide = Side.UP;
-
+    
     @Override
     public void onDrag(MouseEvent event) {
         if (getTileset() == null) {
             return;
         }
-
+        
         int x = (int) (event.getX() / this.getTileWidth());
         int y = (int) (event.getY() / this.getTileHeight());
-
+        
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) {
             return;
         }
-
+        
         double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
         double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
         Side side = Side.fromRemainders(xRemainder, yRemainder);
-
+        
         if (x == previousX && y == previousY && side == previousSide) {
             return;
         }
+        
         previousX = x;
         previousY = y;
         previousSide = side;
-
+    
+        refreshHighlight(x, y, side);
+        
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             leftClick(event, x, y, side);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             rightClick(event, x, y, side);
         }
     }
-
+    
+    @Override
+    public void onDragStart(MouseEvent event) {
+        onDrag(event);
+    }
+    
     @Override
     public void onMove(MouseEvent event) {
-
+        int x = (int) (event.getX() / this.getTileWidth());
+        int y = (int) (event.getY() / this.getTileHeight());
+        
+        if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
+        
+        double xRemainder = (event.getX() / (double) this.getTileWidth()) - x;
+        double yRemainder = (event.getY() / (double) this.getTileHeight()) - y;
+        Side side = Side.fromRemainders(xRemainder, yRemainder);
+        
+        if (x == previousX && y == previousY && side == previousSide) return;
+        
+        previousX = x;
+        previousY = y;
+        previousSide = side;
+        
+        refreshHighlight(x, y, side);
     }
-
+    
     public void leftClick(MouseEvent event, int x, int y, Side side) {
         Node node = event.getPickResult().getIntersectedNode();
         if (node == null || !(node instanceof PixelatedImageView)) {
@@ -118,7 +141,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             set(x, y, side, 1);
         }
     }
-
+    
     public void rightClick(MouseEvent event, int x, int y, Side corner) {
         if (this.grid[x][y] instanceof WholeTile) {
             remove(x, y);
@@ -126,7 +149,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             remove(x, y, corner);
         }
     }
-
+    
     public void middleClick(MouseEvent event, int x, int y, Side corner) {
 //        Node node = event.getPickResult().getIntersectedNode();
 //        if (node != null && node instanceof PixelatedImageView) {
@@ -135,7 +158,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
 //            wholeTile.updateImageView();
 //        }
     }
-
+    
     @Override
     public void draw(Pane pane) {
         for (int y = getHeight() - 1; y >= 0; y--) {
@@ -147,37 +170,38 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             }
         }
     }
-
+    
     public void set(int x, int y, Side side, int id) {
         SidedTile tile;
         if (grid[x][y] != null && grid[x][y] instanceof SidedTile) {
             tile = (SidedTile) grid[x][y];
             tile.setSide(side, id);
-            tile.updateImageView();
+            System.out.println("NNOO");
         } else {
-            remove(x, y);
+            System.out.println("YYEE");
             tile = new SidedTile(getTileset());
             this.grid[x][y] = tile;
             refreshTile(x, y);
         }
     }
-
+    
     public void set(int x, int y, WholeTile tile) {
         remove(x, y);
         this.grid[x][y] = tile;
         refreshTile(x, y);
     }
-
+    
     private void refreshTile(int x, int y) {
         if (this.grid[x][y] == null) {
             return;
         }
+        System.out.println("refreshing tile");
         this.grid[x][y].updateImageView();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);
     }
-
+    
     public void remove(int x, int y) {
         if (grid[x][y] == null) {
             return;
@@ -186,15 +210,15 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         this.grid[x][y] = null;
         setChanged(true);
     }
-
+    
     public void remove(int x, int y, Side side) {
         if (grid[x][y] == null || !(grid[x][y] instanceof SidedTile)) {
             return;
         }
-        ((SidedTile) grid[x][y]).setSide(side, 0);
+        ((SidedTile) grid[x][y]).removeSide(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()), side);
         setChanged(true);
     }
-
+    
     @Override
     @CallSuper
     public JSONObject serialize() {
@@ -206,5 +230,21 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         }
         return json;
     }
-
+    
+    private Polygon triangle;
+    
+    private void refreshHighlight(int x, int y, Side side) {
+        if (triangle == null) {
+            triangle = new Polygon(0, 0,
+                    this.getTileWidth() / 2, this.getTileHeight() / 2,
+                    this.getTileWidth(), 0);
+            triangle.setFill(Color.AQUA.deriveColor(0, 1, 1, .5f));
+            EditorCoordinator.get().getEditor().getTabDrawingPane(getId()).getChildren().add(triangle);
+        }
+        triangle.toFront();
+        triangle.setRotate(90 * side.ordinal());
+        triangle.setTranslateX(x * this.getTileWidth() + (this.getTileWidth() * side.x));
+        triangle.setTranslateY(y * this.getTileHeight() + (this.getTileHeight() * side.y));
+    }
+    
 }

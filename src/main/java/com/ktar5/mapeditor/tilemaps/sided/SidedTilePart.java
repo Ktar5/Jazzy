@@ -24,29 +24,27 @@ public class SidedTilePart implements ToolSerializeable {
         this.baseId = baseId;
         this.data = data;
     }
-
+    
     public void updateImageView(SidedTileset tileset) {
         if (tileset == null) {
             return;
         }
         if (this.imageView == null) {
-            if (baseId == 0) {
-                this.imageView = new PixelatedImageView(tileset.getTileImages().get(1));
-            } else {
-                int i = data.ordinal();
-                if(i == 0) return;
-                if(i > 3) i -= 3;
-                this.imageView = new PixelatedImageView(tileset.getTileImages().get((baseId * 3) + i));
-                if(data.ordinal() > SidedTile.Data.UP_SIDE.ordinal()){
-                    imageView.setRotate(i * 90);
-                }
+            int i = data.ordinal();
+            if (i == 0) return;
+            if (i > 3) i -= 3;
+            System.out.println((baseId * 3) + i);
+            this.imageView = new PixelatedImageView(tileset.getTileImages().get((baseId * 3) + i));
+            if (data.ordinal() > SidedTile.Data.UP_SIDE.ordinal()) {
+                imageView.setRotate(i * 90);
             }
         } else {
             int i = data.ordinal();
-            if(i == 0) return;
-            if(i > 3) i -= 3;
+            if (i == 0) return;
+            if (i > 3) i -= 3;
+            System.out.println((baseId * 3) + i);
             this.imageView.setImage(tileset.getTileImages().get((baseId * 3) + i));
-            if(data.ordinal() > SidedTile.Data.UP_SIDE.ordinal()){
+            if (data.ordinal() > SidedTile.Data.UP_SIDE.ordinal()) {
                 imageView.setRotate(i * 90);
             }
         }

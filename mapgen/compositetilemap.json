@@ -4,18 +4,18 @@
         "y": 0
     },
     "tileset": "..\\compositetileset.json",
-    "tileWidth": 16,
+    "tileWidth": 32,
     "dimensions": {
         "width": 6,
         "height": 6
     },
-    "tileHeight": 16,
+    "tileHeight": 32,
     "tilemap": [
-        "[0/0/0/0],0,0,0,0,0",
         "0,0,0,0,0,0",
         "0,0,0,0,0,0",
         "0,0,0,0,0,0",
         "0,0,0,0,0,0",
-        "0,0,0,0,0,0"
+        "0,0,0,0,0,0",
+        "0,0,0,[1_0/1_4/0/1_3],0,0"
     ]
 }
