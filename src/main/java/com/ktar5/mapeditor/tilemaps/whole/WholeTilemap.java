@@ -161,7 +161,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         }
         remove(x, y);
         this.grid[x][y] = tile;
-        this.grid[x][y].updateImageView();
+        this.grid[x][y].updateAllImageViews();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);
@@ -174,11 +174,11 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             WholeTile wholeTile = (WholeTile) this.grid[x][y];
             wholeTile.setBlockId(currentId);
             wholeTile.setDirection(currentData);
-            wholeTile.updateImageView();
+            wholeTile.updateAllImageViews();
         } else {
             remove(x, y);
             this.grid[x][y] = new WholeTile(currentId, currentData, getTileset());
-            this.grid[x][y].updateImageView();
+            this.grid[x][y].updateAllImageViews();
             Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
             this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileWidth());
         }

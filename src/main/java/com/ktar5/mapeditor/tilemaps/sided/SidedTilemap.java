@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class SidedTilemap extends BaseTilemap<SidedTileset> {
-    int currentId = 3;
+    int currentId = 1;
     
     public SidedTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
@@ -132,13 +132,13 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
     public void leftClick(MouseEvent event, int x, int y, Side side) {
         Node node = event.getPickResult().getIntersectedNode();
         if (node == null || !(node instanceof PixelatedImageView)) {
-            set(x, y, side, 1);
+            set(x, y, side, currentId);
         } else if (this.grid[x][y] instanceof WholeTile) {
             WholeTile tile = ((WholeTile) this.grid[x][y]);
             tile.setBlockId(tile.getBlockId() + 1);
-            tile.updateImageView();
+            tile.updateAllImageViews();
         } else if (this.grid[x][y] instanceof SidedTile) {
-            set(x, y, side, 1);
+            set(x, y, side, currentId);
         }
     }
     
@@ -155,7 +155,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
 //        if (node != null && node instanceof PixelatedImageView) {
 //            WholeTile wholeTile = (WholeTile) this.grid[x][y];
 //            wholeTile.setDirection((wholeTile.getDirection() + 1) % 4);
-//            wholeTile.updateImageView();
+//            wholeTile.updateAllImageViews();
 //        }
     }
     
@@ -180,6 +180,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         } else {
             System.out.println("YYEE");
             tile = new SidedTile(getTileset());
+            tile.setSide(side, id);
             this.grid[x][y] = tile;
             refreshTile(x, y);
         }
@@ -195,8 +196,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         if (this.grid[x][y] == null) {
             return;
         }
-        System.out.println("refreshing tile");
-        this.grid[x][y].updateImageView();
+        this.grid[x][y].updateAllImageViews();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);

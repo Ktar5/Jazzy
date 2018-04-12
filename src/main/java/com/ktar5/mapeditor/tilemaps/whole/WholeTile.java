@@ -45,7 +45,7 @@ public class WholeTile extends Tile<WholeTileset> {
                 direction == wholeTile.direction;
     }
 
-    public void updateImageView() {
+    public void updateAllImageViews() {
         if (this.imageView == null) {
             this.imageView = new PixelatedImageView(getTileset().getTileImages().get(blockId));
         } else {
@@ -70,7 +70,7 @@ public class WholeTile extends Tile<WholeTileset> {
     @Override
     public void draw(Pane pane, int actualX, int actualY) {
         if (imageView == null) {
-            updateImageView();
+            updateAllImageViews();
         }
         imageView.setTranslateX(actualX);
         imageView.setTranslateY(actualY);
