@@ -1,6 +1,6 @@
 package com.ktar5.mapeditor.tilemaps.sided;
 
-import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
+import com.ktar5.mapeditor.gui.utils.TilesetImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
@@ -15,18 +15,18 @@ public class SidedTileset extends BaseTileset {
     public SidedTileset(File tilesetFile, JSONObject json) {
         super(tilesetFile, json);
     }
-
+    
     public SidedTileset(File sourceFile, File saveFile, int paddingVertical, int paddingHorizontal, int offsetLeft, int offsetUp, int tileWidth, int tileHeight) {
         super(sourceFile, saveFile, paddingVertical, paddingHorizontal, offsetLeft, offsetUp, tileWidth, tileHeight);
     }
-
+    
     @Override
     public void getTilesetImages(BufferedImage image) {
         int index = 0;
-
+        
         int columns = (image.getWidth() - getOffsetLeft()) / (getTileWidth() + getPaddingHorizontal());
         int rows = (image.getHeight() - getOffsetUp()) / (getTileHeight() + getPaddingVertical());
-
+        
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
                 BufferedImage subImage = image.getSubimage(
@@ -39,32 +39,32 @@ public class SidedTileset extends BaseTileset {
             }
         }
     }
-
+    
     @Override
     public void onClick(MouseEvent event) {
-
+    
     }
-
+    
     @Override
     public void onDrag(MouseEvent event) {
-
+    
     }
-
+    
     @Override
     public void onMove(MouseEvent event) {
-
+    
     }
-
+    
     @Override
     public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
-            PixelatedImageView iv = new PixelatedImageView(this.getTileImages().get(i));
+            TilesetImageView iv = new TilesetImageView(this, i);
             iv.setVisible(true);
             iv.setTranslateX(((i % getColumns()) * (this.getTileWidth())));
             iv.setTranslateY((((i) / getRows()) * (this.getTileHeight())));
             pane.getChildren().add(iv);
         }
-
+        
     }
-
+    
 }

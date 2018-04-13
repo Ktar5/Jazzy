@@ -8,6 +8,7 @@ import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TilesetSidebar;
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
+import com.ktar5.mapeditor.tilemaps.sided.SidedTilemap;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTilemap;
 import com.ktar5.mapeditor.util.Tabbable;
 import javafx.scene.control.SplitPane;
@@ -82,10 +83,12 @@ public abstract class TilemapTab extends AbstractTab {
         @Handler
         public void onSelectTile(TileSelectEvent event) {
             if (event.getTab().equals(this.getTabId())) {
+                System.out.println("select");
                 Image image = event.getTileset().getTileImages().get(event.getId());
                 getTilesetSidebar().getSelectedTileView().setTile(new PixelatedImageView(image));
-                WholeTilemap tilemap = ((WholeTilemap) getTabbable());
-                tilemap.setCurrentData(event.getId(), 0);
+                SidedTilemap tilemap = ((SidedTilemap) getTabbable());
+                System.out.println((event.getId() / 3) + 1);
+                tilemap.setCurrentData((event.getId() / 3) + 1);
             }
         }
     }

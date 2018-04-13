@@ -29,12 +29,12 @@ public class MapManager {
     private HashMap<UUID, BaseTilemap> openMaps;
     @Getter
     private UUID currentLevel = null;
-
+    
     public MapManager(File dir) {
         instance = this;
-
+        
         openMaps = new HashMap<>();
-
+        
         //Initialize tinylog
         Configurator.defaultConfig()
                 .writer(new ConsoleWriter())
@@ -43,39 +43,39 @@ public class MapManager {
                 .formatPattern("{date:mm:ss:SSS} {class_name}.{method}() [{level}]: {message}")
                 .activate();
     }
-
+    
     public static MapManager get() {
         if (instance == null) {
             throw new RuntimeException("Please initialize tile manager first.");
         }
         return instance;
     }
-
+    
     public void remove(UUID uuid) {
         if (this.openMaps.containsKey(uuid)) {
             Logger.debug("Removed tilemap: " + getMap(uuid).getName());
             openMaps.remove(uuid);
         }
     }
-
+    
     public BaseTilemap getMap(UUID id) {
         if (!openMaps.containsKey(id)) {
             throw new RuntimeException("Tilemap with id: " + id + " doesn't exist");
         }
         return openMaps.get(id);
     }
-
+    
     public BaseTilemap createMap() {
         return createMap(WholeOrComposite.getType(WholeTilemap.class, SidedTilemap.class));
     }
-
+    
     public <T extends BaseTilemap> T createMap(Class<? extends T> clazz) {
         CreateBaseTilemap createDialog = CreateBaseTilemap.create();
         if (createDialog == null) {
             new GenericAlert("Something went wrong during the process of creating the map, please try again.");
             return null;
         }
-
+        
         File file = createDialog.getFile();
         for (BaseTilemap baseTilemap1 : openMaps.values()) {
             if (baseTilemap1.getSaveFile().getAbsolutePath().equals(file.getAbsolutePath())) {
@@ -84,7 +84,7 @@ public class MapManager {
                 return null;
             }
         }
-
+        
         T tilemap;
         try {
             Constructor<? extends T> constructor = clazz.getConstructor(File.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
@@ -94,16 +94,16 @@ public class MapManager {
             e.printStackTrace();
             return null;
         }
-
+        
         openMaps.put(tilemap.getId(), tilemap);
         EditorCoordinator.get().getEditor().addTab(new TilemapTab.WholeTilemapTab(tilemap.getId()));
         return tilemap;
     }
-
+    
     public BaseTilemap loadMap() {
         return loadMap(WholeOrComposite.getType(WholeTilemap.class, SidedTilemap.class));
     }
-
+    
     public <T extends BaseTilemap> T loadMap(Class<? extends T> clazz) {
         File loaderFile = LoadDialog.create("Load a tilemap", "Json Tilemap File", "*.json");
         if (loaderFile == null) {
@@ -113,15 +113,15 @@ public class MapManager {
             new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
             return null;
         }
-
+        
         Logger.info("Beginning to load map from file: " + loaderFile.getPath());
-
+        
         String data = StringUtil.readFileAsString(loaderFile);
         if (data == null || data.isEmpty()) {
             Logger.error("Data from file: " + loaderFile.getPath() + " is either null or empty.");
             return null;
         }
-
+        
         T tilemap;
         try {
             Constructor<? extends T> constructor = clazz.getConstructor(File.class, JSONObject.class);
@@ -130,7 +130,7 @@ public class MapManager {
             e.printStackTrace();
             return null;
         }
-
+        
         for (BaseTilemap temp : openMaps.values()) {
             if (temp.getSaveFile().getPath().equals(tilemap.getSaveFile().getPath())) {
                 new GenericAlert("Tilemap with path " + tilemap.getSaveFile().getAbsolutePath() + " already loaded");
@@ -138,26 +138,26 @@ public class MapManager {
             }
         }
         openMaps.put(tilemap.getId(), tilemap);
-        EditorCoordinator.get().getEditor().addTab(new TilemapTab.WholeTilemapTab(tilemap.getId()));
+        EditorCoordinator.get().getEditor().addTab(tilemap.getNewTilemapTab());
         tilemap.draw(EditorCoordinator.get().getEditor().getTabDrawingPane(tilemap.getId()));
-
+        
         Logger.info("Finished loading map: " + tilemap.getName());
         return tilemap;
     }
-
+    
     public void saveMap(UUID id) {
         Logger.info("Starting save for baseTilemap (" + id + ")");
-
+        
         if (!openMaps.containsKey(id)) {
             Logger.info("Map not loaded so could not be saved id: (" + id + ")");
             return;
         }
-
+        
         BaseTilemap baseTilemap = openMaps.get(id);
         if (baseTilemap.getSaveFile().exists()) {
             baseTilemap.getSaveFile().delete();
         }
-
+        
         try {
             baseTilemap.getSaveFile().createNewFile();
             FileWriter writer = new FileWriter(baseTilemap.getSaveFile());
@@ -168,12 +168,12 @@ public class MapManager {
             e.printStackTrace();
             return;
         }
-
+        
         Logger.info("Finished save for baseTilemap (" + id + ") in " + "\"" + baseTilemap.getSaveFile() + "\"");
     }
-
+    
     public BaseTilemap getCurrent() {
         return this.getMap(getCurrentLevel());
     }
-
+    
 }

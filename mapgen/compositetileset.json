@@ -7,7 +7,7 @@
         "left": 2,
         "up": 2
     },
-    "tileWidth": 16,
+    "tileWidth": 8,
     "sourceFile": "..\\testimage.png",
-    "tileHeight": 16
+    "tileHeight": 8
 }

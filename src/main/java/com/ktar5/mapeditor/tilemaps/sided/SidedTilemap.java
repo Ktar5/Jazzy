@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.sided;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
+import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.sided.SidedTile.Side;
@@ -28,6 +29,11 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
     
     public SidedTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         super(saveFile, width, height, tileWidth, tileHeight);
+    }
+    
+    @Override
+    public TilemapTab getNewTilemapTab() {
+        return new TilemapTab.CompositeTilemapTab(getId());
     }
     
     @Override
@@ -94,7 +100,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         previousX = x;
         previousY = y;
         previousSide = side;
-    
+        
         refreshHighlight(x, y, side);
         
         if (event.getButton().equals(MouseButton.PRIMARY)) {
@@ -132,13 +138,13 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
     public void leftClick(MouseEvent event, int x, int y, Side side) {
         Node node = event.getPickResult().getIntersectedNode();
         if (node == null || !(node instanceof PixelatedImageView)) {
-            set(x, y, side, currentId);
+            set(x, y, side);
         } else if (this.grid[x][y] instanceof WholeTile) {
             WholeTile tile = ((WholeTile) this.grid[x][y]);
             tile.setBlockId(tile.getBlockId() + 1);
             tile.updateAllImageViews();
         } else if (this.grid[x][y] instanceof SidedTile) {
-            set(x, y, side, currentId);
+            set(x, y, side);
         }
     }
     
@@ -171,16 +177,14 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         }
     }
     
-    public void set(int x, int y, Side side, int id) {
+    public void set(int x, int y, Side side) {
         SidedTile tile;
         if (grid[x][y] != null && grid[x][y] instanceof SidedTile) {
             tile = (SidedTile) grid[x][y];
-            tile.setSide(side, id);
-            System.out.println("NNOO");
+            tile.setSide(side, currentId);
         } else {
-            System.out.println("YYEE");
             tile = new SidedTile(getTileset());
-            tile.setSide(side, id);
+            tile.setSide(side, currentId);
             this.grid[x][y] = tile;
             refreshTile(x, y);
         }
@@ -196,7 +200,6 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         if (this.grid[x][y] == null) {
             return;
         }
-        this.grid[x][y].updateAllImageViews();
         Pane pane = EditorCoordinator.get().getEditor().getTabDrawingPane(getId());
         this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);
@@ -215,7 +218,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         if (grid[x][y] == null || !(grid[x][y] instanceof SidedTile)) {
             return;
         }
-        ((SidedTile) grid[x][y]).removeSide(EditorCoordinator.get().getEditor().getTabDrawingPane(getId()), side);
+        ((SidedTile) grid[x][y]).removeSide(side);
         setChanged(true);
     }
     
@@ -247,4 +250,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         triangle.setTranslateY(y * this.getTileHeight() + (this.getTileHeight() * side.y));
     }
     
+    public void setCurrentData(int id) {
+        this.currentId = id;
+    }
 }

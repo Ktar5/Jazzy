@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
+import com.ktar5.mapeditor.gui.utils.TilesetImageView;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
@@ -58,7 +59,7 @@ public class WholeTileset extends BaseTileset {
     @Override
     public void draw(Pane pane) {
         for (int i = 0; i < this.getTileImages().size; i++) {
-            WholeTilesetImageView iv = new WholeTilesetImageView(this, i);
+            TilesetImageView iv = new TilesetImageView(this, i);
             iv.setVisible(true);
             iv.setTranslateX(((i % getColumns()) * (this.getTileWidth())));
             iv.setTranslateY((((i) / getColumns()) * (this.getTileHeight())));
@@ -66,20 +67,5 @@ public class WholeTileset extends BaseTileset {
         }
 
     }
-
-
-    @Getter
-    public static class WholeTilesetImageView extends PixelatedImageView {
-        private WholeTileset tileset;
-        private int tileId;
-
-        public WholeTilesetImageView(WholeTileset tileset, int tileId) {
-            super(tileset.getTileImages().get(tileId));
-            this.tileId = tileId;
-            this.tileset = tileset;
-        }
-
-    }
-
 
 }

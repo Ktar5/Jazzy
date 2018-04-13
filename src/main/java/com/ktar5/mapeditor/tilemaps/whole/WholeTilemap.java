@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.tilemaps.whole;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
+import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tileset.TilesetManager;
@@ -34,7 +35,12 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
     public WholeTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         super(saveFile, width, height, tileWidth, tileHeight);
     }
-
+    
+    @Override
+    public TilemapTab getNewTilemapTab() {
+        return new TilemapTab.WholeTilemapTab(getId());
+    }
+    
     @Override
     public void loadTilesetIfExists(JSONObject json) {
         if (json.has("tileset")) {

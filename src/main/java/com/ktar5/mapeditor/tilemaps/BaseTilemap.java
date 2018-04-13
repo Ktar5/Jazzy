@@ -58,7 +58,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
                 deserializeBlock(blocks[y][x], x, y);
             }
         }
-
+    
     }
 
     public BaseTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
@@ -71,6 +71,8 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         this.id = UUID.randomUUID();
     }
 
+    public abstract TilemapTab getNewTilemapTab();
+    
     public boolean isInMapRange(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
