@@ -15,12 +15,7 @@ public class Main extends Application {
     public static Root root;
 
     public static void main(String[] args) {
-        File file = new File("D:\\GameDev\\Projects\\TileJumpGame\\tools\\mapgen");
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        new MapManager(file);
-
+        new MapManager();
         launch(args);
     }
 

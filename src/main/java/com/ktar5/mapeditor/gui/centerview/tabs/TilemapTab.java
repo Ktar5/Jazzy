@@ -74,8 +74,8 @@ public abstract class TilemapTab extends AbstractTab {
     }
 
     @Listener
-    public static class CompositeTilemapTab extends TilemapTab {
-        public CompositeTilemapTab(UUID tilemap) {
+    public static class SidedTilemapTab extends TilemapTab {
+        public SidedTilemapTab(UUID tilemap) {
             super(tilemap);
             EventCoordinator.get().registerListener(this);
         }

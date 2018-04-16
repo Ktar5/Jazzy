@@ -45,6 +45,7 @@ public class WholeTile extends Tile<WholeTileset> {
                 direction == wholeTile.direction;
     }
 
+    @Override
     public void updateAllImageViews() {
         if (this.imageView == null) {
             this.imageView = new PixelatedImageView(getTileset().getTileImages().get(blockId));

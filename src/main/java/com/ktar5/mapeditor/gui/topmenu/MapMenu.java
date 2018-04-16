@@ -2,7 +2,7 @@ package com.ktar5.mapeditor.gui.topmenu;
 
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
-import com.ktar5.mapeditor.gui.dialogs.WholeOrComposite;
+import com.ktar5.mapeditor.gui.dialogs.SelectType;
 import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.MapManager;
 import com.ktar5.mapeditor.tilemaps.sided.SidedTileset;
@@ -24,7 +24,7 @@ public class MapMenu extends Menu {
             final Tab selectedItem = EditorCoordinator.get().getEditor().getSelectionModel().getSelectedItem();
             if (selectedItem instanceof TilemapTab) {
                 BaseTileset baseTileset = TilesetManager.get().loadTileset(
-                        WholeOrComposite.getType(WholeTileset.class, SidedTileset.class)
+                        SelectType.getType(WholeTileset.class, SidedTileset.class)
                 );
                 BaseTilemap map = MapManager.get().getMap(((TilemapTab) selectedItem).getTabId());
                 map.setTileset(baseTileset);

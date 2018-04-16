@@ -33,6 +33,13 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     @Setter
     private boolean dragging;
 
+    /**
+     * This constructor is used to deserialize tilemaps.
+     * It **MUST** be overriden by all subclasses.
+     *
+     * @param saveFile the file used for saving
+     * @param json the json serialization of the tilemap
+     */
     public BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
                 json.getJSONObject("dimensions").getInt("height"),
@@ -61,6 +68,16 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     
     }
 
+    /**
+     * This constructor is used to initialize tilemaps on creation.
+     * It **MUST** be overrided by all subclasses.
+     *
+     * @param saveFile the file used for saving
+     * @param width the width (in tiles) of the tilemap
+     * @param height the height (in tiles) of the tilemap
+     * @param tileWidth the width (in pixels) of a single tile
+     * @param tileHeight the height (in pixels) of a single tile
+     */
     public BaseTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         this.width = width;
         this.height = height;
@@ -71,12 +88,25 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         this.id = UUID.randomUUID();
     }
 
+    /**
+     * Gets an instance of the TilemapTab used to set the layout and display
+     * the content of the tilemap
+     * @return a new instance of a TilemapTab unique to the implementation
+     */
     public abstract TilemapTab getNewTilemapTab();
-    
+
+    /**
+     * @return true if the x and y are within the bounds of the map
+     */
     public boolean isInMapRange(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
+    /**
+     * Expand the map by n tiles in a direction
+     * @param n amount of tiles to expand
+     * @param direction direction to place the new tiles
+     */
     public void expandMap(int n, Direction direction) {
         int heightTmpMap = width + (direction.y * n);
         int widthTmpMap = height + (direction.x * n);
@@ -90,6 +120,10 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         setChanged(true);
     }
 
+    /**
+     * Set the tileset of this tilemap to the passed parameter
+     * @param tileset the new tileset to set to this map
+     */
     public void setTileset(S tileset) {
         this.tileset = tileset;
         AbstractTab currentTab = EditorCoordinator.get().getEditor().getCurrentTab();
@@ -98,12 +132,28 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         }
     }
 
+    /**
+     * This method is called to deserialize each comma-separated string in the
+     * "tilemap" section of the serialized json file
+     * @param block the string representing a single element of the comma-separated string in
+     *              the serialized json file
+     */
     protected abstract void deserializeBlock(String block, int x, int y);
 
+    /**
+     * This method should check if the tileset exists within the jsonobject.
+     * If it does, it should deserialize and load it
+     * @param object the JSONMObject representing the entire tilemap
+     */
     protected abstract void loadTilesetIfExists(JSONObject object);
 
     @Override
     @CallSuper
+    /**
+     * Serializes the information stored in the tilemap to a json file.
+     * Subclasses should override this and provide specific implementations.
+     * NOTE: all subclasses must call super or else code won't compile.
+     */
     public JSONObject serialize() {
         JSONObject json = new JSONObject();
 
@@ -141,26 +191,45 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     }
 
     @Override
+    /**
+     * Retrieves dimensions of the tilemap. Format is as follows:
+     * pair(
+     *      pair(total width, total height),
+     *      pair(tile width, tile height)
+     *   )
+     */
     public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions() {
         return new Pair<>(new Pair<>(getTileWidth() * getWidth(), getTileHeight() * getHeight()), new Pair<>(getTileWidth(), getTileHeight()));
     }
 
     @Override
+    /**
+     * Saves the map to a file.
+     */
     public void save() {
         MapManager.get().saveMap(getId());
     }
 
     @Override
+    /**
+     * Gets the name of the map.
+     */
     public String getName() {
         return getSaveFile().getName();
     }
 
     @Override
+    /**
+     * Removes the map from the application.
+     */
     public void remove() {
         MapManager.get().remove(getId());
     }
 
     @Override
+    /**
+     * Change the save file to a different file.
+     */
     public void updateSaveFile(File file) {
         this.saveFile = file;
     }

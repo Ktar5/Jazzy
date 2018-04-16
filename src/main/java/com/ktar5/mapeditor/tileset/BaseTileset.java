@@ -22,6 +22,7 @@ import java.util.UUID;
 @Getter
 public abstract class BaseTileset implements Tabbable {
     public static final int SCALE = 1;
+
     private UUID id;
     private IntMap<Image> tileImages;
     private Image originalImage;
@@ -33,6 +34,13 @@ public abstract class BaseTileset implements Tabbable {
     @Setter
     private boolean dragging;
 
+    /**
+     * This constructor is used to deserialize tilesets.
+     * It **MUST** be overriden by all subclasses.
+     *
+     * @param saveFile the file used for saving
+     * @param json the json serialization of the tileset
+     */
     public BaseTileset(File saveFile, JSONObject json) {
         this(Paths.get(saveFile.getPath()).resolve(json.getString("sourceFile")).toFile(),
                 saveFile,
@@ -44,6 +52,19 @@ public abstract class BaseTileset implements Tabbable {
                 json.getInt("tileHeight"));
     }
 
+    /**
+     * This constructor is used to initialize tilesets on creation.
+     * It **MUST** be overrided by all subclasses.
+     *
+     * @param sourceFile the image file representing this tileset
+     * @param saveFile the file that the tileset should be saved to
+     * @param paddingVertical the vertical padding between each tile in pixels (excluding the very top)
+     * @param paddingHorizontal the horizontal padding between each tile in pixels (excluding the very left)
+     * @param offsetLeft the offset, in pixels, from the left edge of the image where the tiles start
+     * @param offsetUp the offset, in pixels, from the top edge of the image where the tiles start
+     * @param tileWidth the width of each tile in pixels
+     * @param tileHeight the height of each tile in pixels
+     */
     public BaseTileset(File sourceFile, File saveFile, int paddingVertical, int paddingHorizontal,
                        int offsetLeft, int offsetUp, int tileWidth, int tileHeight) {
         this.sourceFile = sourceFile;
@@ -75,14 +96,30 @@ public abstract class BaseTileset implements Tabbable {
         this.paddingVertical = paddingVertical * SCALE;
     }
 
+    /**
+     * Scales an image using a proper image scaling library.
+     *
+     * @param sbi the BufferedImage to be scaled
+     * @param factor the scalar to scale by
+     * @return the BufferedImage
+     */
     public static BufferedImage scale(BufferedImage sbi, int factor) {
         return Scalr.resize(sbi, Scalr.Method.SPEED, sbi.getWidth() * factor);
     }
 
+    /**
+     * Initializes and sets {@link BaseTileset#tileImages}
+     * @param image
+     */
     public abstract void getTilesetImages(BufferedImage image);
 
     @Override
     @CallSuper
+    /**
+     * Serializes the information stored in the tileset to a json file.
+     * Subclasses should override this and provide specific implementations.
+     * NOTE: all subclasses must call super or else code won't compile.
+     */
     public JSONObject serialize() {
         JSONObject json = new JSONObject();
 
@@ -106,36 +143,61 @@ public abstract class BaseTileset implements Tabbable {
     }
 
     @Override
+    /**
+     * Retrieves dimensions of the tabbable. Format is as follows:
+     * pair(
+     *      pair(total width, total height),
+     *      pair(tile width, tile height)
+     *   )
+     */
     public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions() {
         return new Pair<>(new Pair<>(dimensionX, dimensionY), new Pair<>(getTileWidth(), getTileHeight()));
     }
 
     @Override
+    /**
+     * Removes the map from the application.
+     */
     public void remove() {
         TilesetManager.get().remove(getId());
     }
 
     @Override
+    /**
+     * Returns a UUID that should be randomly generated in the constructor of any subclass
+     */
     public UUID getId() {
         return this.id;
     }
 
     @Override
+    /**
+     * Saves the tileset to a file.
+     */
     public void save() {
         TilesetManager.get().saveTileset(getId());
     }
 
     @Override
+    /**
+     * Gets the name of the tileset.
+     */
     public String getName() {
         return getSaveFile().getName();
     }
 
     @Override
+    /**
+     * Returns the save file
+     */
     public File getSaveFile() {
         return saveFile;
     }
 
     @Override
+    /**
+     * Change the save file to a different file.
+     */
     public void updateSaveFile(File file) {
         this.saveFile = file;
     }

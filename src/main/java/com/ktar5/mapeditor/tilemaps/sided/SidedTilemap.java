@@ -33,7 +33,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
     
     @Override
     public TilemapTab getNewTilemapTab() {
-        return new TilemapTab.CompositeTilemapTab(getId());
+        return new TilemapTab.SidedTilemapTab(getId());
     }
     
     @Override
