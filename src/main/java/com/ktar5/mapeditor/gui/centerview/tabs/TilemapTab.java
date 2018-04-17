@@ -2,7 +2,7 @@ package com.ktar5.mapeditor.gui.centerview.tabs;
 
 import com.ktar5.mapeditor.coordination.EventCoordinator;
 import com.ktar5.mapeditor.gui.centerview.EditorPane;
-import com.ktar5.mapeditor.gui.centerview.sidebars.DetailsSidebar;
+import com.ktar5.mapeditor.gui.centerview.sidebars.properties.PropertiesSidebar;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TileSelectEvent;
 import com.ktar5.mapeditor.gui.centerview.sidebars.tileset.TilesetSidebar;
 import com.ktar5.mapeditor.gui.utils.PixelatedImageView;
@@ -21,14 +21,15 @@ import java.util.UUID;
 
 @Getter
 public abstract class TilemapTab extends AbstractTab {
-    private DetailsSidebar detailsSidebar;
+    private PropertiesSidebar detailsSidebar;
     private TilesetSidebar tilesetSidebar;
     
     public TilemapTab(UUID tilemap) {
         super(tilemap);
         
         SplitPane sp = new SplitPane();
-        sp.getItems().addAll(detailsSidebar = new DetailsSidebar(), this.pane, tilesetSidebar = new TilesetSidebar());
+        sp.getItems().addAll(detailsSidebar = new PropertiesSidebar(MapManager.get().getMap(getTabId()).getRootProperty()),
+                this.pane, tilesetSidebar = new TilesetSidebar());
         sp.setDividerPositions(0.2, .75);
         
         

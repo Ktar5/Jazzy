@@ -1,30 +1,27 @@
 package com.ktar5.mapeditor.gui.centerview.tabs;
 
 import com.ktar5.mapeditor.gui.centerview.EditorPane;
-import com.ktar5.mapeditor.gui.centerview.sidebars.DetailsSidebar;
+import com.ktar5.mapeditor.gui.centerview.sidebars.properties.PropertiesSidebar;
 import com.ktar5.mapeditor.tileset.TilesetManager;
 import com.ktar5.mapeditor.util.Tabbable;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.SplitPane;
 import lombok.Getter;
 
 import java.util.UUID;
 
 @Getter
 public class TilesetTab extends AbstractTab {
-    private HBox viewportLayout;
-    private DetailsSidebar detailsSidebar;
+    private PropertiesSidebar propertiesSidebar;
     
     public TilesetTab(UUID tilemap) {
         super(tilemap);
-        viewportLayout = new HBox();
-        VBox.setVgrow(viewportLayout, Priority.ALWAYS);
-        viewportLayout.getChildren().addAll(
-                detailsSidebar = new DetailsSidebar(),
-                this.pane
-        );
-        this.setContent(viewportLayout);
+        propertiesSidebar = new PropertiesSidebar(TilesetManager.get().getTileset(getTabId()).getRootProperty());
+        
+        SplitPane sp = new SplitPane();
+        sp.getItems().addAll(propertiesSidebar, this.pane);
+        sp.setDividerPositions(.3);
+        
+        this.setContent(sp);
     }
     
     @Override
