@@ -1,12 +1,23 @@
 {
-  "padding": {
-    "horizontal": 2,
-    "vertical": 2
-  },
-  "offset": {
-    "left": 2,
-    "up": 2
-  },
-  "tileSize": 16,
-  "sourceFile": "..\\tilemapimage.png"
+    "padding": {
+        "horizontal": 2,
+        "vertical": 2
+    },
+    "offset": {
+        "left": 2,
+        "up": 2
+    },
+    "tileWidth": 16,
+    "sourceFile": "..\\tilemapimage.png",
+    "properties": {"abc": {
+        "123": {
+            "elmo": "Tickle mewwww",
+            "why": "Tell me I'm pretty"
+        },
+        "456": {
+            "elmo": "Tickle me",
+            "why": "Tell me I'm pretty"
+        }
+    }},
+    "tileHeight": 16
 }

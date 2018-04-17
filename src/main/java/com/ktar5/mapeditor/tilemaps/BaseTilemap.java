@@ -3,6 +3,7 @@ package com.ktar5.mapeditor.tilemaps;
 import com.ktar5.mapeditor.coordination.EditorCoordinator;
 import com.ktar5.mapeditor.gui.centerview.tabs.AbstractTab;
 import com.ktar5.mapeditor.gui.centerview.tabs.TilemapTab;
+import com.ktar5.mapeditor.properties.RootProperty;
 import com.ktar5.mapeditor.tileset.BaseTileset;
 import com.ktar5.mapeditor.tileset.Tile;
 import com.ktar5.mapeditor.util.Tabbable;
@@ -22,30 +23,29 @@ import java.util.UUID;
 
 @Getter
 public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
+    private RootProperty rootProperty;
     private final int width, height, tileWidth, tileHeight;
     @Getter(AccessLevel.NONE)
     protected Tile[][] grid;
     private UUID id;
     private File saveFile;
-    @Setter
-    private int xStart = 0, yStart = 0;
     private S tileset;
     @Setter
     private boolean dragging;
-
+    
     /**
      * This constructor is used to deserialize tilemaps.
      * It **MUST** be overriden by all subclasses.
      *
      * @param saveFile the file used for saving
-     * @param json the json serialization of the tilemap
+     * @param json     the json serialization of the tilemap
      */
     public BaseTilemap(File saveFile, JSONObject json) {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
                 json.getJSONObject("dimensions").getInt("height"),
                 json.getInt("tileWidth"), json.getInt("tileHeight"));
-        this.xStart = json.getJSONObject("spawn").getInt("x");
-        this.yStart = json.getJSONObject("spawn").getInt("y");
+        rootProperty = new RootProperty(json.getJSONObject("properties"));
+        
         loadTilesetIfExists(json);
         JSONArray grid = json.getJSONArray("tilemap");
         String[][] blocks = new String[grid.length()][];
@@ -65,17 +65,17 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
                 deserializeBlock(blocks[y][x], x, y);
             }
         }
-    
+        
     }
-
+    
     /**
      * This constructor is used to initialize tilemaps on creation.
      * It **MUST** be overrided by all subclasses.
      *
-     * @param saveFile the file used for saving
-     * @param width the width (in tiles) of the tilemap
-     * @param height the height (in tiles) of the tilemap
-     * @param tileWidth the width (in pixels) of a single tile
+     * @param saveFile   the file used for saving
+     * @param width      the width (in tiles) of the tilemap
+     * @param height     the height (in tiles) of the tilemap
+     * @param tileWidth  the width (in pixels) of a single tile
      * @param tileHeight the height (in pixels) of a single tile
      */
     public BaseTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
@@ -85,33 +85,36 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         this.tileHeight = tileHeight;
         this.tileWidth = tileWidth;
         this.grid = new Tile[width][height];
+        this.rootProperty = new RootProperty();
         this.id = UUID.randomUUID();
     }
-
+    
     /**
      * Gets an instance of the TilemapTab used to set the layout and display
      * the content of the tilemap
+     *
      * @return a new instance of a TilemapTab unique to the implementation
      */
     public abstract TilemapTab getNewTilemapTab();
-
+    
     /**
      * @return true if the x and y are within the bounds of the map
      */
     public boolean isInMapRange(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
-
+    
     /**
      * Expand the map by n tiles in a direction
-     * @param n amount of tiles to expand
+     *
+     * @param n         amount of tiles to expand
      * @param direction direction to place the new tiles
      */
     public void expandMap(int n, Direction direction) {
         int heightTmpMap = width + (direction.y * n);
         int widthTmpMap = height + (direction.x * n);
         Tile[][] tilemap = new Tile[widthTmpMap][heightTmpMap];
-
+        
         // Copy the old map's data to the new one.
         for (int y = 0; y < grid.length; y++) {
             //TODO might need to fix
@@ -119,9 +122,10 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         }
         setChanged(true);
     }
-
+    
     /**
      * Set the tileset of this tilemap to the passed parameter
+     *
      * @param tileset the new tileset to set to this map
      */
     public void setTileset(S tileset) {
@@ -131,22 +135,24 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
             ((TilemapTab) currentTab).getTilesetSidebar().getTilesetView().setTileset(getTileset());
         }
     }
-
+    
     /**
      * This method is called to deserialize each comma-separated string in the
      * "tilemap" section of the serialized json file
+     *
      * @param block the string representing a single element of the comma-separated string in
      *              the serialized json file
      */
     protected abstract void deserializeBlock(String block, int x, int y);
-
+    
     /**
      * This method should check if the tileset exists within the jsonobject.
      * If it does, it should deserialize and load it
+     *
      * @param object the JSONMObject representing the entire tilemap
      */
     protected abstract void loadTilesetIfExists(JSONObject object);
-
+    
     @Override
     @CallSuper
     /**
@@ -156,20 +162,20 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
      */
     public JSONObject serialize() {
         JSONObject json = new JSONObject();
-
+        
+        getRootProperty().serialize(json);
+        
         JSONObject dimensions = new JSONObject();
         dimensions.put("width", getWidth());
         dimensions.put("height", getHeight());
         json.put("dimensions", dimensions);
-
+        
         JSONObject spawn = new JSONObject();
-        spawn.put("x", getXStart());
-        spawn.put("y", getYStart());
         json.put("spawn", spawn);
-
+        
         json.put("tileWidth", getTileWidth());
         json.put("tileHeight", getTileHeight());
-
+        
         JSONArray jsonArray = new JSONArray();
         StringBuilder builder = new StringBuilder();
         for (int y = 0; y <= getHeight() - 1; y++) {
@@ -185,11 +191,11 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
             jsonArray.put(y, builder.toString());
             builder.setLength(0);
         }
-
+        
         json.put("tilemap", jsonArray);
         return json;
     }
-
+    
     @Override
     /**
      * Retrieves dimensions of the tilemap. Format is as follows:
@@ -201,7 +207,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions() {
         return new Pair<>(new Pair<>(getTileWidth() * getWidth(), getTileHeight() * getHeight()), new Pair<>(getTileWidth(), getTileHeight()));
     }
-
+    
     @Override
     /**
      * Saves the map to a file.
@@ -209,7 +215,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     public void save() {
         MapManager.get().saveMap(getId());
     }
-
+    
     @Override
     /**
      * Gets the name of the map.
@@ -217,7 +223,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     public String getName() {
         return getSaveFile().getName();
     }
-
+    
     @Override
     /**
      * Removes the map from the application.
@@ -225,7 +231,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     public void remove() {
         MapManager.get().remove(getId());
     }
-
+    
     @Override
     /**
      * Change the save file to a different file.
@@ -233,7 +239,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
     public void updateSaveFile(File file) {
         this.saveFile = file;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -243,18 +249,16 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
                 height == baseTilemap.height &&
                 tileHeight == baseTilemap.tileHeight &&
                 tileWidth == baseTilemap.tileWidth &&
-                xStart == baseTilemap.xStart &&
-                yStart == baseTilemap.yStart &&
                 Objects.equals(id, baseTilemap.id) &&
                 Objects.equals(saveFile, baseTilemap.saveFile) &&
                 Arrays.equals(grid, baseTilemap.grid);
     }
-
+    
     @Override
     public int hashCode() {
-        int result = Objects.hash(saveFile, width, height, tileWidth, tileHeight, xStart, yStart);
+        int result = Objects.hash(saveFile, width, height, tileWidth, tileHeight);
         result = 31 * result + Arrays.hashCode(grid);
         return result;
     }
-
+    
 }
