@@ -9,14 +9,14 @@
     },
     "tileWidth": 16,
     "sourceFile": "..\\tilemapimage.png",
-    "properties": {"abc": {
-        "123": {
-            "elmo": "Tickle mewwww",
-            "why": "Tell me I'm pretty"
+    "properties": {"locations": {
+        "spawn": {
+            "x": "5",
+            "y": "4"
         },
-        "456": {
-            "elmo": "Tickle me",
-            "why": "Tell me I'm pretty"
+        "finish": {
+            "x": "5",
+            "y": "4"
         }
     }},
     "tileHeight": 16

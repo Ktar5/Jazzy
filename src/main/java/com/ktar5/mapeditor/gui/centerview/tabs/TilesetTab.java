@@ -19,7 +19,7 @@ public class TilesetTab extends AbstractTab {
         
         SplitPane sp = new SplitPane();
         sp.getItems().addAll(propertiesSidebar, this.pane);
-        sp.setDividerPositions(.3);
+        sp.setDividerPositions(.2);
         
         this.setContent(sp);
     }
