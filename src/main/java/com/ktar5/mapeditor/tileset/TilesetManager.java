@@ -17,19 +17,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class TilesetManager {
     private static TilesetManager instance;
-    private Set<Class<? extends BaseTileset>> registeredTilesetTypes;
+    private ArrayList<Class<? extends BaseTileset>> registeredTilesetTypes;
     private HashMap<UUID, BaseTileset> tilesetHashMap;
     
     public TilesetManager() {
         this.tilesetHashMap = new HashMap<>();
-        this.registeredTilesetTypes = new HashSet<>();
+        this.registeredTilesetTypes = new ArrayList<>();
         
         registerTilemapClass(WholeTileset.class);
         registerTilemapClass(SidedTileset.class);

@@ -20,19 +20,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class MapManager {
     private static MapManager instance;
     private HashMap<UUID, BaseTilemap> openMaps;
-    private Set<Class<? extends BaseTilemap>> registeredMapTypes;
+    private ArrayList<Class<? extends BaseTilemap>> registeredMapTypes;
     
     public MapManager() {
         instance = this;
-        registeredMapTypes = new HashSet<>();
+        registeredMapTypes = new ArrayList<>();
         openMaps = new HashMap<>();
         
         //Initialize tinylog
