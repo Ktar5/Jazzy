@@ -13,12 +13,12 @@ import java.io.File;
 import java.util.UUID;
 
 public interface Tabbable extends Interactable {
-
+    
     /**
      * Saves the tabbable to a file.
      */
     public void save();
-
+    
     @DontOverride
     /**
      * Saves the tabbable to a chosen file.
@@ -35,7 +35,7 @@ public interface Tabbable extends Interactable {
         updateSaveFile(saveFile);
         save();
     }
-
+    
     @DontOverride
     /**
      * Sets the tabbable to be marked as having an edit/change.
@@ -43,23 +43,23 @@ public interface Tabbable extends Interactable {
     public default void setChanged(boolean value) {
         EditorCoordinator.get().getEditor().getTab(getId()).setEdit(value);
     }
-
+    
+    /**
+     * Should return the boolean set by "setDragging"
+     */
+    public boolean isDragging();
+    
     /**
      * Sets a boolean to the value of "dragging" so that subclasses know when they are
      * being dragged or simply clicked.
      */
     public void setDragging(boolean dragging);
-
-    /**
-     * Should return the boolean set by "setDragging"
-     */
-    public boolean isDragging();
-
+    
     /**
      * Returns a UUID that should be randomly generated in the constructor of any subclass
      */
     public UUID getId();
-
+    
     /**
      * Retrieves dimensions of the tabbable. Format is as follows:
      * pair(
@@ -68,27 +68,27 @@ public interface Tabbable extends Interactable {
      * )
      */
     public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions();
-
+    
     /**
      * Gets the name of the tabbable.
      */
     public String getName();
-
+    
     /**
      * Returns the save file
      */
     public File getSaveFile();
-
+    
     /**
      * Removes the map from the application.
      */
     public void remove();
-
+    
     /**
      * Change the save file to a different file.
      */
     public void updateSaveFile(File file);
-
+    
     /**
      * This method should draw whatever the Tabbable represents to
      * the pane passed as a parameter.
@@ -96,7 +96,7 @@ public interface Tabbable extends Interactable {
      * @param pane the pane to be drawn to.
      */
     public void draw(Pane pane);
-
+    
     @CallSuper
     /**
      * Turn a Tabbable into a JSONObject manually to assure the
@@ -105,5 +105,5 @@ public interface Tabbable extends Interactable {
      * Note: all implementations must call super
      */
     public JSONObject serialize();
-
+    
 }

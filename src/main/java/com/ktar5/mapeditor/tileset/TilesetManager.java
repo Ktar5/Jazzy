@@ -5,9 +5,7 @@ import com.ktar5.mapeditor.gui.centerview.tabs.TilesetTab;
 import com.ktar5.mapeditor.gui.dialogs.CreateWholeTileset;
 import com.ktar5.mapeditor.gui.dialogs.GenericAlert;
 import com.ktar5.mapeditor.gui.dialogs.SelectType;
-import com.ktar5.mapeditor.tilemaps.BaseTilemap;
 import com.ktar5.mapeditor.tilemaps.sided.SidedTileset;
-import com.ktar5.mapeditor.tilemaps.whole.WholeTile;
 import com.ktar5.mapeditor.tilemaps.whole.WholeTileset;
 import com.ktar5.mapeditor.util.StringUtil;
 import javafx.stage.FileChooser;
@@ -28,23 +26,15 @@ public class TilesetManager {
     private static TilesetManager instance;
     private Set<Class<? extends BaseTileset>> registeredTilesetTypes;
     private HashMap<UUID, BaseTileset> tilesetHashMap;
-
+    
     public TilesetManager() {
         this.tilesetHashMap = new HashMap<>();
         this.registeredTilesetTypes = new HashSet<>();
-
+        
         registerTilemapClass(WholeTileset.class);
         registerTilemapClass(SidedTileset.class);
     }
-
-    /**
-     * Registers a tileset class to be used in creation/loading dialogs.
-     */
-    public <T extends BaseTileset> void registerTilemapClass(Class<? extends T> clazz) {
-        registeredTilesetTypes.add(clazz);
-        Logger.debug("Registered tilemap class: " + clazz.getName());
-    }
-
+    
     /**
      * Gets the instance of the TilesetManager
      */
@@ -54,7 +44,15 @@ public class TilesetManager {
         }
         return instance;
     }
-
+    
+    /**
+     * Registers a tileset class to be used in creation/loading dialogs.
+     */
+    public <T extends BaseTileset> void registerTilemapClass(Class<? extends T> clazz) {
+        registeredTilesetTypes.add(clazz);
+        Logger.debug("Registered tilemap class: " + clazz.getName());
+    }
+    
     /**
      * Removes the tileset with the given id
      */
@@ -64,7 +62,7 @@ public class TilesetManager {
             tilesetHashMap.remove(uuid);
         }
     }
-
+    
     /**
      * Return the tileset (if it exists) with the given id
      */
@@ -74,7 +72,7 @@ public class TilesetManager {
         }
         return tilesetHashMap.get(id);
     }
-
+    
     /**
      * Creates a tileset given the dialog options
      *
@@ -83,9 +81,10 @@ public class TilesetManager {
     public BaseTileset createTileset() {
         return createTileset(SelectType.getType(registeredTilesetTypes));
     }
-
+    
     /**
      * Create a tileset of the type specified. Uses a create dialog.
+     *
      * @param clazz The class to instantiate (ex: WholeTileset.class)
      * @param <T>   The type of tilemap to instantiate (ex: WholeTileset)
      * @return the tileset of type <T> that has been instantiated, otherwise null
@@ -96,7 +95,7 @@ public class TilesetManager {
             new GenericAlert("Something went wrong during the process of creating the tileset, please try again.");
             return null;
         }
-
+        
         File tilesetFile = createDialog.getTilesetFile();
         for (BaseTileset tileset1 : tilesetHashMap.values()) {
             if (tileset1.getSaveFile().getPath().equals(tilesetFile.getPath())) {
@@ -105,7 +104,7 @@ public class TilesetManager {
                 return null;
             }
         }
-
+        
         T tileset;
         try {
             Constructor<? extends T> constructor = clazz.getConstructor(File.class, File.class,
@@ -118,14 +117,14 @@ public class TilesetManager {
             e.printStackTrace();
             return null;
         }
-
+        
         tilesetHashMap.put(tileset.getId(), tileset);
         TilesetTab tab;
         EditorCoordinator.get().getEditor().addTab(tab = new TilesetTab(tileset.getId()));
         tab.draw();
         return tileset;
     }
-
+    
     /**
      * Loads a tileset given the dialog options
      *
@@ -134,21 +133,22 @@ public class TilesetManager {
     public BaseTileset loadTileset() {
         return loadTileset(SelectType.getType(registeredTilesetTypes));
     }
-
+    
     /**
      * Load a tileset of the type specified from the file specified.
+     *
      * @param clazz The class to instantiate (ex: WholeTileset.class)
      * @param <T>   The type of tilemap to instantiate (ex: WholeTileset)
      * @return the tileset of type <T> that has been instantiated, otherwise null
      */
     public <T extends BaseTileset> T loadTileset(File loaderFile, Class<? extends T> clazz) {
         Logger.info("Beginning to load tileset from file: " + loaderFile.getPath());
-
+        
         String data = StringUtil.readFileAsString(loaderFile);
         if (data == null || data.isEmpty()) {
             return null;
         }
-
+        
         T tileset;
         try {
             Constructor<? extends T> constructor = clazz.getConstructor(File.class, JSONObject.class);
@@ -157,14 +157,14 @@ public class TilesetManager {
             e.printStackTrace();
             return null;
         }
-
+        
         for (BaseTileset temp : tilesetHashMap.values()) {
             if (temp.getSaveFile().getPath().equals(tileset.getSaveFile().getPath())) {
                 new GenericAlert("Tileset with path " + tileset.getSaveFile().getAbsolutePath() + " already loaded");
                 return clazz.isInstance(temp) ? (T) temp : null;
             }
         }
-
+        
         tilesetHashMap.put(tileset.getId(), tileset);
         TilesetTab tilesetTab = new TilesetTab(tileset.getId());
         EditorCoordinator.get().getEditor().addTab(tilesetTab);
@@ -172,7 +172,7 @@ public class TilesetManager {
         Logger.info("Finished loading tileset: " + tileset.getSaveFile().getName());
         return tileset;
     }
-
+    
     /**
      * Loads a tileset from a file selected in an "open file" dialog, and instantiates it using
      * the serialization constructor of tileset.
@@ -193,10 +193,10 @@ public class TilesetManager {
             new GenericAlert("The selected file: " + loaderFile.getPath() + " does not exist. Try again.");
             return null;
         }
-
+        
         return loadTileset(loaderFile, clazz);
     }
-
+    
     /**
      * Save a tileset with the UUID specified.
      *
@@ -204,18 +204,18 @@ public class TilesetManager {
      */
     public void saveTileset(UUID id) {
         Logger.info("Starting save for baseTileset (" + id + ")");
-
+        
         if (!tilesetHashMap.containsKey(id)) {
             Logger.info("BaseTileset not loaded so could not be saved id: (" + id + ")");
             return;
         }
-
+        
         BaseTileset baseTileset = tilesetHashMap.get(id);
-
+        
         if (baseTileset.getSaveFile().exists()) {
             baseTileset.getSaveFile().delete();
         }
-
+        
         try {
             baseTileset.getSaveFile().createNewFile();
             FileWriter writer = new FileWriter(baseTileset.getSaveFile());
@@ -226,10 +226,10 @@ public class TilesetManager {
             Logger.error("An error occured during save");
             return;
         }
-
+        
         EditorCoordinator.get().getEditor().setChanges(baseTileset.getId(), false);
         Logger.info("Finished save for baseTileset (" + id + ") in " + "\"" + baseTileset.getSaveFile() + "\"");
     }
-
-
+    
+    
 }

@@ -4,7 +4,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
 public class EditMenu extends Menu {
-
+    
     public EditMenu() {
         super("Edit");
         this.getItems().addAll(
@@ -12,5 +12,5 @@ public class EditMenu extends Menu {
                 new MenuItem("Redo")
         );
     }
-
+    
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
 public class TilesetTab extends AbstractTab {
     private HBox viewportLayout;
     private DetailsSidebar detailsSidebar;
-
+    
     public TilesetTab(UUID tilemap) {
         super(tilemap);
         viewportLayout = new HBox();
@@ -26,26 +26,26 @@ public class TilesetTab extends AbstractTab {
         );
         this.setContent(viewportLayout);
     }
-
+    
     @Override
     protected EditorPane getEditorPane() {
         return new EditorPane(getTabbable().getDimensions());
     }
-
+    
     @Override
     public void draw() {
         getTabbable().draw(getViewport());
     }
-
+    
     @Override
     public Tabbable getTabbable() {
         return TilesetManager.get().getTileset(getTabId());
     }
-
+    
     @Override
     public void onSelect() {
-
+    
     }
-
-
+    
+    
 }

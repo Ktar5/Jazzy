@@ -21,45 +21,36 @@ public class SelectType<T> extends Dialog<Class<? extends T>> {
     private final Label label;
     private final ComboBox<Class<? extends T>> comboBox;
     private final Class<? extends T> defaultChoice;
-
-    public static <Z> Class<? extends Z> getType(Class<? extends Z>... options) {
-        return getType(Arrays.asList(options));
-    }
-
-    public static <Z> Class<? extends Z> getType(Collection<Class<? extends Z>> options) {
-        final SelectType<Z> zSelectType = new SelectType<>(options);
-        return zSelectType.showAndWait().get();
-    }
-
+    
     public SelectType(Collection<Class<? extends T>> choices) {
         final DialogPane dialogPane = getDialogPane();
-
+        
         // -- grid
         this.grid = new GridPane();
         this.grid.setHgap(10);
         this.grid.setMaxWidth(Double.MAX_VALUE);
         this.grid.setAlignment(Pos.CENTER_LEFT);
-
+        
         // -- label
         label = createLabel(dialogPane.getContentText());
         label.setPrefWidth(Region.USE_COMPUTED_SIZE);
         label.textProperty().bind(dialogPane.contentTextProperty());
-
+        
         dialogPane.contentTextProperty().addListener(o -> updateGrid());
-
+        
         setTitle(ControlResources.getString("Dialog.confirm.title"));
         dialogPane.setHeaderText(ControlResources.getString("Dialog.confirm.header"));
         dialogPane.getStyleClass().add("choice-dialog");
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
+        
         final double MIN_WIDTH = 150;
-
+        
         // -- initialization
         HashMap<String, Class<? extends T>> types = new HashMap<>();
         for (Class<? extends T> clazz : choices) {
             types.put(clazz.getSimpleName(), clazz);
         }
-
+        
         // -- combo box
         ObservableList<Class<? extends T>> observableList = FXCollections.observableArrayList(choices);
         comboBox = new ComboBox<>(observableList);
@@ -68,7 +59,7 @@ public class SelectType<T> extends Dialog<Class<? extends T>> {
             public String toString(Class<? extends T> object) {
                 return object.getSimpleName();
             }
-
+            
             @Override
             public Class<? extends T> fromString(String string) {
                 return types.get(string);
@@ -76,11 +67,11 @@ public class SelectType<T> extends Dialog<Class<? extends T>> {
         });
         comboBox.setMinWidth(MIN_WIDTH);
         comboBox.setMaxWidth(Double.MAX_VALUE);
-
+        
         // -- display
         GridPane.setHgrow(comboBox, Priority.ALWAYS);
         GridPane.setFillWidth(comboBox, true);
-
+        
         // -- default choice
         defaultChoice = choices.iterator().next();
         if (defaultChoice == null) {
@@ -88,17 +79,26 @@ public class SelectType<T> extends Dialog<Class<? extends T>> {
         } else {
             comboBox.getSelectionModel().select(defaultChoice);
         }
-
+        
         // -- more display
         updateGrid();
-
+        
         // -- return / result
         setResultConverter((dialogButton) -> {
             ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
             return data == ButtonData.OK_DONE ? comboBox.getSelectionModel().getSelectedItem() : null;
         });
     }
-
+    
+    public static <Z> Class<? extends Z> getType(Class<? extends Z>... options) {
+        return getType(Arrays.asList(options));
+    }
+    
+    public static <Z> Class<? extends Z> getType(Collection<Class<? extends Z>> options) {
+        final SelectType<Z> zSelectType = new SelectType<>(options);
+        return zSelectType.showAndWait().get();
+    }
+    
     private Label createLabel(String text) {
         Label label = new Label(text);
         label.setMaxWidth(Double.MAX_VALUE);
@@ -108,16 +108,16 @@ public class SelectType<T> extends Dialog<Class<? extends T>> {
         label.setPrefWidth(360);
         return label;
     }
-
+    
     private void updateGrid() {
         grid.getChildren().clear();
-
+        
         grid.add(label, 0, 0);
         grid.add(comboBox, 1, 0);
         getDialogPane().setContent(grid);
-
+        
         Platform.runLater(comboBox::requestFocus);
     }
-
+    
 }
 

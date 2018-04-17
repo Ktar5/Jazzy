@@ -22,6 +22,9 @@ import java.nio.file.Paths;
 
 public class SidedTilemap extends BaseTilemap<SidedTileset> {
     int currentId = 1;
+    private int previousX = -1, previousY = -1;
+    private Side previousSide = Side.UP;
+    private Polygon triangle;
     
     public SidedTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
@@ -42,7 +45,7 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             this.grid[x][y] = new SidedTile(getTileset(), block);
         }
     }
-    
+
     @Override
     protected void loadTilesetIfExists(JSONObject json) {
         if (json.has("tileset")) {
@@ -72,9 +75,6 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
             middleClick(event, x, y, side);
         }
     }
-    
-    private int previousX = -1, previousY = -1;
-    private Side previousSide = Side.UP;
     
     @Override
     public void onDrag(MouseEvent event) {
@@ -233,8 +233,6 @@ public class SidedTilemap extends BaseTilemap<SidedTileset> {
         }
         return json;
     }
-    
-    private Polygon triangle;
     
     private void refreshHighlight(int x, int y, Side side) {
         if (triangle == null) {

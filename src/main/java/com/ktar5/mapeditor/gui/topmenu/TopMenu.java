@@ -10,8 +10,8 @@ import lombok.Getter;
 public class TopMenu extends MenuBar {
     private FileMenu fileMenu;
     private EditMenu editMenu;
-
-
+    
+    
     public TopMenu() {
         super();
         this.getMenus().addAll(fileMenu = new FileMenu(), editMenu = new EditMenu(), new MapMenu());

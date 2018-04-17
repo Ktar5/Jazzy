@@ -18,35 +18,35 @@ public class ImageHelper {
      */
     static public byte[] imageToPNG(Image image) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
+        
         try {
             BufferedImage buffer = new BufferedImage(
                     image.getWidth(null), image.getHeight(null),
                     BufferedImage.TYPE_INT_ARGB);
-
+            
             buffer.createGraphics().drawImage(image, 0, 0, null);
             ImageIO.write(buffer, "PNG", baos);
             baos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
         return baos.toByteArray();
     }
-
+    
     public static byte[] imageToRAW(Image image, PixelFormat pixelFormat, boolean bigEndian) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
+        
         int w = image.getWidth(null);
         int h = image.getHeight(null);
         BufferedImage buffer = new BufferedImage(
                 w, h,
                 BufferedImage.TYPE_INT_ARGB);
-
+        
         buffer.createGraphics().drawImage(image, 0, 0, null);
-
+        
         int[] rgbArray = buffer.getRGB(0, 0, w, h, null, 0, w);
-
+        
         int arraySize = rgbArray.length;
         switch (pixelFormat) {
             case A1R5G5B5: {
@@ -56,14 +56,14 @@ public class ImageHelper {
                     int r = (pixel & 0x00ff0000) >>> 16;
                     int g = (pixel & 0x0000ff00) >>> 8;
                     int b = (pixel & 0x000000ff) >>> 0;
-
+                    
                     int output = 0;
                     if (a >= 0x80)
                         output |= 0x00008000;
                     output |= (r >> 3) << 10;
                     output |= (g >> 3) << 5;
                     output |= (b >> 3) << 0;
-
+                    
                     if (bigEndian) {
                         baos.write(output >> 8);
                         baos.write(output);
@@ -82,7 +82,7 @@ public class ImageHelper {
                     int r = (pixel & 0x00ff0000) >>> 16;
                     int g = (pixel & 0x0000ff00) >>> 8;
                     int b = (pixel & 0x000000ff) >>> 0;
-
+                    
                     if (pixelFormat == PixelFormat.A8R8G8B8) {
                         if (bigEndian) {
                             baos.write(a);
@@ -119,10 +119,10 @@ public class ImageHelper {
         } catch (IOException iox) {
             iox.printStackTrace();
         }
-
+        
         return baos.toByteArray();
     }
-
+    
     /**
      * Converts a byte array into an image. The byte array must include the
      * image header, so that a decision about format can be made.
@@ -135,7 +135,7 @@ public class ImageHelper {
     static public BufferedImage pngToImage(byte[] imageData) throws IOException {
         return ImageIO.read(new ByteArrayInputStream(imageData));
     }
-
+    
     public static Image rawToImage(byte[] imageData, PixelFormat pixelFormat, boolean bigEndian, int width, int height) {
         int[] iArray = new int[width * height];
         switch (pixelFormat) {
@@ -200,7 +200,7 @@ public class ImageHelper {
                     int r = ((ssample & 0x7c00) >> 7) | ((ssample & 0x7000) >> 12);
                     int g = ((ssample & 0x03e0) >> 2) | ((ssample & 0x0380) >> 7);
                     int b = ((ssample & 0x001f) << 3) | ((ssample & 0x001f) >> 2);
-
+                    
                     int sample = (a << 24) | (r << 16) | (g << 8) | (b);
                     iArray[j++] = sample;
                 }
@@ -208,10 +208,10 @@ public class ImageHelper {
         }
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         img.getRaster().setDataElements(0, 0, width, height, iArray);
-
+        
         return img;
     }
-
+    
     /**
      * This function loads the image denoted by <code>file</code>. This
      * supports PNG, GIF, JPG, and BMP (in 1.5).
@@ -223,7 +223,7 @@ public class ImageHelper {
     static public BufferedImage loadImageFile(File file) throws IOException {
         return ImageIO.read(file);
     }
-
+    
     /**
      * This grabs the width of the specified image. If the width is not
      * available, this method will block until it becomes available
@@ -233,7 +233,7 @@ public class ImageHelper {
      */
     public static int getImageWidth(Image image) {
         SynchronizedImageObserver o = new SynchronizedImageObserver();
-
+        
         // we use the image observer as lock
         synchronized (o) {
             while (true) {
@@ -248,7 +248,7 @@ public class ImageHelper {
             return o.getValue(ImageObserver.WIDTH);
         }
     }
-
+    
     /**
      * This grabs the width of the specified image. If the width is not
      * available, this method will block until it becomes available
@@ -258,7 +258,7 @@ public class ImageHelper {
      */
     public static int getImageHeight(Image image) {
         SynchronizedImageObserver o = new SynchronizedImageObserver();
-
+        
         // we use the image observer as lock
         synchronized (o) {
             while (true) {
@@ -273,11 +273,11 @@ public class ImageHelper {
             return o.getValue(ImageObserver.HEIGHT);
         }
     }
-
+    
     public static enum ImageFormat {
         PNG,
         RAW;
-
+        
         public static ImageFormat valueOf(String s, ImageFormat defaultValue) {
             try {
                 return ImageFormat.valueOf(ImageFormat.class, s);
@@ -287,7 +287,7 @@ public class ImageHelper {
             return defaultValue;
         }
     }
-
+    
     /**
      * the format names are borrowed from Direct3D (e.g. D3DFORMAT_A8R8G8B8
      * is A8R8G8B8)
@@ -296,7 +296,7 @@ public class ImageHelper {
         A8R8G8B8,
         R8G8B8A8,
         A1R5G5B5;
-
+        
         public static PixelFormat valueOf(String s, PixelFormat defaultValue) {
             try {
                 return PixelFormat.valueOf(PixelFormat.class, s);
@@ -306,11 +306,11 @@ public class ImageHelper {
             return defaultValue;
         }
     }
-
+    
     private static class SynchronizedImageObserver implements ImageObserver {
         int width = -1;
         int height = -1;
-
+        
         synchronized void setValue(int value, int infoflag) {
             switch (infoflag) {
                 case ImageObserver.WIDTH:
@@ -322,7 +322,7 @@ public class ImageHelper {
             }
             notifyAll();
         }
-
+        
         /**
          * gets an image property value from the image observer, specified
          * by the infoflag parameter.
@@ -340,7 +340,7 @@ public class ImageHelper {
             }
             return -1;
         }
-
+        
         public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
             if (infoflags == ImageObserver.ALLBITS)
                 return false;

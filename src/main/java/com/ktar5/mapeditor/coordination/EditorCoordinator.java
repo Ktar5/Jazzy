@@ -6,27 +6,26 @@ import com.ktar5.mapeditor.gui.centerview.tabs.AbstractTab;
 
 public class EditorCoordinator {
     private static EditorCoordinator instance;
-
+    
     public EditorCoordinator() {
-
-
+    
+    
     }
-
-    public AbstractTab getCurrentTab() {
-        return getEditor().getCurrentTab();
-    }
-
-    public TabHoldingPane getEditor() {
-        return Main.root.getCenterView();
-    }
-
-
+    
     public static EditorCoordinator get() {
         if (instance == null) {
             instance = new EditorCoordinator();
         }
         return instance;
     }
-
-
+    
+    public AbstractTab getCurrentTab() {
+        return getEditor().getCurrentTab();
+    }
+    
+    public TabHoldingPane getEditor() {
+        return Main.root.getCenterView();
+    }
+    
+    
 }

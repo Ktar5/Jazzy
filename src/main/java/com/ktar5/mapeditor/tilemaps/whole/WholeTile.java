@@ -12,21 +12,21 @@ import java.util.Objects;
 @Setter
 public class WholeTile extends Tile<WholeTileset> {
     private PixelatedImageView imageView;
-
+    
     private int blockId;
     private int direction;
-
+    
     public WholeTile(int blockId, int direction, WholeTileset tileset) {
         super(tileset);
         this.blockId = blockId;
         this.direction = direction;
     }
-
+    
     @Override
     public String serialize() {
         return toString();
     }
-
+    
     @Override
     public String toString() {
         if (direction == 0) {
@@ -35,7 +35,7 @@ public class WholeTile extends Tile<WholeTileset> {
             return blockId + "_" + direction;
         }
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,7 +44,7 @@ public class WholeTile extends Tile<WholeTileset> {
         return blockId == wholeTile.blockId &&
                 direction == wholeTile.direction;
     }
-
+    
     @Override
     public void updateAllImageViews() {
         if (this.imageView == null) {
@@ -54,12 +54,12 @@ public class WholeTile extends Tile<WholeTileset> {
         }
         this.imageView.setRotate(90 * direction);
     }
-
+    
     @Override
     public int hashCode() {
         return Objects.hash(blockId, direction);
     }
-
+    
     @Override
     public void remove(Pane pane) {
         if (imageView != null) {
@@ -67,7 +67,7 @@ public class WholeTile extends Tile<WholeTileset> {
         }
         imageView = null;
     }
-
+    
     @Override
     public void draw(Pane pane, int actualX, int actualY) {
         if (imageView == null) {

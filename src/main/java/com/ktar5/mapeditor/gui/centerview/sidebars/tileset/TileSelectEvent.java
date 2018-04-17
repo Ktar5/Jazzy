@@ -11,8 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TileSelectEvent extends EditorEvent {
     private UUID tab;
-
+    
     private int id;
     private BaseTileset tileset;
-
+    
 }

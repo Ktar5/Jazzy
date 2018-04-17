@@ -12,22 +12,22 @@ import static com.ktar5.mapeditor.gui.dialogs.QuitSaveConfirmation.quitSaveConfi
 
 public abstract class AbstractTab extends Tab {
     private final UUID tabId;
-    private boolean hasEdits = false;
     protected EditorPane pane;
-
+    private boolean hasEdits = false;
+    
     public AbstractTab(UUID uuid) {
         this.tabId = uuid;
-
+        
         this.setText(getTabbable().getName());
-
+        
         pane = getEditorPane();
-
+        
         this.setOnCloseRequest(e -> {
             if (this.hasEdits) quitSaveConfirmation(e, getTabbable());
         });
-
+        
         this.setOnClosed(e -> getTabbable().remove());
-
+        
         pane.getViewport().addEventFilter(MouseEvent.MOUSE_CLICKED, (event) -> {
             if (getTabbable().isDragging()) {
                 getTabbable().setDragging(false);
@@ -47,27 +47,27 @@ public abstract class AbstractTab extends Tab {
             }
         });
     }
-
+    
     protected abstract EditorPane getEditorPane();
-
+    
     public abstract void draw();
-
+    
     public abstract Tabbable getTabbable();
-
+    
     public abstract void onSelect();
-
+    
     public Pane getViewport() {
         return pane.getViewport();
     }
-
+    
     public boolean getEdits() {
         return hasEdits;
     }
-
+    
     public UUID getTabId() {
         return tabId;
     }
-
+    
     public void setEdit(boolean value) {
         if (value == hasEdits) {
             return;
@@ -79,5 +79,5 @@ public abstract class AbstractTab extends Tab {
             this.setText(getTabbable().getName());
         }
     }
-
+    
 }

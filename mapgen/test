@@ -1,0 +1,9 @@
+locations
+  spawn
+    x
+    y
+  finish
+    x
+    y
+mapname
+timeAmount

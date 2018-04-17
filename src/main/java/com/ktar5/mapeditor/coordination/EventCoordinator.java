@@ -10,19 +10,26 @@ import org.pmw.tinylog.Logger;
 public class EventCoordinator {
     private static EventCoordinator instance;
     private final MBassador<EditorEvent> eventBus;
-
+    
     public EventCoordinator() {
         eventBus = initializeEventBus();
     }
-
+    
+    public static EventCoordinator get() {
+        if (instance == null) {
+            instance = new EventCoordinator();
+        }
+        return instance;
+    }
+    
     public void fireEvent(EditorEvent editorEvent) {
         eventBus.publish(editorEvent);
     }
-
+    
     public void registerListener(Object object) {
         eventBus.subscribe(object);
     }
-
+    
     private MBassador<EditorEvent> initializeEventBus() {
         return new MBassador<>(new BusConfiguration()
                 .addFeature(Feature.SyncPubSub.Default())
@@ -31,12 +38,5 @@ public class EventCoordinator {
                 .addPublicationErrorHandler(Logger::error)
                 .setProperty(IBusConfiguration.Properties.BusId, "Game Event Bus"));
     }
-
-    public static EventCoordinator get() {
-        if (instance == null) {
-            instance = new EventCoordinator();
-        }
-        return instance;
-    }
-
+    
 }

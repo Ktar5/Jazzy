@@ -15,10 +15,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 
 public class MapMenu extends Menu {
-
+    
     public MapMenu() {
         super("Map");
-
+        
         final MenuItem addTileset = new MenuItem("Add Tileset");
         addTileset.setOnAction((ActionEvent event) -> {
             final Tab selectedItem = EditorCoordinator.get().getEditor().getSelectionModel().getSelectedItem();
@@ -33,12 +33,12 @@ public class MapMenu extends Menu {
                 System.out.println("Drawing tilemap");
             }
         });
-
-
+        
+        
         this.getItems().addAll(
                 addTileset
         );
     }
-
-
+    
+    
 }

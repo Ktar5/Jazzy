@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public class DetailsSidebar extends Pane {
-
+    
     public DetailsSidebar() {
         super();
         this.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -16,5 +16,5 @@ public class DetailsSidebar extends Pane {
         this.setMaxWidth(200);
         this.setPrefWidth(200);
     }
-
+    
 }

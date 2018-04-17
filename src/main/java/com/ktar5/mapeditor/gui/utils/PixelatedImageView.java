@@ -10,22 +10,22 @@ import javafx.scene.image.ImageView;
 
 @SuppressWarnings("restriction")
 public class PixelatedImageView extends ImageView {
-
+    
     public PixelatedImageView(javafx.scene.image.Image image) {
         super(image);
     }
-
+    
     @Override
     protected NGNode impl_createPeer() {
         return new NGImageView() {
             private Image image;
-
+            
             @Override
             public void setImage(Object img) {
                 super.setImage(img);
                 image = (Image) img;
             }
-
+            
             @Override
             protected void renderContent(Graphics g) {
                 BaseResourceFactory factory = (BaseResourceFactory) g.getResourceFactory();
@@ -36,7 +36,7 @@ public class PixelatedImageView extends ImageView {
             }
         };
     }
-
-
+    
+    
 }
 

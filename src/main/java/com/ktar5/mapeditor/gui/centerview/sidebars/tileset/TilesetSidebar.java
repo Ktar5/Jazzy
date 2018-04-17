@@ -14,33 +14,33 @@ import lombok.Getter;
 public class TilesetSidebar extends VBox {
     private TilesetSidebarViewPane tilesetView;
     private SelectedTileView selectedTileView;
-
+    
     public TilesetSidebar() {
         super();
-
+        
         this.setMaxWidth(500);
         this.setPrefWidth(250);
-
+        
         tilesetView = new TilesetSidebarViewPane();
-
+        
         tilesetView.prefHeightProperty().bind(this.widthProperty());
         tilesetView.prefWidthProperty().bind(this.widthProperty());
-
-
+        
+        
         selectedTileView = new SelectedTileView();
-
+        
         selectedTileView.prefHeightProperty().bind(this.widthProperty());
         selectedTileView.maxHeightProperty().bind(this.widthProperty());
         selectedTileView.prefWidthProperty().bind(this.widthProperty());
-
+        
         SplitPane sp = new SplitPane();
         sp.setOrientation(Orientation.VERTICAL);
         sp.getItems().addAll(tilesetView, selectedTileView);
         sp.setDividerPositions(0.6f);
-
-
+        
+        
         this.setBackground(new Background(new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY)));
         this.getChildren().addAll(sp);
     }
-
+    
 }

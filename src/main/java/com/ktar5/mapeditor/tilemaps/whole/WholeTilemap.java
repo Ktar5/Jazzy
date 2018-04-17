@@ -22,18 +22,21 @@ import java.nio.file.Paths;
 public class WholeTilemap extends BaseTilemap<WholeTileset> {
     int currentData = 0;
     int currentId = 1;
-
-    public void setCurrentData(int id, int currentData) {
-        this.currentData = currentData;
-        this.currentId = id;
-    }
-
+    //region Tabbable interactions
+    int previousX = -1, previousY = -1;
+    private Rectangle rect;
+    
     public WholeTilemap(File saveFile, JSONObject json) {
         super(saveFile, json);
     }
-
+    
     public WholeTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
         super(saveFile, width, height, tileWidth, tileHeight);
+    }
+    
+    public void setCurrentData(int id, int currentData) {
+        this.currentData = currentData;
+        this.currentId = id;
     }
     
     @Override
@@ -53,7 +56,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             this.setTileset(tileset1);
         }
     }
-
+    
     @Override
     public void deserializeBlock(String block, int x, int y) {
         if (block.equals("0")) {
@@ -65,33 +68,30 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             this.grid[x][y] = new WholeTile(Integer.valueOf(block), 0, getTileset());
         }
     }
-
-    //region Tabbable interactions
-    int previousX = -1, previousY = -1;
-
+    
     @Override
     public void onClick(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileWidth());
         int y = (int) (event.getY() / this.getTileHeight());
-
+        
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setCurrent(x, y);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
             remove(x, y);
         }
     }
-
+    
     @Override
     public void onDrag(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileWidth());
         int y = (int) (event.getY() / this.getTileHeight());
-
+        
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
         if (isDragging() && x == previousX && y == previousY) return;
-
+        
         previousX = x;
         previousY = y;
-
+        
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             setCurrent(x, y);
         } else if (event.getButton().equals(MouseButton.SECONDARY)) {
@@ -99,14 +99,12 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         }
         refreshHighlight(x, y);
     }
-
+    
     @Override
     public void onDragStart(MouseEvent event) {
         onDrag(event);
     }
-
-    private Rectangle rect;
-
+    
     private void refreshHighlight(int x, int y) {
         if (rect == null) {
             rect = new Rectangle(0, 0, 16, 16);
@@ -117,22 +115,22 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         rect.setTranslateX(x * this.getTileWidth());
         rect.setTranslateY(y * this.getTileWidth());
     }
-
+    
     @Override
     public void onMove(MouseEvent event) {
         int x = (int) (event.getX() / this.getTileWidth());
         int y = (int) (event.getY() / this.getTileHeight());
-
+        
         if (x >= getWidth() || y >= getHeight() || x < 0 || y < 0) return;
         if (x == previousX && y == previousY) return;
-
+        
         previousX = x;
         previousY = y;
-
+        
         refreshHighlight(x, y);
     }
     //endregion
-
+    
     @Override
     public void draw(Pane pane) {
         for (int y = getHeight() - 1; y >= 0; y--) {
@@ -148,7 +146,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
             }
         }
     }
-
+    
     @Override
     @CallSuper
     public JSONObject serialize() {
@@ -160,7 +158,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         }
         return json;
     }
-
+    
     public void set(int x, int y, WholeTile tile) {
         if (tile == null || getTileset() == null) {
             return;
@@ -172,10 +170,10 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         this.grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
         setChanged(true);
     }
-
+    
     public void setCurrent(int x, int y) {
         if (getTileset() == null) return;
-
+        
         if (grid[x][y] != null && grid[x][y] instanceof WholeTile) {
             WholeTile wholeTile = (WholeTile) this.grid[x][y];
             wholeTile.setBlockId(currentId);
@@ -190,7 +188,7 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         }
         setChanged(true);
     }
-
+    
     public void remove(int x, int y) {
         if (grid[x][y] == null) {
             return;
@@ -199,5 +197,5 @@ public class WholeTilemap extends BaseTilemap<WholeTileset> {
         this.grid[x][y] = null;
         setChanged(true);
     }
-
+    
 }
