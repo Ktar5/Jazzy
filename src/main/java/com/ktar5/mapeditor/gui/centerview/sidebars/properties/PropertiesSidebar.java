@@ -71,7 +71,7 @@ public class PropertiesSidebar extends Pane {
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
             setPrefWidths(newValue.intValue(), nameColumn, dataColumn, .55);
         });
-        System.out.println("Style: " + getClass().getResource("/tableview.css").toExternalForm());
+
         final String cssUrl1 = getClass().getResource("/tableview.css").toExternalForm();
         Main.root.getScene().getStylesheets().add(cssUrl1);
 

@@ -44,7 +44,7 @@ public abstract class BaseTilemap<S extends BaseTileset> implements Tabbable {
         this(saveFile, json.getJSONObject("dimensions").getInt("width"),
                 json.getJSONObject("dimensions").getInt("height"),
                 json.getInt("tileWidth"), json.getInt("tileHeight"));
-        rootProperty = new RootProperty(json.getJSONObject("properties"));
+        rootProperty.deserialize(json.getJSONObject("properties"));
         
         loadTilesetIfExists(json);
         JSONArray grid = json.getJSONArray("tilemap");

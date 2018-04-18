@@ -4,23 +4,26 @@ import com.ktar5.mapeditor.properties.Property;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableCell;
+import javafx.scene.input.KeyCode;
 
 final class EditingCell extends TreeTableCell<Property, String> {
-
+    private PropertiesRClickMenu menu;
     private TextField textField;
 
     EditingCell() {
+        menu = new PropertiesRClickMenu(this);
     }
 
     @Override
     public void startEdit() {
-        if (!isEmpty()) {
-            super.startEdit();
+        super.startEdit();
+
+        if (textField == null) {
             createTextField();
-            setText(null);
-            setGraphic(textField);
-            textField.selectAll();
         }
+        setText(null);
+        setGraphic(textField);
+        textField.selectAll();
     }
 
     @Override
@@ -34,34 +37,46 @@ final class EditingCell extends TreeTableCell<Property, String> {
     @Override
     public void updateItem(String item, boolean empty) {
         super.updateItem(item, empty);
-
-        if (empty) {
-            setText(item);
+        if (empty || item == null || getTreeTableRow().getTreeItem() == null) {
+            setText(null);
             setGraphic(null);
+            setContextMenu(null);
         } else {
             if (isEditing()) {
                 if (textField != null) {
                     textField.setText(getString());
-//                        setGraphic(null);
                 }
                 setText(null);
                 setGraphic(textField);
             } else {
                 setText(getString());
-                setGraphic(null);
+                setContextMenu(menu);
             }
         }
     }
 
+    @Override
+    public void commitEdit(String text) {
+        super.commitEdit(text);
+        setText(textField.getText());
+        setGraphic(null);
+    }
+
     private void createTextField() {
         textField = new TextField(getString());
-        textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-        textField.setOnAction((e) -> commitEdit(textField.getText()));
         textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
                 commitEdit(textField.getText());
             }
         });
+        textField.setOnKeyReleased(t -> {
+            if (t.getCode() == KeyCode.ENTER) {
+                commitEdit(textField.getText());
+            } else if (t.getCode() == KeyCode.ESCAPE) {
+                cancelEdit();
+            }
+        });
+
     }
 
     private String getString() {

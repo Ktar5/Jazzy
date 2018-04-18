@@ -52,7 +52,7 @@ public abstract class BaseTileset implements Tabbable {
                 json.getJSONObject("offset").getInt("up"),
                 json.getInt("tileWidth"),
                 json.getInt("tileHeight"));
-        rootProperty = new RootProperty(json.getJSONObject("properties"));
+        rootProperty.deserialize(json.getJSONObject("properties"));
     }
     
     /**

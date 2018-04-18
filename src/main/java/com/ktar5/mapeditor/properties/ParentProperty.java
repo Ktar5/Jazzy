@@ -21,7 +21,7 @@ public class ParentProperty extends Property {
         children = new HashMap<>();
     }
     
-    private void deserialize(JSONObject property) {
+    public void deserialize(JSONObject property) {
         for (String key : property.keySet()) {
             try {
                 JSONObject jsonObject = property.getJSONObject(key);
@@ -36,12 +36,12 @@ public class ParentProperty extends Property {
         return !getChildren().isEmpty();
     }
     
-    public void createProperty(String key) {
-        createProperty(key, "");
+    public Property createProperty(String key) {
+        return createProperty(key, "");
     }
     
     //TODO Possibly setup recursion
-    public void createProperty(String key, String value) throws IllegalArgumentException {
+    public Property createProperty(String key, String value) throws IllegalArgumentException {
         String[] split = key.split(Pattern.quote("."));
         
         //loop until last node
@@ -66,7 +66,9 @@ public class ParentProperty extends Property {
                     "The property: '" + key + "' for property '" + getName() + "' already exists." +
                             "\nFound error at node " + (split.length - 1) + ": '" + propName + "'.");
         } else {
-            parentProperty.getChildren().put(propName, new StringProperty(propName, value));
+            StringProperty stringProperty = new StringProperty(propName, value);
+            parentProperty.getChildren().put(propName, stringProperty);
+            return stringProperty;
         }
     }
     

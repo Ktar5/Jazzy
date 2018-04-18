@@ -10,14 +10,12 @@
     "tileWidth": 16,
     "sourceFile": "..\\tilemapimage.png",
     "properties": {"locations": {
-        "spawn": {
-            "x": "5",
-            "y": "4"
-        },
         "finish": {
-            "x": "5",
-            "y": "4"
-        }
+            "x": "7",
+            "y": "4",
+            "Testing": ""
+        },
+        "Testing": "erw"
     }},
     "tileHeight": 16
 }
