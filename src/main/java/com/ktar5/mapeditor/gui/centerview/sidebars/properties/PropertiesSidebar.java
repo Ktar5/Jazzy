@@ -6,6 +6,7 @@ import com.ktar5.mapeditor.properties.Property;
 import com.ktar5.mapeditor.properties.RootProperty;
 import com.ktar5.mapeditor.properties.StringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.MapChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -28,6 +29,7 @@ public class PropertiesSidebar extends Pane {
         this.setMaxWidth(500);
 
         TreeItem<Property> rootNode = new TreeItem<>(root);
+        setMapListener(rootNode);
         for (Property property : root.getChildren().values()) {
             addNode(rootNode, property);
         }
@@ -35,7 +37,7 @@ public class PropertiesSidebar extends Pane {
 
         //name column
         TreeTableColumn<Property, String> nameColumn = new TreeTableColumn<>("Property");
-        nameColumn.setCellFactory(p -> new EditingCell());
+        nameColumn.setCellFactory(p -> new EditingCell(root));
         nameColumn.setOnEditCommit((p) -> {
             TreeTablePosition<Property, ?> editingCell = p.getTreeTableView().getEditingCell();
             editingCell.getTreeItem().getValue().nameProperty.set(p.getNewValue());
@@ -45,7 +47,7 @@ public class PropertiesSidebar extends Pane {
 
         //data column
         TreeTableColumn<Property, String> dataColumn = new TreeTableColumn<>("Value");
-        dataColumn.setCellFactory(p -> new EditingCell());
+        dataColumn.setCellFactory(p -> new EditingCell(root));
         dataColumn.setOnEditCommit((p) -> {
             TreeTablePosition<Property, ?> editingCell = p.getTreeTableView().getEditingCell();
             if (p.getRowValue().getValue() instanceof ParentProperty) return;
@@ -89,10 +91,24 @@ public class PropertiesSidebar extends Pane {
         TreeItem<Property> childNode = new TreeItem<>(property);
         parent.getChildren().add(childNode);
         if (property instanceof ParentProperty) {
+            setMapListener(childNode);
             for (Property descendant : ((ParentProperty) property).getChildren().values()) {
                 addNode(childNode, descendant);
             }
         }
     }
 
+    public void setMapListener(TreeItem<Property> rootNode) {
+        if (!(rootNode.getValue() instanceof ParentProperty)) {
+            return;
+        }
+        ParentProperty property = ((ParentProperty) rootNode.getValue());
+        property.getChildren().addListener((MapChangeListener<String, Property>) change -> {
+            if (change.wasAdded()) {
+                addNode(rootNode, change.getValueAdded());
+            } else if (change.wasRemoved()) {
+                rootNode.getChildren().removeIf(p -> p.getValue() == change.getValueRemoved());
+            }
+        });
+    }
 }

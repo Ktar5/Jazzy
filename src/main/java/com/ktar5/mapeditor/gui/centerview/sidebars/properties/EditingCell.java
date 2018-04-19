@@ -1,6 +1,7 @@
 package com.ktar5.mapeditor.gui.centerview.sidebars.properties;
 
 import com.ktar5.mapeditor.properties.Property;
+import com.ktar5.mapeditor.properties.RootProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableCell;
@@ -8,10 +9,12 @@ import javafx.scene.input.KeyCode;
 
 final class EditingCell extends TreeTableCell<Property, String> {
     private PropertiesRClickMenu menu;
+    private PropertiesRootRClickMenu rootMenu;
     private TextField textField;
 
-    EditingCell() {
+    EditingCell(RootProperty rootProperty) {
         menu = new PropertiesRClickMenu(this);
+        rootMenu = new PropertiesRootRClickMenu(rootProperty);
     }
 
     @Override
@@ -40,7 +43,7 @@ final class EditingCell extends TreeTableCell<Property, String> {
         if (empty || item == null || getTreeTableRow().getTreeItem() == null) {
             setText(null);
             setGraphic(null);
-            setContextMenu(null);
+            setContextMenu(rootMenu);
         } else {
             if (isEditing()) {
                 if (textField != null) {

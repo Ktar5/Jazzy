@@ -1,5 +1,6 @@
 package com.ktar5.mapeditor.properties;
 
+import com.sun.javafx.collections.ObservableMapWrapper;
 import lombok.Getter;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,25 +10,25 @@ import java.util.regex.Pattern;
 
 @Getter
 public class ParentProperty extends Property {
-    private HashMap<String, Property> children;
+    private ObservableMapWrapper<String, Property> children;
     
-    public ParentProperty(String name, JSONObject parent) {
-        this(name);
-        deserialize(parent);
+    public ParentProperty(String name, JSONObject parentJson, ParentProperty parentProperty) {
+        this(name, parentProperty);
+        deserialize(parentJson);
     }
     
-    public ParentProperty(String name) {
-        super(name);
-        children = new HashMap<>();
+    public ParentProperty(String name, ParentProperty parentProperty) {
+        super(name, parentProperty);
+        children = new ObservableMapWrapper<>(new HashMap<>());
     }
     
     public void deserialize(JSONObject property) {
         for (String key : property.keySet()) {
             try {
                 JSONObject jsonObject = property.getJSONObject(key);
-                children.put(key, new ParentProperty(key, jsonObject));
+                children.put(key, new ParentProperty(key, jsonObject, this));
             } catch (JSONException e) {
-                children.put(key, new StringProperty(key, property.getString(key)));
+                children.put(key, new StringProperty(key, property.getString(key), this));
             }
         }
     }
@@ -48,7 +49,7 @@ public class ParentProperty extends Property {
         ParentProperty parentProperty = this;
         for (int i = 0; i < split.length - 1; i++) {
             if (!parentProperty.getChildren().containsKey(split[i])) {
-                parentProperty.getChildren().put(split[i], new ParentProperty(split[i]));
+                parentProperty.getChildren().put(split[i], new ParentProperty(split[i], parentProperty));
                 parentProperty = (ParentProperty) parentProperty.getChildren().get(split[i]);
             } else {
                 Property property = parentProperty.getChildren().get(split[i]);
@@ -66,7 +67,7 @@ public class ParentProperty extends Property {
                     "The property: '" + key + "' for property '" + getName() + "' already exists." +
                             "\nFound error at node " + (split.length - 1) + ": '" + propName + "'.");
         } else {
-            StringProperty stringProperty = new StringProperty(propName, value);
+            StringProperty stringProperty = new StringProperty(propName, value, parentProperty);
             parentProperty.getChildren().put(propName, stringProperty);
             return stringProperty;
         }

@@ -2,7 +2,9 @@ package com.ktar5.mapeditor.gui.centerview.sidebars.properties;
 
 import com.ktar5.mapeditor.properties.ParentProperty;
 import com.ktar5.mapeditor.properties.Property;
+import com.ktar5.mapeditor.properties.StringProperty;
 import javafx.scene.control.*;
+import javafx.util.Pair;
 
 import java.util.Optional;
 
@@ -16,22 +18,14 @@ public class PropertiesRClickMenu extends ContextMenu {
         //Edit menu
         MenuItem editMenuItem = new MenuItem("Edit..");
         editMenuItem.setOnAction(event -> {
-            Property clicked = cell.getTreeTableRow().getTreeItem().getValue();
-            if (clicked instanceof ParentProperty) {
-
+            if (getProperty() instanceof ParentProperty) {
+                Optional<String> name = EditParentDialog.create(((ParentProperty) getProperty()));
+                name.ifPresent(string -> getProperty().changeName(string));
             } else {
-
-            }
-            //TODO make this
-
-
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Edit Property");
-            dialog.setContentText("Please enter the name for the property you want to create:");
-
-            Optional<String> result = dialog.showAndWait();
-            if (!result.isPresent()) {
-                return;
+                Optional<Pair<String, String>> nameAndValueOptional = EditValueDialog.create(((StringProperty) getProperty()));
+                nameAndValueOptional.ifPresent(nameAndValue -> {
+                    ((StringProperty) getProperty()).setNameAndValue(nameAndValue.getKey(), nameAndValue.getValue());
+                });
             }
         });
         getItems().add(editMenuItem);
@@ -52,9 +46,7 @@ public class PropertiesRClickMenu extends ContextMenu {
             if (!result.isPresent()) {
                 return;
             }
-            Property testing = ((ParentProperty) getProperty()).createProperty(result.get());
-            TreeItem<Property> newTreeItem = new TreeItem<>(testing);
-            getTreeItem().getChildren().add(newTreeItem);
+            ((ParentProperty) getProperty()).createProperty(result.get());
         });
         getItems().add(createMenuItem);
 
@@ -64,24 +56,23 @@ public class PropertiesRClickMenu extends ContextMenu {
             Property parent = getParentProperty();
             if (!(parent instanceof ParentProperty)) return;
             ((ParentProperty) parent).getChildren().remove(getProperty().getName());
-            getTreeItem().getParent().getChildren().remove(getTreeItem());
         });
         getItems().add(removeMenuItem);
     }
 
-    public Property getParentProperty(){
+    public Property getParentProperty() {
         return getParentTreeItem().getValue();
     }
 
-    public TreeItem<Property> getParentTreeItem(){
+    public TreeItem<Property> getParentTreeItem() {
         return getTreeItem().getParent();
     }
 
-    public Property getProperty(){
+    public Property getProperty() {
         return getTreeItem().getValue();
     }
 
-    public TreeItem<Property> getTreeItem(){
+    public TreeItem<Property> getTreeItem() {
         return cell.getTreeTableRow().getTreeItem();
     }
 
