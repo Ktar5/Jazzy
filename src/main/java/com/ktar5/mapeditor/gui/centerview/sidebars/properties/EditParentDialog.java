@@ -35,9 +35,9 @@ public class EditParentDialog {
         // Do some validation (using the Java 8 lambda syntax).
         Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
         propertyName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.equals(property.getName())){
+            if (newValue.equals(property.getName())) {
                 loginButton.setDisable(false);
-            }else{
+            } else {
                 loginButton.setDisable(property.getParent().getChildren().containsKey(newValue));
                 //todo create information telling user that they already have property of this name
             }

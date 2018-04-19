@@ -51,7 +51,7 @@ public class EditValueDialog {
 
         dialog.getDialogPane().setContent(grid);
 
-        Platform.runLater(() -> propertyName.requestFocus());
+        Platform.runLater(propertyName::requestFocus);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
@@ -60,8 +60,6 @@ public class EditValueDialog {
             return null;
         });
 
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-
-        return result;
+        return dialog.showAndWait();
     }
 }

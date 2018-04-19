@@ -10,7 +10,6 @@ import javafx.collections.MapChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTablePosition;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -37,22 +36,12 @@ public class PropertiesSidebar extends Pane {
 
         //name column
         TreeTableColumn<Property, String> nameColumn = new TreeTableColumn<>("Property");
-        nameColumn.setCellFactory(p -> new EditingCell(root));
-        nameColumn.setOnEditCommit((p) -> {
-            TreeTablePosition<Property, ?> editingCell = p.getTreeTableView().getEditingCell();
-            editingCell.getTreeItem().getValue().nameProperty.set(p.getNewValue());
-        });
+        nameColumn.setCellFactory(p -> new PropertyCell(root));
         nameColumn.setCellValueFactory(param -> param.getValue().getValue().nameProperty);
-
 
         //data column
         TreeTableColumn<Property, String> dataColumn = new TreeTableColumn<>("Value");
-        dataColumn.setCellFactory(p -> new EditingCell(root));
-        dataColumn.setOnEditCommit((p) -> {
-            TreeTablePosition<Property, ?> editingCell = p.getTreeTableView().getEditingCell();
-            if (p.getRowValue().getValue() instanceof ParentProperty) return;
-            ((StringProperty) editingCell.getTreeItem().getValue()).valueProperty.set(p.getNewValue());
-        });
+        dataColumn.setCellFactory(param -> new PropertyCell(root));
         dataColumn.setCellValueFactory(param -> {
             if (param.getValue().getValue() instanceof ParentProperty)
                 return new ReadOnlyStringWrapper("");
@@ -73,6 +62,8 @@ public class PropertiesSidebar extends Pane {
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
             setPrefWidths(newValue.intValue(), nameColumn, dataColumn, .55);
         });
+
+        treeTableView.setContextMenu(new PropertiesRootRClickMenu(root));
 
         final String cssUrl1 = getClass().getResource("/tableview.css").toExternalForm();
         Main.root.getScene().getStylesheets().add(cssUrl1);

@@ -1,7 +1,5 @@
 package com.ktar5.mapeditor.gui.centerview.sidebars.properties;
 
-import com.ktar5.mapeditor.properties.ParentProperty;
-import com.ktar5.mapeditor.properties.Property;
 import com.ktar5.mapeditor.properties.RootProperty;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -21,9 +19,7 @@ public class PropertiesRootRClickMenu extends ContextMenu {
             if (!result.isPresent()) {
                 return;
             }
-            Property testing = property.createProperty(result.get());
-            //TreeItem<Property> newTreeItem = new TreeItem<>(testing);
-            //getTreeItem().getChildren().add(newTreeItem);
+            property.createProperty(result.get());
         });
         getItems().add(createMenuItem);
     }
