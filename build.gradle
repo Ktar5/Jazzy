@@ -4,7 +4,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'application'
 apply plugin: 'java'
 
-mainClassName = "com.ktar5.mapeditor.Main"
+mainClassName = "com.ktar5.jazzy.Main"
 
 sourceCompatibility = 1.8
 
