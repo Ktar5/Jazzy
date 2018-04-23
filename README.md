@@ -1,4 +1,4 @@
-<h1 align="center"> Java-Tilemap-Editor </h1> <br>
+<h1 align="center"> Jazzy, The Hackable Java Tilemap Editor </h1> <br>
 <p align="center">
   <a href="https://github.com/Ktar5/Java-Tilemap-Editor">
     <img alt="Header" title="Header" src="https://i.imgur.com/rqWMZLc.gif">

@@ -1,2 +1,5 @@
 rootProject.name = 'jazzy'
+include 'editor'
+include 'plugins'
+include 'libgdx'
 

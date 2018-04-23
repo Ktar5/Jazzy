@@ -1,0 +1,9 @@
+dependencies{
+    //Core dependencies
+    compile 'com.ktar5:common:1.0-SNAPSHOT'
+
+    //JSON parsing
+    compile group: 'org.json', name: 'json', version: '20180130'
+
+    compile "com.badlogicgames.gdx:gdx:1.9.8"
+}
