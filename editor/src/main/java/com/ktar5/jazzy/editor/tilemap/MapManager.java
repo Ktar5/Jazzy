@@ -6,7 +6,7 @@ import com.ktar5.jazzy.editor.gui.dialogs.CreateBaseTilemap;
 import com.ktar5.jazzy.editor.gui.dialogs.GenericAlert;
 import com.ktar5.jazzy.editor.gui.dialogs.LoadDialog;
 import com.ktar5.jazzy.editor.gui.dialogs.SelectType;
-import com.ktar5.jazzy.editor.tilemap.whole.WholeTilemap;
+import com.ktar5.jazzy.editor.tilemap.whole.WholeTileLayer;
 import com.ktar5.jazzy.editor.util.StringUtil;
 import org.json.JSONObject;
 import org.pmw.tinylog.Configurator;
@@ -41,7 +41,7 @@ public class MapManager {
                 .formatPattern("{date:mm:ss:SSS} {class_name}.{method}() [{level}]: {message}")
                 .activate();
         
-        registerTilemapClass(WholeTilemap.class);
+        registerTilemapClass(WholeTileLayer.class);
     }
     
     /**
@@ -94,8 +94,8 @@ public class MapManager {
     /**
      * Create a tilemap of the type specified. Uses a create dialog.
      *
-     * @param clazz The class to instantiate (ex: WholeTilemap.class)
-     * @param <T>   The type of tilemap to instantiate (ex: WholeTilemap)
+     * @param clazz The class to instantiate (ex: WholeTileLayer.class)
+     * @param <T>   The type of tilemap to instantiate (ex: WholeTileLayer)
      * @return the tilemap of type <T> that has been instantiated, otherwise null
      */
     public <T extends BaseTilemap> T createMap(Class<? extends T> clazz) {
@@ -142,8 +142,8 @@ public class MapManager {
      * Loads a tilemap from a file selected in an "open file" dialog, and instantiates it using
      * the serialization constructor of tilemap.
      *
-     * @param clazz The class to instantiate (ex: WholeTilemap.class)
-     * @param <T>   The type of tilemap to instantiate (ex: WholeTilemap)
+     * @param clazz The class to instantiate (ex: WholeTileLayer.class)
+     * @param <T>   The type of tilemap to instantiate (ex: WholeTileLayer)
      * @return the tilemap of type <T> that has been instantiated, otherwise null
      */
     public <T extends BaseTilemap> T loadMap(Class<? extends T> clazz) {

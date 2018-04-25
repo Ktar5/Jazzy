@@ -1,9 +1,12 @@
 package com.ktar5.jazzy.editor.tileset;
 
+import com.ktar5.jazzy.editor.gui.dialogs.GenericAlert;
 import com.ktar5.jazzy.editor.tilemap.BaseTilemap;
+import com.ktar5.jazzy.editor.tilemap.whole.WholeTileset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -22,8 +25,15 @@ public class Tilesets {
      *
      * @param json the JSONMObject representing the entire tilemap
      */
-    protected void loadTileset(JSONObject json){
-    
+    protected void loadTileset(JSONObject json) {
+        //TODO
+        File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
+        WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset, WholeTileset.class);
+        if (tileset1.getTileHeight() != getTileHeight() || tileset1.getTileWidth() != getTileWidth()) {
+            new GenericAlert("Tileset's tilesize does not match map's tilesize");
+            return;
+        }
+        this.setTileset(tileset1);
     }
     
     public JSONArray serialize() {

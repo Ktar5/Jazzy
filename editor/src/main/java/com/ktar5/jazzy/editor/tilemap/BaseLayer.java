@@ -3,6 +3,7 @@ package com.ktar5.jazzy.editor.tilemap;
 import com.ktar5.jazzy.editor.properties.RootProperty;
 import com.ktar5.jazzy.editor.tileset.Tile;
 import com.ktar5.jazzy.editor.util.Drawable;
+import com.ktar5.jazzy.editor.util.Interactable;
 import com.ktar5.utilities.common.constants.Direction;
 import javafx.util.Pair;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import org.json.JSONObject;
 import java.util.Optional;
 
 @Getter
-public abstract class BaseLayer implements Drawable {
+public abstract class BaseLayer implements Drawable, Interactable {
     private BaseTilemap parent;
     private String name;
     private RootProperty rootProperty;
@@ -113,5 +114,17 @@ public abstract class BaseLayer implements Drawable {
     }
     
     public abstract JSONObject serialize();
+    
+    public int getWidth() {
+        return parent.getWidth();
+    }
+    
+    public int getHeight() {
+        return parent.getHeight();
+    }
+    
+    public boolean isDragging() {
+        return parent.isDragging();
+    }
     
 }

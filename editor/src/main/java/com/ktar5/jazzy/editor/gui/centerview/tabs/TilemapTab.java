@@ -8,7 +8,7 @@ import com.ktar5.jazzy.editor.gui.centerview.sidebars.tileset.TilesetSidebar;
 import com.ktar5.jazzy.editor.gui.utils.PixelatedImageView;
 import com.ktar5.jazzy.editor.tilemap.BaseTilemap;
 import com.ktar5.jazzy.editor.tilemap.MapManager;
-import com.ktar5.jazzy.editor.tilemap.whole.WholeTilemap;
+import com.ktar5.jazzy.editor.tilemap.whole.WholeTileLayer;
 import com.ktar5.jazzy.editor.util.Tabbable;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
@@ -67,7 +67,7 @@ public abstract class TilemapTab extends AbstractTab {
             if (event.getTab().equals(this.getTabId())) {
                 Image image = event.getTileset().getTileImages().get(event.getId());
                 getTilesetSidebar().getSelectedTileView().setTile(new PixelatedImageView(image));
-                WholeTilemap tilemap = ((WholeTilemap) getTabbable());
+                WholeTileLayer tilemap = ((WholeTileLayer) getTabbable());
                 tilemap.setCurrentData(event.getId(), 0);
             }
         }

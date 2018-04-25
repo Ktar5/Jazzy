@@ -1,5 +1,5 @@
 {
-    "tileset": "..\\wholetileset.json",
+    "tilesets": "..\\wholetileset.json",
     "properties": {},
     "dimensions": {
         "width": 10,

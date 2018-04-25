@@ -1,12 +1,8 @@
 package com.ktar5.jazzy.editor.tilemap.whole;
 
 import com.ktar5.jazzy.editor.coordination.EditorCoordinator;
-import com.ktar5.jazzy.editor.gui.centerview.tabs.TilemapTab;
-import com.ktar5.jazzy.editor.gui.dialogs.GenericAlert;
 import com.ktar5.jazzy.editor.tilemap.BaseLayer;
 import com.ktar5.jazzy.editor.tilemap.BaseTilemap;
-import com.ktar5.jazzy.editor.tileset.TilesetManager;
-import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -15,40 +11,23 @@ import javafx.scene.shape.Rectangle;
 import lombok.Getter;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 @Getter
-public class WholeTilemap extends BaseLayer {
+public class WholeTileLayer extends BaseLayer {
     int currentData = 0, currentId = 1;
     int previousX = -1, previousY = -1;
     private Rectangle rect;
     
-    public WholeTilemap(BaseTilemap parent, JSONObject json) {
+    public WholeTileLayer(BaseTilemap parent, JSONObject json) {
         super(parent, json);
     }
     
-    public WholeTilemap(BaseTilemap parent, String name, boolean visible, int tileHeight, int tileWidth, int xOffset, int yOffset, int xPadding, int yPadding) {
+    public WholeTileLayer(BaseTilemap parent, String name, boolean visible, int tileHeight, int tileWidth, int xOffset, int yOffset, int xPadding, int yPadding) {
         super(parent, name, visible, tileHeight, tileWidth, xOffset, yOffset, xPadding, yPadding);
     }
     
     public void setCurrentData(int id, int currentData) {
         this.currentData = currentData;
         this.currentId = id;
-    }
-    
-    @Override
-    public void loadTilesetIfExists(JSONObject json) {
-        if (json.has("tileset")) {
-            File tileset = Paths.get(getSaveFile().getPath()).resolve(json.getString("tileset")).toFile();
-            WholeTileset tileset1 = TilesetManager.get().loadTileset(tileset, WholeTileset.class);
-            if (tileset1.getTileHeight() != getTileHeight() || tileset1.getTileWidth() != getTileWidth()) {
-                new GenericAlert("Tileset's tilesize does not match map's tilesize");
-                return;
-            }
-            this.setTileset(tileset1);
-        }
     }
     
     @Override
@@ -61,6 +40,11 @@ public class WholeTilemap extends BaseLayer {
         } else {
             this.grid[x][y] = new WholeTile(Integer.valueOf(block), 0, getTileset());
         }
+    }
+    
+    @Override
+    public JSONObject serialize() {
+        return null;
     }
     
     @Override
@@ -103,7 +87,7 @@ public class WholeTilemap extends BaseLayer {
         if (rect == null) {
             rect = new Rectangle(0, 0, 16, 16);
             rect.setFill(Color.AQUA.deriveColor(0, 1, 1, .5f));
-            EditorCoordinator.get().getEditor().getTabDrawingPane(getId()).getChildren().add(rect);
+            EditorCoordinator.get().getEditor().getTabDrawingPane(getParent().getId()).getChildren().add(rect);
         }
         rect.toFront();
         rect.setTranslateX(x * this.getTileWidth());
@@ -138,18 +122,6 @@ public class WholeTilemap extends BaseLayer {
                 grid[x][y].draw(pane, x * getTileWidth(), y * getTileHeight());
             }
         }
-    }
-    
-    @Override
-    @CallSuper
-    public JSONObject serialize() {
-        final JSONObject json = super.serialize();
-        if (this.getTileset() != null) {
-            Path path = Paths.get(this.getSaveFile().getPath())
-                    .relativize(Paths.get(this.getTileset().getSaveFile().getPath()));
-            json.put("tileset", path.toString());
-        }
-        return json;
     }
     
     public void set(int x, int y, WholeTile tile) {
