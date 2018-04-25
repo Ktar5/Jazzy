@@ -5,7 +5,6 @@ import com.ktar5.jazzy.editor.util.Tabbable;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import org.imgscalr.Scalr;
@@ -148,18 +147,6 @@ public abstract class BaseTileset implements Tabbable {
                 .relativize(Paths.get(this.getSourceFile().getPath()));
         json.put("sourceFile", path.toString());
         return json;
-    }
-    
-    @Override
-    /**
-     * Retrieves dimensions of the tabbable. Format is as follows:
-     * pair(
-     *      pair(total width, total height),
-     *      pair(tile width, tile height)
-     *   )
-     */
-    public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions() {
-        return new Pair<>(new Pair<>(dimensionX, dimensionY), new Pair<>(getTileWidth(), getTileHeight()));
     }
     
     @Override

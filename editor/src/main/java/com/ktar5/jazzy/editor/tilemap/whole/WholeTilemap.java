@@ -3,6 +3,7 @@ package com.ktar5.jazzy.editor.tilemap.whole;
 import com.ktar5.jazzy.editor.coordination.EditorCoordinator;
 import com.ktar5.jazzy.editor.gui.centerview.tabs.TilemapTab;
 import com.ktar5.jazzy.editor.gui.dialogs.GenericAlert;
+import com.ktar5.jazzy.editor.tilemap.BaseLayer;
 import com.ktar5.jazzy.editor.tilemap.BaseTilemap;
 import com.ktar5.jazzy.editor.tileset.TilesetManager;
 import com.ktar5.utilities.annotation.callsuper.CallSuper;
@@ -19,27 +20,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Getter
-public class WholeTilemap extends BaseTilemap<WholeTileset> {
+public class WholeTilemap extends BaseLayer {
     int currentData = 0, currentId = 1;
     int previousX = -1, previousY = -1;
     private Rectangle rect;
     
-    public WholeTilemap(File saveFile, JSONObject json) {
-        super(saveFile, json);
+    public WholeTilemap(BaseTilemap parent, JSONObject json) {
+        super(parent, json);
     }
     
-    public WholeTilemap(File saveFile, int width, int height, int tileWidth, int tileHeight) {
-        super(saveFile, width, height, tileWidth, tileHeight);
+    public WholeTilemap(BaseTilemap parent, String name, boolean visible, int tileHeight, int tileWidth, int xOffset, int yOffset, int xPadding, int yPadding) {
+        super(parent, name, visible, tileHeight, tileWidth, xOffset, yOffset, xPadding, yPadding);
     }
     
     public void setCurrentData(int id, int currentData) {
         this.currentData = currentData;
         this.currentId = id;
-    }
-    
-    @Override
-    public TilemapTab getNewTilemapTab() {
-        return new TilemapTab.WholeTilemapTab(getId());
     }
     
     @Override

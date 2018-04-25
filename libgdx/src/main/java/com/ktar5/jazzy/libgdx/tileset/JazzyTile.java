@@ -2,9 +2,6 @@ package com.ktar5.jazzy.libgdx.tileset;
 
 import com.ktar5.jazzy.libgdx.drawers.DrawWrapper;
 
-/**
- * Heavily based off of LibGDX's TiledMapTile
- */
 public abstract class JazzyTile<T extends JazzyTileset> {
     public static final int ROTATE_0 = 0;
     public static final int ROTATE_90 = 1;

@@ -1,8 +1,4 @@
 {
-    "spawn": {
-        "x": 0,
-        "y": 0
-    },
     "tileset": "..\\compositetileset.json",
     "tileWidth": 16,
     "dimensions": {

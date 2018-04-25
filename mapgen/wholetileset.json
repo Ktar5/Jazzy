@@ -1,20 +1,26 @@
 {
-    "padding": {
-        "horizontal": 2,
-        "vertical": 2
+  "padding": {
+    "horizontal": 2,
+    "vertical": 2
+  },
+  "offset": {
+    "left": 2,
+    "up": 2
+  },
+  "tileWidth": 16,
+  "sourceFile": "..\\tilemapimage.png",
+  "properties": {
+    "tester": {
+      "two": ""
     },
-    "offset": {
-        "left": 2,
-        "up": 2
-    },
-    "tileWidth": 16,
-    "sourceFile": "..\\tilemapimage.png",
-    "properties": {
-        "tester": {"two": ""},
-        "locations": {
-            "abacus": {"monday": {"feelsbadman": "tester"}},
-            "Testing": "erw"
+    "locations": {
+      "abacus": {
+        "monday": {
+          "feelsbadman": "tester"
         }
-    },
-    "tileHeight": 16
+      },
+      "Testing": "erw"
+    }
+  },
+  "tileHeight": 16
 }

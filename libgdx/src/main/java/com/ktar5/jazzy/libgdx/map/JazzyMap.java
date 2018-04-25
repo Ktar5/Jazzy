@@ -18,14 +18,12 @@ public abstract class JazzyMap implements Disposable {
      */
     public JazzyMap(JSONObject json) {
         rootProperty.deserialize(json.getJSONObject("properties"));
-        //TODO implement multiple map layers!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!/
-        //tODO implement multiple map tilesets
-        //TODO
-        //TODO
-        //todo
-        loadMapLayers();
-        
-        
+        if (json.has("tilemap")) {
+            
+        } else {
+            //Layers
+            //Type
+        }
     }
     
     /**

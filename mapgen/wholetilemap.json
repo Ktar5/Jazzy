@@ -1,13 +1,10 @@
 {
-    "spawn": {},
     "tileset": "..\\wholetileset.json",
-    "tileWidth": 16,
     "properties": {},
     "dimensions": {
         "width": 10,
         "height": 10
     },
-    "tileHeight": 16,
     "tilemap": [
         "9,9,9,9,9,9,9,9,9,9",
         "9,0,0,0,0,0,0,0,0,9",

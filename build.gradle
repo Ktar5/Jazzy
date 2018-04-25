@@ -2,15 +2,17 @@ group = 'com.ktar5'
 version = '1.0-SNAPSHOT'
 
 allprojects {
+
+}
+
+subprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'maven'
     //apply plugin: "net.ltgt.errorprone"
 
     sourceCompatibility = 1.8
-}
 
-subprojects {
     group = this.group
     version = this.version
 

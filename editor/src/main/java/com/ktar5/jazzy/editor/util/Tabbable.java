@@ -12,7 +12,7 @@ import org.pmw.tinylog.Logger;
 import java.io.File;
 import java.util.UUID;
 
-public interface Tabbable extends Interactable {
+public interface Tabbable extends Interactable, Drawable {
     
     /**
      * Saves the tabbable to a file.
@@ -61,15 +61,6 @@ public interface Tabbable extends Interactable {
     public UUID getId();
     
     /**
-     * Retrieves dimensions of the tabbable. Format is as follows:
-     * pair(
-     * pair(total width, total height),
-     * pair(unit width, unit height)
-     * )
-     */
-    public Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> getDimensions();
-    
-    /**
      * Gets the name of the tabbable.
      */
     public String getName();
@@ -88,14 +79,6 @@ public interface Tabbable extends Interactable {
      * Change the save file to a different file.
      */
     public void updateSaveFile(File file);
-    
-    /**
-     * This method should draw whatever the Tabbable represents to
-     * the pane passed as a parameter.
-     *
-     * @param pane the pane to be drawn to.
-     */
-    public void draw(Pane pane);
     
     @CallSuper
     /**

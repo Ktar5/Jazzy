@@ -15,7 +15,6 @@ public abstract class JazzyTileset implements Iterable<TextureRegion> {
     private RootProperty rootProperty;
     private int tileWidth, tileHeight;
     
-    
     public JazzyTileset(JSONObject json) {
         int paddingVertical = json.getJSONObject("padding").getInt("vertical");
         int paddingHorizontal = json.getJSONObject("padding").getInt("horizontal");
